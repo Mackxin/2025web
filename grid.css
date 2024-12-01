@@ -1,0 +1,245 @@
+/* 继承基础变量 */
+@import 'style.css';
+
+/* 网格特有变量 */
+:root {
+    --grid-gap: var(--spacing-md);
+    --grid-columns: 3;
+    --grid-min-width: 200px;
+    --spacing-xl: 30px;
+}
+
+/* 网格内容区域 */
+.grid-content {
+    width: 100%;
+    margin-top: calc(var(--header-height) + var(--spacing-md));
+    margin-bottom: calc(var(--footer-height) + var(--spacing-md));
+    padding: var(--spacing-md);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* 网格项目 */
+.grid-item {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+    transition: all var(--transition-normal) ease;
+    position: relative;
+    z-index: 1;
+}
+
+/* 添加双层阴影效果 */
+.grid-item::before,
+.grid-item::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
+    transition: all var(--transition-normal) ease;
+}
+
+.grid-item::before {
+    inset: 0;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    z-index: -1;
+}
+
+.grid-item::after {
+    inset: 1px;
+    background: linear-gradient(to right bottom, transparent, rgba(99, 102, 241, 0.05));
+    opacity: 0;
+    z-index: -2;
+}
+
+.grid-item:hover {
+    transform: translateY(-3px);
+}
+
+.grid-item:hover::before {
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+}
+
+.grid-item:hover::after {
+    opacity: 1;
+}
+
+.grid-item h3 {
+    font-size: var(--font-size-lg);
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.grid-item p {
+    font-size: var(--font-size-md);
+    color: var(--color-secondary);
+    margin: 0;
+    text-align: center;
+}
+
+/* 标题和时间的行 */
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+    margin: 0 calc(var(--spacing-sm) * -1);
+    width: 100%;
+    gap: var(--spacing-md);
+}
+
+.item-header h2 {
+    font-size: 1vw;
+    color: var(--color-primary);
+    margin: 0;
+    font-weight: 500;
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.item-header time {
+    font-size: 0.9vw;
+    color: var(--color-secondary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--color-background);
+    border-radius: var(--border-radius-sm);
+    white-space: pre-wrap;
+    text-align: right;
+    min-width: max-content;
+}
+
+/* 内容区域 */
+.item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+    align-items: flex-start;
+}
+
+.item-content p {
+    margin: 0;
+    font-size: 0.9vw;
+    color: var(--color-secondary);
+    line-height: 1.5;
+    text-align: left;
+    width: 100%;
+}
+
+/* 内容区域的链接样式 */
+.item-content p a {
+    display: inline-block;
+    color: #6366f1;
+    text-decoration: none;
+    padding: 2px 8px;
+    margin: 0 2px;
+    border-radius: var(--border-radius-sm);
+    background-color: rgba(99, 102, 241, 0.1);
+    transition: all var(--transition-normal) ease;
+    font-weight: 500;
+}
+
+.item-content p a:hover {
+    background-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+    .grid-content {
+        padding: var(--spacing-sm);
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        margin-top: calc(var(--header-height) + var(--spacing-sm));
+        margin-bottom: calc(var(--footer-height) + var(--spacing-sm));
+        padding-bottom: var(--spacing-lg);
+    }
+
+    .grid-item {
+        min-height: auto;
+        padding: var(--spacing-md);
+    }
+
+    .item-header {
+        padding: 0 var(--spacing-xs);
+        padding-bottom: var(--spacing-xs);
+        margin: 0 calc(var(--spacing-xs) * -1);
+    }
+
+    .item-header h2 {
+        font-size: 4.5vw;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .item-header time {
+        font-size: 3.5vw;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .item-content {
+        gap: var(--spacing-xs);
+    }
+
+    .item-content p {
+        font-size: 3.8vw;
+        line-height: 1.6;
+    }
+
+    .item-content p a {
+        padding: 1px 6px;
+        margin: 0 2px;
+        font-size: 3.8vw;
+    }
+
+    .grid-item:hover {
+        transform: translateY(-1px);
+    }
+
+    .grid-item:hover::before {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+}
+
+/* 修改 header 下的标题和时间样式 */
+header h1 {
+    font-size: 1.5vw;  /* 增大标题字体 */
+    color: var(--color-primary);
+    margin: 0;
+    font-weight: 600;
+    line-height: var(--header-height);
+    display: flex;
+    align-items: center;
+}
+
+header p {
+    font-size: 1.2vw;  /* 增大时间字体 */
+    color: var(--color-secondary);
+    margin: 0;
+    line-height: var(--header-height);
+    display: flex;
+    align-items: center;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+    header h1 {
+        font-size: 5vw;  /* 移动端标题字体 */
+    }
+
+    header p {
+        font-size: 4vw;  /* 移动端时间字体 */
+    }
+}
