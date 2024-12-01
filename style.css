@@ -504,44 +504,53 @@ a:active {
     }
 
     .left-nav, .right-nav {
-        width: 50vw;
+        width: 50vw;  /* 使用视窗宽度的50% */
         height: calc(100vh - var(--header-height) - var(--footer-height));
         top: var(--header-height);
         background-color: var(--color-overlay);
         z-index: 999;
-        transform: translateX(-100%);
         transition: transform 0.3s ease;
         display: none;
-        padding: var(--spacing-sm);
+        padding: 0;
         overflow-y: auto;
+    }
+
+    .left-nav {
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .right-nav {
+        right: 0;
+        transform: translateX(100%);
     }
 
     /* 显示时改为grid布局 */
     .nav-visible .left-nav,
     .nav-visible .right-nav {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);  /* 改为两列布局 */
-        gap: var(--spacing-xs);
+        grid-template-columns: repeat(2, 1fr);  /* 两列布局 */
+        gap: 1px;  /* 减小间距到最小 */
         transform: translateX(0);
     }
 
     /* 导航链接样式 */
     .nav-link {
-        font-size: 4vw;  /* 增大字体大小 */
-        padding: var(--spacing-sm);  /* 增加内边距 */
+        font-size: 4vw;
+        padding: var(--spacing-sm);
         height: auto;
-        min-height: 44px;  /* 增加最小高度 */
+        min-height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
         word-break: break-word;
-        background-color: rgba(255, 255, 255, 0.5);
-        border-radius: var(--border-radius-sm);
+        background-color: var(--color-white);
+        border-radius: 0;
     }
 
     .nav-link:active {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: var(--color-hover);
     }
 
     .footer {
