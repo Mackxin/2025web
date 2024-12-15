@@ -11,6 +11,7 @@
     --color-overlay: rgba(255, 255, 255, 0.95);
     --color-button-bg: rgba(255, 255, 255, 0.7);
     --color-button-hover: rgba(255, 255, 255, 0.9);
+    --color-h2: rgba(99, 101, 241, 0.863);
     --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
     --gradient-hover: linear-gradient(120deg, 
         rgba(99, 102, 241, 0.08),

@@ -98,7 +98,7 @@
 
 .item-header h2 {
     font-size: 1vw;
-    color: var(--color-primary);
+    color: var(--color-h2);
     margin: 0;
     font-weight: 500;
     flex: 1;
