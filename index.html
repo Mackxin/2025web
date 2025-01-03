@@ -1,267 +1,92 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>搜索</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="xininn.ico" />
+    <title>一零</title>
     <style>
-        .search-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* 使元素的宽高包括内边距和边框 */
         }
-
-        .search-box {
-            width: 100%;
-            display: flex;
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .search-input {
-            width: 100%;
-            padding: var(--spacing-md) var(--spacing-lg);
-            border: 2px solid var(--color-border);
-            border-radius: var(--border-radius-lg);
-            font-size: var(--font-size-lg);
-            outline: none;
-            transition: all var(--transition-normal) ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .search-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .search-engines {
+        body {
             display: flex;
             justify-content: center;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-
-        .search-engine {
-            padding: var(--spacing-md) var(--spacing-xl);
-            border: 2px solid transparent;
-            border-radius: var(--border-radius-lg);
-            cursor: pointer;
-            background: var(--color-white);
-            transition: all var(--transition-normal) ease;
-            font-size: var(--font-size-lg);
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            min-width: 140px;
-            min-height: 52px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
             align-items: center;
-            justify-content: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
         }
-
-        .search-engine::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            opacity: 0;
-            transition: opacity var(--transition-normal) ease;
-            z-index: 0;
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 链接和二维码并排 */
+            gap: 40px;
+            text-align: center;
+            border-radius: 15px;
+            max-width: 600px; /* 增加最大宽度 */
+            width: 100%;
+            padding: 30px; /* 添加内边距 */
         }
-
-        .search-engine span {
-            position: relative;
-            z-index: 1;
+        .links {
+            display: flex;
+            flex-direction: column; /* 链接上下排列 */
+            justify-content: space-around; /* 垂直居中 */
+            gap: 15px; /* 链接之间的间距 */
         }
-
-        .search-engine:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
-            border-color: rgba(99, 102, 241, 0.2);
-            color: #6366f1;
+        .qr-code {
+            display: flex; /* 使用flexbox */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            width: 100%; /* 使二维码宽度适应屏幕 */
+            aspect-ratio: 1; /* 保持宽高比为1:1 */
+            border-radius: 15px;
+            overflow: hidden; /* 确保图片不会溢出边框 */
         }
-
-        .search-engine.active {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        .qr-code img {
+            width: 100%; /* 使图片宽度适应容器 */
+            height: 100%; /* 使图片高度适应容器 */
+            object-fit: cover; /* 保持图片比例并填充容器 */
         }
-
-        .search-engine.active:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+        .link {
+            font-size: 18px;
+            color: #ff1d55; /* 链接颜色 */
+            text-decoration: none;
+            padding: 12px 20px; /* 增加内边距 */
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s; /* 添加变换效果 */
+            background-color: white; /* 链接背景颜色 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影 */
         }
-
-        @media screen and (max-width: 768px) {
-            .search-container {
-                width: 95%;
-                padding: 0 var(--spacing-sm);
-            }
-
-            .search-input {
-                font-size: var(--font-size-md);
-                padding: var(--spacing-sm) var(--spacing-md);
-            }
-
-            .search-engines {
-                gap: var(--spacing-sm);
-            }
-
-            .search-engine {
-                padding: var(--spacing-sm) var(--spacing-md);
-                min-width: 110px;
-                min-height: 44px;
-                font-size: var(--font-size-md);
-            }
+        .link:hover {
+            color: #ff1d55; /* 悬停时文字颜色 */
+            transform: scale(1.05); /* 悬停时放大效果 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 悬停时阴影变化 */
         }
-
-        /* 覆盖默认的header样式 */
-        header {
-            width: 100% !important;  /* 强制100%宽度 */
-            left: 0 !important;      /* 从左边开始 */
-            background: none !important;  /* 移除背景 */
-            box-shadow: none !important;  /* 移除阴影 */
-        }
-
-        /* 暗色主题适配 */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: var(--color-background);
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr; /* 在小屏幕上，链接和二维码垂直排列 */
+                gap: 20px; /* 减小间距 */
             }
-
-            .search-input {
-                background-color: var(--color-white);  /* 使用暗色变量 */
-                border-color: var(--color-border);
-                color: var(--color-primary);
-            }
-
-            .search-input:focus {
-                border-color: #818cf8;  /* 使用暗色主题的主色 */
-                box-shadow: 0 4px 20px rgba(129, 140, 248, 0.2);
-            }
-
-            .search-engine {
-                background: var(--color-white);
-                color: var(--color-primary);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            }
-
-            .search-engine:hover {
-                border-color: rgba(129, 140, 248, 0.3);
-                color: #818cf8;
-                box-shadow: 0 4px 20px rgba(129, 140, 248, 0.2);
-            }
-
-            .search-engine.active {
-                background: linear-gradient(135deg, #818cf8, #a78bfa);
-                color: #fff;
-                border-color: transparent;
-                box-shadow: 0 4px 20px rgba(129, 140, 248, 0.3);
-            }
-
-            .search-engine.active:hover {
-                box-shadow: 0 6px 25px rgba(129, 140, 248, 0.4);
+            .qr-code {
+                height: auto; /* 高度自适应 */
             }
         }
     </style>
 </head>
 <body>
-    <!-- <header>
-        <h1>搜索</h1>
-        <p id="current-time"></p>
-    </header> -->
-
-    <main class="search-container">
-        <div class="search-box">
-            <input type="text" class="search-input" placeholder="请输入搜索内容...">
+    <div class="container">
+        <div class="links">
+            <a href="http://yilingyaoling.xyz/naver.html" class="link" target="_blank">一零幺零</a>
+            <a href="http://yilingyaoling.xyz/bobo.html" class="link" target="_blank">幺零一零</a>
+            <a href="http://yilingyaoling.xyz/" class="link" target="_blank">暂定</a>
+            <a href="http://yilingyaoling.xyz/" class="link" target="_blank">暂定</a>
         </div>
-        <div class="search-engines">
-            <button class="search-engine active" data-engine="google"><span>谷歌搜索</span></button>
-            <button class="search-engine" data-engine="chatgpt"><span>ChatGPT</span></button>
-            <button class="search-engine" data-engine="bilibili"><span>B站搜索</span></button>
-            <button class="search-engine" data-engine="kimi"><span>Kimi</span></button>
-            <button class="search-engine" data-engine="douyin"><span>抖音搜索</span></button>
-            <button class="search-engine" data-engine="bing"><span>必应搜索</span></button>
+        <div class="qr-code">
+            <img src="111.png" alt="二维码">
         </div>
-    </main>
-
-    <footer class="footer">
-        <a href="index.html">首页</a>
-        <a href="naver.html">导航</a>
-        <a href="baozhi.html">报纸</a>
-        <a href="me.html">关于</a>
-    </footer>
-
-    <script>
-        // 时间更新
-        function initTimeUpdate() {
-            function updateTime() {
-                const now = new Date();
-                const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-                const time = now.toLocaleTimeString('zh-CN', { hour12: false });
-                const weekday = weekdays[now.getDay()];
-                document.getElementById('current-time').textContent = `${time} ${weekday}`;
-            }
-            updateTime();
-            setInterval(updateTime, 1000);
-        }
-
-        // 搜索引擎切换和搜索功能
-        const engines = {
-            google: 'https://www.google.com/search?q=',
-            chatgpt: 'https://chat.openai.com/',
-            bilibili: 'https://search.bilibili.com/all?keyword=',
-            kimi: 'https://kimi.moonshot.cn/',
-            douyin: 'https://www.douyin.com/search/',
-            bing: 'https://www.bing.com/search?q='
-        };
-
-        let currentEngine = 'google';
-        const searchInput = document.querySelector('.search-input');
-
-        document.querySelectorAll('.search-engine').forEach(button => {
-            button.addEventListener('click', () => {
-                const query = searchInput.value.trim();
-                
-                // 如果有搜索内容，直接搜索
-                if (query) {
-                    const url = engines[button.dataset.engine] + encodeURIComponent(query);
-                    window.open(url, '_blank');
-                    searchInput.value = '';  // 清空输入框
-                    searchInput.focus();     // 保持焦点在输入框
-                }
-                
-                // 更新当前选中的搜索引擎
-                document.querySelector('.search-engine.active').classList.remove('active');
-                button.classList.add('active');
-                currentEngine = button.dataset.engine;
-            });
-        });
-
-        // 回车搜索
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    const url = engines[currentEngine] + encodeURIComponent(query);
-                    window.open(url, '_blank');
-                    searchInput.value = '';  // 清空输入框
-                    searchInput.focus();     // 保持焦点在输入框
-                }
-            }
-        });
-
-        // 初始化
-        document.addEventListener('DOMContentLoaded', initTimeUpdate);
-    </script>
+    </div>
 </body>
-</html> 
+</html>

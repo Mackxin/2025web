@@ -1,0 +1,307 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+:root {
+    --primary-color: #ff1d55;
+    --primary-gradient: linear-gradient(45deg, #ff1d56, #ff4444);
+    --text-color: #333;
+    --transition-speed: 0.3s;
+}
+
+html {
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: #fff;
+}
+
+.container {
+    max-width: 120rem;
+    margin: 0 auto;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: opacity var(--transition-speed) ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+.update-text a {
+    display: inline-block;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0 1rem;
+    border-radius: 2rem;
+    margin: 0.5rem 1rem 0.5rem 0;
+    font-size: 1.4rem;
+    text-indent: 0;
+}
+
+.update-text a:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.section-title {
+    font-size: 3rem;
+    color: var(--primary-color);
+    text-align: center;
+    font-weight: 600;
+}
+
+.timeline {
+    position: relative;
+    padding: 2rem 0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.date {
+    font-size: 2.6rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    display: block;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.3s ease-in-out;
+    text-align: right;
+    padding-right: 2rem;
+    border-right: 3px solid var(--primary-color);
+    opacity: 0.6;
+}
+
+.date:hover {
+    opacity: 0.8;
+    border-right-color: currentColor;
+}
+
+.timeline-content {
+    overflow: hidden;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 2000px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 2rem;
+}
+
+.timeline-content.hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+    margin: 0;
+}
+
+.welcome-section,
+.update-section {
+    width: 100%;
+    max-width: 100rem;
+    margin: 0 auto;
+}
+
+.content-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.content-card.hide {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.card-tag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.2rem 0.8rem;
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    z-index: 2;
+    backdrop-filter: blur(2px);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.card-tag:hover {
+    opacity: 0.8;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 2.4rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.card-text,
+.update-text {
+    font-size:  1.8rem;
+    color: var(--text-color);
+    line-height: 3.6rem;
+    text-indent: 2rem;
+}
+
+.update-title {
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card-image-wrapper {
+    margin: 0 -1.6rem;
+    overflow: hidden;
+    border-radius: 0.8rem;
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.card-with-image:hover .card-image {
+    transform: scale(1.05);
+}
+
+.toggle-all {
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.3s ease;
+}
+
+.toggle-all:hover {
+    opacity: 0.8;
+}
+
+/* 专门处理点击状态 */
+a, button, .date, .card-tag, .toggle-all {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+
+a:active, button:active, .date:active, .card-tag:active, .toggle-all:active {
+    background-color: transparent !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    html {
+        font-size: 56.25%;  /* 9px */
+    }
+
+    .container {
+        padding: 1.5rem;
+    }
+
+    .content-card {
+        padding: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-with-qr {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+
+    .links-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .update-text {
+        font-size: 1.4rem;
+        line-height: 1.6;
+    }
+
+    .update-text a {
+        display: inline-block;
+        margin: 0.5rem 1rem 0.5rem 0;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .section-title {
+        font-size: 2.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-image-wrapper {
+        margin: 1.5rem -2rem;
+    }
+
+    .timeline-item {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 50%;  /* 8px */
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .content-card {
+        padding: 1rem;
+    }
+
+    .update-text {
+        font-size: 1.4rem;
+    }
+
+    .update-text a {
+        margin: 0.5rem 0.8rem 0.5rem 0;
+        padding: 0.5rem 1.2rem;
+    }
+
+    .card-tag {
+        font-size: 1rem;
+        padding: 0.2rem 0.6rem;
+    }
+}
