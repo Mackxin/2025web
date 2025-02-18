@@ -4,7 +4,7 @@
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent !important;
     -webkit-touch-callout: none;
-    user-select: none;
+    /* user-select: none; */
 }
 :root {
     --primary-color: #ff1d55;
