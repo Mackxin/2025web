@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="这是一个静态页面示例，展示了Markdown风格的内容。">
+    <link rel="shortcut icon" href="../img/xininn.ico" />
+    <title>DeepSeek</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            max-width: 1000px; /* 增加最大宽度 */
+            margin: auto;
+            background-color: #f4f4f4;
+            line-height: 1.6; /* 调整行高，使文字之间的空隙更小 */
+            scroll-behavior: smooth; /* 平滑滚动 */
+        }
+        h1, h2, h3, h4{
+            color: #0056b3;
+            text-align: center;
+        }
+        h2 {
+            text-align: left;
+            margin-top: 24px;
+        }
+        hr {
+            border: 1px solid #dedfdf;
+            margin: 10px 0;
+        }
+        blockquote {
+            border-left: 4px solid #c9c9ca;
+            margin: 10px 0;
+            padding-left: 10px;
+            color: #555;
+            background-color: #dedfdf61;
+            padding: 10px;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        li {
+            margin: 8px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            /* background-color: #fff; */
+            /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+        }
+        table, th, td {
+            border: 1px solid #cccccc85;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #dedfdf61;
+            /* color: white; */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            color: #0056b3;
+            text-decoration: none;
+            padding: 8px 10px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin: 0 2px; /* 增加链接之间的间距 */
+        }
+        a:hover {
+            background-color: #dedfdf61;
+            text-decoration: none;
+        }
+        /* 导航链接样式 */
+        .nav-links {
+            text-align: center; /* 居中显示 */
+            margin-bottom: 20px; /* 增加下方间距 */
+        }
+        /* 新增的样式 */
+        .nodejs-intro {
+            margin: 20px 0;
+            padding: 20px; /* 增加内边距 */
+            background-color: #ebebeb47; /* 背景颜色 */
+            border-radius: 5px; /* 圆角 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+        }
+        .nodejs-intro ul {
+            list-style-type: none; /* 去掉默认的圆点 */
+        }
+        .nodejs-intro li {
+            position: relative; /* 相对定位 */
+            line-height: 1.8;
+        }
+
+        /* 作者信息样式 */
+        .author-info {
+            width: 100%;
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            /*background-color: #e9f7ff;  背景颜色 */
+            border-radius: 5px; /* 圆角 */
+            display: inline-block; /* 使其宽度适应内容 */
+            /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  阴影效果 */
+        }
+        /* 增加段落的左右内边距 */
+        p {
+            margin: 10px 0; /* 设置段落的上下间距 */
+            padding: 0 15px; /* 设置段落的左右内边距 */
+        }
+        .ling{
+            font-size: 1rem;
+            line-height: 14px;
+        }
+
+        /* 返回顶部按钮样式 */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent; /* 移除点击高亮 */
+        }
+        .back-to-top.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .back-to-top:hover {
+            transform: scale(1.2);
+        }
+        
+        /* 移动端样式 */
+        @media (max-width: 768px) {
+            .back-to-top {
+                display: none;
+            }
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .nav-links a {
+                text-align: center;
+                padding: 12px;
+                margin: 0;
+                font-size: 14px;
+                border-radius: 8px;
+                background-color: #f5f5f5;
+                transition: all 0.2s ease;
+            }
+            .nav-links a:hover {
+                background-color: #e0e0e0;
+                transform: translateY(-2px);
+            }
+            .nav-links a:active {
+                background-color: #d0d0d0;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航链接 -->
+    <div class="nav-links">
+        <a href="http://yilingyaoling.xyz/" target="_blank">首页</a>
+        <a href="http://yilingyaoling.xyz/naver.html" target="_blank">壹零</a>
+        <a href="http://yilingyaoling.xyz/bobo.html" target="_blank">幺零</a>
+        <a href="#" target="_blank">赞助</a>
+    </div>
+
+    <h1>DeepSeek</h1>
+    
+    <!-- 作者信息 -->
+    <div class="author-info">
+        <p class="ling">作者: 零零零肆</p>
+        <p class="ling">更新时间: 2025年02月22日</p>
+    </div>
+    
+    <blockquote>
+        最近很火的deepseek,也来记录一下
+    </blockquote>
+
+    <h2>壹 · 平替网站列表</h2>
+
+    <blockquote>
+        AI,无处不在
+    </blockquote>
+
+    <h3>平替网站来了</h3>
+    <p>
+        <a href="https://www.wenxiaobai.com/" target="_blank"> 问小白</a>
+        <a href="https://xiaoyi.huawei.com/chat/" target="_blank">华为小艺助手</a>
+        <a href="https://bot.n.cn/" target="_blank">纳米AI</a>
+        <a href="https://chat.scnet.cn/#/home" target="_blank">国家超算互联网</a>
+    </p>
+    <p>
+        <a href="https://ai.dangbei.com/chat" target="_blank"> 当贝AI</a>
+        <a href="https://fanyi.youdao.com/" target="_blank">有道翻译</a>
+        <a href="https://bailian.console.aliyun.com" target="_blank">阿里云</a>
+        <a href="https://iflow.cn/" target="_blank">心流AI</a>
+    </p>
+
+    <hr>
+
+    <h3>一些资源</h3>
+    <p>学无止尽，好好学习AI</p>
+    <ul>
+        <li>清华大学第二弹：“deepseek赋能职场”</li>
+        <li>这个很符合新人阅读上手的需求，逻辑清晰，信息熵很高</li>
+    </ul>
+    <p>
+        <a href="https://pan.quark.cn/s/56e2713e95f4" target="_blank">资源穿越</a>
+    </p>
+
+
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" onclick="scrollToTop()">
+        <svg width='64' height='64' viewBox='0 0 20 18' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><rect width='64' height='64' stroke='none' fill='#000000' opacity='0'/>
+
+
+            <g transform="matrix(0.2 0 0 0.2 12 12)" >
+            <g style="" >
+            <g transform="matrix(1 0 0 1 27 -37)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(241,188,25); fill-rule: nonzero; opacity: 1;" transform=" translate(-77, -13)" d="M 77 12 C 76.44771525016921 12 76 12.447715250169207 76 13 C 76 13.552284749830793 76.44771525016921 14 77 14 C 77.55228474983079 14 78 13.552284749830793 78 13 C 78 12.447715250169207 77.55228474983079 12 77 12 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 0 0)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(228,228,249); fill-rule: nonzero; opacity: 1;" transform=" translate(-50, -50)" d="M 50 13 C 29.565464256260643 13 13 29.565464256260643 13 50 C 13 70.43453574373936 29.565464256260643 87 50 87 C 70.43453574373936 87 87 70.43453574373936 87 50 C 87 29.56546425626064 70.43453574373936 13 50 13 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 33 -35)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(241,188,25); fill-rule: nonzero; opacity: 1;" transform=" translate(-83, -15)" d="M 83 11 C 80.79086100067683 11 79 12.790861000676827 79 15 C 79 17.209138999323173 80.79086100067683 19 83 19 C 85.20913899932317 19 87 17.209138999323173 87 15 C 87 12.790861000676827 85.20913899932317 11 83 11 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 37 -26)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(136,137,185); fill-rule: nonzero; opacity: 1;" transform=" translate(-87, -24)" d="M 87 22 C 85.8954305003384 22 85 22.895430500338414 85 24 C 85 25.104569499661586 85.8954305003384 26 87 26 C 88.1045694996616 26 89 25.104569499661586 89 24 C 89 22.895430500338414 88.1045694996616 22 87 22 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -3 18.5)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(251,205,89); fill-rule: nonzero; opacity: 1;" transform=" translate(-47, -68.5)" d="M 81 74 C 79.8954305003384 74 79 74.8954305003384 79 76 C 79 77.1045694996616 79.8954305003384 78 81 78 C 82.1045694996616 78 83 77.1045694996616 83 76 C 83 74.8954305003384 82.1045694996616 74 81 74 z M 15 59 C 12.790861000676827 59 11 60.79086100067683 11 63 C 11 65.20913899932317 12.790861000676827 67 15 67 C 17.209138999323173 67 19 65.20913899932317 19 63 C 19 60.79086100067683 17.209138999323173 59 15 59 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -25 37)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(136,137,185); fill-rule: nonzero; opacity: 1;" transform=" translate(-25, -87)" d="M 25 85 C 23.895430500338414 85 23 85.8954305003384 23 87 C 23 88.1045694996616 23.895430500338414 89 25 89 C 26.104569499661586 89 27 88.1045694996616 27 87 C 27 85.8954305003384 26.104569499661586 85 25 85 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -1.5 -7)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" translate(-48.5, -43)" d="M 18.5 49 C 17.119288125423015 49 16 50.11928812542302 16 51.5 C 16 52.88071187457698 17.119288125423015 54 18.5 54 C 19.880711874576985 54 21 52.88071187457698 21 51.5 C 21 50.11928812542302 19.880711874576985 49 18.5 49 z M 79.5 32 C 78.67157287525382 32 78 32.67157287525381 78 33.5 C 78 34.32842712474619 78.67157287525382 35 79.5 35 C 80.32842712474618 35 81 34.32842712474619 81 33.5 C 81 32.67157287525381 80.32842712474618 32 79.5 32 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 0 -0.13)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(72,190,216); fill-rule: nonzero; opacity: 1;" transform=" translate(-50, -49.88)" d="M 50 25.625 C 36.60709481660326 25.625 25.75 36.48209481660326 25.75 49.875 C 25.75 63.26790518339674 36.60709481660326 74.125 50 74.125 C 63.39290518339674 74.125 74.25 63.26790518339674 74.25 49.875 C 74.25 36.48209481660326 63.39290518339674 25.625 50 25.625 Z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 0 -0.13)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-50, -49.88)" d="M 50 74.825 C 36.243 74.825 25.05 63.633 25.05 49.875 C 25.05 36.117 36.243 24.925 50 24.925 C 63.757 24.925 74.95 36.117000000000004 74.95 49.875 C 74.95 63.632999999999996 63.757 74.825 50 74.825 z M 50 26.325 C 37.015 26.325 26.45 36.888999999999996 26.45 49.875 C 26.45 62.861000000000004 37.015 73.425 50 73.425 C 62.985 73.425 73.55 62.861 73.55 49.875 C 73.55 36.889 62.985 26.325 50 26.325 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 18.52 -7.94)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-68.52, -42.06)" d="M 69.424 44.625 C 69.21000000000001 44.625 69.012 44.486 68.94600000000001 44.271 C 68.85800000000002 43.984 68.763 43.7 68.662 43.418 C 68.27000000000001 42.324 67.77600000000001 41.259 67.19200000000001 40.249 C 67.05300000000001 40.011 67.135 39.704 67.37400000000001 39.566 C 67.61300000000001 39.425000000000004 67.91900000000001 39.509 68.05700000000002 39.749 C 68.67100000000002 40.81 69.19100000000002 41.931000000000004 69.60300000000002 43.080000000000005 C 69.70900000000002 43.377 69.80900000000003 43.675000000000004 69.90100000000002 43.977000000000004 C 69.98200000000003 44.24100000000001 69.83400000000003 44.521 69.56900000000003 44.602000000000004 C 69.521 44.618 69.472 44.625 69.424 44.625 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 0 -0.06)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-50, -49.94)" d="M 50 70.75 C 38.489000000000004 70.75 29.125 61.413 29.125 49.937 C 29.125 38.461 38.489 29.125 50 29.125 C 55.975 29.125 61.674 31.685 65.636 36.147999999999996 C 65.935 36.485 66.22399999999999 36.833 66.50099999999999 37.18899999999999 C 66.66999999999999 37.407 66.63099999999999 37.71999999999999 66.41399999999999 37.88999999999999 C 66.19599999999998 38.06199999999999 65.88199999999999 38.020999999999994 65.71199999999999 37.80199999999999 C 65.448 37.462999999999994 65.17199999999998 37.132999999999996 64.88799999999999 36.81199999999999 C 61.11599999999999 32.56199999999999 55.68899999999999 30.12399999999999 49.99999999999999 30.12399999999999 C 39.041 30.12399999999999 30.124999999999993 39.01199999999999 30.124999999999993 49.93699999999999 C 30.124999999999993 60.86199999999999 39.041 69.75 50 69.75 C 60.959 69.75 69.875 60.862 69.875 49.937 C 69.875 48.942 69.8 47.940999999999995 69.653 46.964 C 69.61200000000001 46.692 69.80000000000001 46.437 70.07300000000001 46.396 C 70.35300000000001 46.355000000000004 70.60100000000001 46.543 70.64200000000001 46.816 C 70.796 47.841 70.87500000000001 48.892 70.87500000000001 49.937000000000005 C 70.875 61.413 61.511 70.75 50 70.75 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -3.88 8.9)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(181,207,228); fill-rule: nonzero; opacity: 1;" transform=" translate(-46.12, -58.9)" d="M 48.656 58.485 L 44.301 62.506 C 44.301 62.506 43.961 62.767 43.588 62.603 L 44.422000000000004 55.133 L 48.656 58.485 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -3.82 8.78)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-46.18, -58.78)" d="M 43.843 62.907 C 43.732000000000006 62.907 43.612 62.885999999999996 43.489000000000004 62.831999999999994 L 43.321000000000005 62.75899999999999 L 44.22500000000001 54.657999999999994 L 49.04100000000001 58.471 L 44.47100000000001 62.69 C 44.444 62.711 44.184 62.907 43.843 62.907 z M 44.621 55.609 L 43.863 62.407000000000004 C 44.019999999999996 62.401 44.144 62.31100000000001 44.150999999999996 62.306000000000004 L 48.272999999999996 58.499 L 44.621 55.609 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -2.36 0.78)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" translate(-47.64, -50.78)" d="M 62.72 38.514 L 57.949 62.879000000000005 C 57.949 62.879000000000005 57.282 64.569 55.446 63.758 L 44.435 55.208 L 40.431000000000004 53.248 L 33.691 50.951 C 33.691 50.951 32.656000000000006 50.58 32.556000000000004 49.769 C 32.456 48.958 33.723000000000006 48.519 33.723000000000006 48.519 L 60.51800000000001 37.873999999999995 C 60.518 37.871 62.72 36.891 62.72 38.514 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -2.36 0.78)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-47.64, -50.78)" d="M 56.384 64.229 C 56.057 64.229 55.71 64.148 55.345 63.987 L 44.282 55.405 L 40.321999999999996 53.472 L 33.611999999999995 51.187 C 33.559999999999995 51.168 32.42699999999999 50.751999999999995 32.309 49.797999999999995 C 32.184999999999995 48.797999999999995 33.583 48.30199999999999 33.643 48.28099999999999 L 60.426 37.64 L 60.429 37.647 C 60.761 37.461999999999996 61.636 37.229 62.192 37.379 C 62.483 37.455999999999996 62.97 37.707 62.97 38.513999999999996 L 62.964999999999996 38.562 L 58.193999999999996 62.92699999999999 C 58.169 63.00399999999999 57.855999999999995 63.77499999999999 57.07899999999999 64.094 C 56.859 64.184 56.627 64.229 56.384 64.229 z M 60.74 38.051 L 60.74 38.053000000000004 L 60.611000000000004 38.105000000000004 L 33.816 48.75 C 33.795 48.758 32.732 49.146 32.804 49.737 C 32.883 50.378 33.767 50.712 33.776 50.715 L 40.512 53.011 L 44.545 54.983000000000004 L 55.6 63.561 C 56.056000000000004 63.753 56.506 63.788 56.89 63.631 C 57.473 63.392 57.715 62.793 57.717 62.787 L 62.47 38.49 C 62.466 38.216 62.388 38.034 62.234 37.934000000000005 C 61.858 37.693 61.083 37.921 60.74 38.051 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -1.01 2.59)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(210,229,241); fill-rule: nonzero; opacity: 1;" transform=" translate(-48.99, -52.59)" d="M 43.588 62.604 C 43.588 62.604 43.267 62.574 42.866 61.289 C 42.466 60.005 40.43 53.246 40.43 53.246 L 56.614000000000004 42.837 C 56.614000000000004 42.837 57.548 42.262 57.51500000000001 42.837 C 57.51500000000001 42.837 57.681000000000004 42.938 57.181000000000004 43.412000000000006 C 56.681000000000004 43.886 44.467000000000006 55.00300000000001 44.467000000000006 55.00300000000001 L 43.588 62.604 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -1.04 2.6)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-48.96, -52.6)" d="M 43.808 62.875 L 43.565 62.853 C 43.382999999999996 62.836 43.019 62.621 42.626999999999995 61.364000000000004 C 42.227 60.080000000000005 40.19 53.319 40.19 53.319 L 40.135 53.138000000000005 L 40.294 53.03600000000001 L 56.477999999999994 42.62800000000001 C 56.696999999999996 42.492000000000004 57.23199999999999 42.20600000000001 57.55499999999999 42.39900000000001 C 57.62799999999999 42.44200000000001 57.74099999999999 42.54100000000001 57.76299999999999 42.74300000000001 L 57.78999999999999 42.86400000000001 C 57.81099999999999 43.06300000000001 57.67699999999999 43.28900000000001 57.35399999999999 43.59400000000001 C 56.87199999999999 44.05100000000001 45.79299999999999 54.13600000000001 44.70599999999999 55.126000000000005 L 43.808 62.875 z M 40.723 53.354 C 41.049 54.436 42.743 60.055 43.104 61.214 C 43.216 61.573 43.319 61.823 43.406 61.995 L 44.229 54.881 L 44.298 54.818 C 44.42 54.707 56.516000000000005 43.696999999999996 57.008 43.229 C 57.149 43.095 57.220000000000006 43.005 57.257000000000005 42.952 L 57.264 42.832 C 57.152 42.846000000000004 56.925000000000004 42.938 56.743 43.050000000000004 L 40.723 53.354 z" stroke-linecap="round" />
+            </g>
+            <g transform="matrix(1 0 0 1 -2.36 0.78)" >
+            <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(71,43,41); fill-rule: nonzero; opacity: 1;" transform=" translate(-47.64, -50.78)" d="M 56.384 64.479 C 56.024 64.479 55.642 64.391 55.244 64.215 L 55.155 64.164 L 48.446 59.362 L 44.64 62.873000000000005 C 44.551 62.946000000000005 44.045 63.315000000000005 43.443 63.084 C 42.851 62.923 42.507 61.819 42.388 61.438 C 42.053 60.363 40.568999999999996 55.442 40.096 53.874 L 40.025 53.639 L 33.531 51.425000000000004 C 33.469 51.403000000000006 32.196999999999996 50.935 32.061 49.830000000000005 C 31.943 48.87200000000001 32.948 48.258 33.561 48.04600000000001 L 60.335 37.409000000000006 L 60.338 37.41700000000001 C 60.762 37.208000000000006 61.745000000000005 36.93300000000001 62.407000000000004 37.18700000000001 C 62.711000000000006 37.305000000000014 63.221000000000004 37.63300000000001 63.221000000000004 38.515000000000015 L 58.440000000000005 62.97600000000001 C 58.37800000000001 63.15600000000001 58.034000000000006 63.97300000000001 57.17400000000001 64.32700000000001 C 56.923 64.428 56.66 64.479 56.384 64.479 z M 55.694 63.32 C 56.117000000000004 63.498 56.487 63.523 56.794000000000004 63.399 C 57.264 63.207 57.482000000000006 62.7 57.484 62.695 L 62.230000000000004 38.418 C 62.221000000000004 38.321 62.18000000000001 38.197 62.099000000000004 38.146 C 61.879000000000005 38.003 61.319 38.107 60.915000000000006 38.252 L 60.91400000000001 38.254000000000005 L 33.908 48.982 C 33.579 49.098 33.017 49.42 33.052 49.705999999999996 C 33.104 50.126 33.702 50.422999999999995 33.86 50.479 L 40.807 52.847 L 40.892 53.061 C 40.892 53.062 40.953 53.254 41.052 53.583 C 41.525 55.15 43.007 60.064 43.342 61.14 C 43.562999999999995 61.85 43.74 62.088 43.793 62.147 C 43.888999999999996 62.184999999999995 44.003 62.105 44.004 62.103 L 48.366 58.075 L 55.694 63.32 z" stroke-linecap="round" />
+            </g>
+            </g>
+            </g>
+            </svg>
+    </div>
+
+    <script>
+        // 显示/隐藏返回顶部按钮
+        window.onscroll = function() {
+            const btn = document.querySelector('.back-to-top');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        };
+
+        // 平滑滚动到顶部
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
