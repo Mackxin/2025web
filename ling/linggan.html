@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/xininn.ico" />
+    <title>灵感随记</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    color: #0f172a;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+/* 头部样式优化 */
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.header-controls h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    .header-controls h1 a {
+        text-decoration: none;
+        color: inherit;
+        background: linear-gradient(135deg, #0ea5e9, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: opacity 0.2s;
+    }
+
+    .header-controls h1 a:hover {
+        opacity: 0.8;
+    }
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.03em;
+}
+
+.backup-controls {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.backup-controls button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #475569;
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.backup-controls button:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+/* 输入区域样式优化 */
+.input-section {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 2.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+textarea {
+    width: 100%;
+    height: 140px;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: none;
+    transition: all 0.2s;
+    margin-bottom: 1.25rem;
+    background: #f8fafc;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+textarea::placeholder {
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    outline: none;
+    background: white;
+}
+
+.input-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+#saveBtn {
+    background: #2563eb;
+    color: white;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    border: none;
+}
+
+#saveBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(37,99,235,0.1);
+}
+
+.storage-tip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    padding: 0.75rem 1rem;
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.storage-tip svg {
+    color: #0ea5e9;
+    flex-shrink: 0;
+}
+
+/* 标签云样式优化 */
+.tag-cloud {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 2.5rem;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    display: none; /* 默认隐藏 */
+}
+
+.tag-cloud.has-tags {
+    display: block; /* 当有标签时显示 */
+}
+
+.tag-cloud h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+}
+
+#tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.tag-cloud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+#clearFilter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0;  /* 移除上边距 */
+}
+
+#clearFilter::before {
+    content: '×';
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+#clearFilter:hover {
+    background: #e2e8f0;
+    color: #475569;
+    transform: translateY(-1px);
+}
+
+.tag {
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #475569;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+    transform: translateY(-1px);
+}
+
+/* 卡片样式优化 */
+.ideas-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.idea-card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+    position: relative;  /* 添加相对定位 */
+}
+
+.card-content {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #334155;
+    margin-bottom: 1.5rem;
+}
+
+.card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.card-footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.idea-card .tag {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    background: #f8fafc;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0;  /* 默认隐藏 */
+}
+
+.idea-card:hover .delete-btn {
+    opacity: 1;  /* 鼠标悬停时显示 */
+}
+
+.delete-btn:hover {
+    color: #ef4444;
+    background: #fee2e2;
+    transform: scale(1.05);
+}
+
+/* 响应式布局优化 */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+
+    .header-controls {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+        margin-bottom: 1.5rem;
+    }
+
+    .header-controls h1 {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .backup-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .input-section {
+        padding: 1rem;
+    }
+
+    .input-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #saveBtn {
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    .storage-tip {
+        text-align: center;
+    }
+
+    .tag-cloud {
+        padding: 1rem;
+    }
+
+    .tag-cloud-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    #clearFilter {
+        width: 100%;
+    }
+
+    .ideas-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .idea-card {
+        padding: 1.25rem;
+    }
+
+    .delete-btn {
+        opacity: 1;
+    }
+}
+
+/* 针对中等屏幕的优化 */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .ideas-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header-controls">
+            <h1><a href="http://yilingyaoling.xyz" target="_blank">✨ 灵感随记</a></h1>
+            <div class="backup-controls">
+                <button id="exportBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M13 5v6h3l-4 4-4-4h3V5h2M17 3H7c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 18H7V5h10v16z"/>
+                    </svg>
+                    导出数据
+                </button>
+                <input type="file" id="importInput" accept=".json" style="display: none">
+                <button id="importBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M13 9h-3V5H8v4H5l4 4 4-4m-8 8v2h14v-2H5z"/>
+                    </svg>
+                    导入数据
+                </button>
+                <button id="clearAllBtn" style="color: #e74c3c;">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                    </svg>
+                    清空数据
+                </button>
+            </div>
+        </div>
+        <!-- 修改 input-section 部分 -->
+        <div class="input-section">
+            <textarea id="ideaInput" placeholder="在这里记录你的灵感...&#10;支持 Markdown 语法&#10;使用 #标签 添加标签&#10;按 Ctrl+Enter 快速保存"></textarea>
+            <div class="input-controls">
+                <button id="saveBtn">保存灵感</button>
+                <div class="storage-tip">
+                    <svg viewBox="0 0 24 24" width="14" height="14">
+                        <path fill="currentColor" d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </svg>
+                    <span>数据保存在浏览器本地，请及时导出备份重要数据</span>
+                </div>
+            </div>
+        </div>
+        <div class="tag-cloud">
+            <div class="tag-cloud-header">
+                <h3>标签筛选</h3>
+                <button id="clearFilter">清除筛选</button>
+            </div>
+            <div id="tagContainer"></div>
+        </div>
+        <div class="ideas-container" id="ideasContainer"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 获取必要的 DOM 元素
+            const ideaInput = document.getElementById('ideaInput');
+            const saveBtn = document.getElementById('saveBtn');
+            const ideasContainer = document.getElementById('ideasContainer');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importInput = document.getElementById('importInput');
+
+            // 从本地存储加载灵感
+            let ideas = JSON.parse(localStorage.getItem('ideas')) || [];
+
+            // 生成随机柔和的背景色
+            const getRandomPastelColor = () => {
+                const hue = Math.floor(Math.random() * 360);
+                return `hsl(${hue}, 70%, 95%)`;
+            };
+
+            // 渲染灵感卡片
+            const renderIdeas = (filteredIdeas = ideas) => {
+                ideasContainer.innerHTML = '';
+                filteredIdeas.forEach((idea, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'idea-card';
+                    card.style.backgroundColor = idea.color || getRandomPastelColor();
+                    
+                    const textWithoutTags = idea.text.replace(/#[\u4e00-\u9fa5_a-zA-Z0-9]+/g, '').trim();
+                    const tagsHtml = idea.tags ? 
+                        `<div class="tags">${idea.tags.map(tag => `<span class="tag">#${tag}</span>`).join(' ')}</div>` : '';
+                    
+                    card.innerHTML = `
+                        <div class="card-content">
+                            <div class="content">${marked.parse(textWithoutTags)}</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-footer-top">
+                                <div class="date">${idea.date}</div>
+                                <button class="delete-btn" data-index="${index}">×</button>
+                            </div>
+                            ${tagsHtml}
+                        </div>
+                    `;
+                    
+                    ideasContainer.appendChild(card);
+                });
+
+                // 添加删除事件监听
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = e.target.dataset.index;
+                        ideas.splice(index, 1);
+                        localStorage.setItem('ideas', JSON.stringify(ideas));
+                        renderIdeas();
+                        updateTagCloud();
+                    });
+                });
+            };
+
+            // 更新标签云
+            const updateTagCloud = () => {
+                const tagContainer = document.getElementById('tagContainer');
+                const tagCloud = document.querySelector('.tag-cloud');
+                const allTags = ideas.reduce((acc, idea) => {
+                    if (idea.tags) {
+                        idea.tags.forEach(tag => {
+                            acc[tag] = (acc[tag] || 0) + 1;
+                        });
+                    }
+                    return acc;
+                }, {});
+
+                const hasTags = Object.keys(allTags).length > 0;
+                tagCloud.classList.toggle('has-tags', hasTags);
+
+                if (hasTags) {
+                    tagContainer.innerHTML = Object.entries(allTags)
+                        .map(([tag, count]) => `
+                            <span class="tag" data-tag="${tag}">#${tag} (${count})</span>
+                        `).join('');
+
+                    // 添加标签点击事件
+                    document.querySelectorAll('.tag').forEach(tag => {
+                        tag.addEventListener('click', () => filterByTag(tag.dataset.tag));
+                    });
+                }
+            };
+
+            // 按标签筛选
+            const filterByTag = (tag) => {
+                const clearFilterBtn = document.getElementById('clearFilter');
+                clearFilterBtn.style.visibility = 'visible'; // 改用 visibility 来控制显示
+                renderIdeas(ideas.filter(idea => idea.tags && idea.tags.includes(tag)));
+            };
+
+            // 保存灵感函数
+            const saveIdea = () => {
+                const text = ideaInput.value.trim();
+                if (text) {
+                    const tags = text.match(/#[\u4e00-\u9fa5_a-zA-Z0-9]+/g) || [];
+                    const cleanTags = tags.map(tag => tag.slice(1));
+
+                    const newIdea = {
+                        text,
+                        date: new Date().toLocaleString('zh-CN'),
+                        tags: cleanTags,
+                        color: getRandomPastelColor()
+                    };
+                    
+                    ideas.unshift(newIdea);
+                    localStorage.setItem('ideas', JSON.stringify(ideas));
+                    ideaInput.value = '';
+                    renderIdeas();
+                    updateTagCloud();
+                }
+            };
+
+            // 绑定所有事件
+            const bindEvents = () => {
+                // 保存按钮事件
+                saveBtn.addEventListener('click', saveIdea);
+                
+                // 快捷键事件
+                ideaInput.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        saveIdea();
+                    }
+                });
+
+                // 导出事件
+                exportBtn.addEventListener('click', () => {
+                    const dataStr = JSON.stringify(ideas, null, 2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `灵感记录_${new Date().toLocaleString('zh-CN').replace(/[\/\s:]/g, '_')}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+
+                // 导入事件
+                importBtn.addEventListener('click', () => {
+                    importInput.click();
+                });
+
+                importInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const importedIdeas = JSON.parse(e.target.result);
+                                if (Array.isArray(importedIdeas)) {
+                                    ideas = importedIdeas;
+                                    localStorage.setItem('ideas', JSON.stringify(ideas));
+                                    renderIdeas();
+                                    updateTagCloud();
+                                    alert('数据导入成功！');
+                                }
+                            } catch (err) {
+                                alert('导入失败：文件格式不正确');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                });
+
+                // 清除筛选按钮事件
+                document.getElementById('clearFilter').addEventListener('click', () => {
+                    renderIdeas();
+                    document.getElementById('clearFilter').style.visibility = 'hidden';
+                });
+
+                // 添加清空所有数据的事件
+                const clearAllBtn = document.getElementById('clearAllBtn');
+                clearAllBtn.addEventListener('click', () => {
+                    if (ideas.length === 0) {
+                        alert('没有数据可以清空');
+                        return;
+                    }
+                    
+                    if (confirm('确定要删除所有灵感记录吗？此操作不可恢复！')) {
+                        if (confirm('再次确认：真的要删除所有数据吗？')) {
+                            ideas = [];
+                            localStorage.setItem('ideas', JSON.stringify(ideas));
+                            renderIdeas();
+                            updateTagCloud();
+                            alert('所有数据已清空');
+                        }
+                    }
+                });
+            };
+
+            // 初始化
+            bindEvents();
+            renderIdeas();
+            updateTagCloud();
+        });
+    </script>
+</body>
+</html>
