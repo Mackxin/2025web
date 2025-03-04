@@ -729,7 +729,8 @@ textarea:focus {
                             try {
                                 const importedIdeas = JSON.parse(e.target.result);
                                 if (Array.isArray(importedIdeas)) {
-                                    ideas = importedIdeas;
+                                    // 合并现有数据和导入的数据
+                                    ideas = [...importedIdeas, ...ideas];
                                     localStorage.setItem('ideas', JSON.stringify(ideas));
                                     renderIdeas();
                                     updateTagCloud();
@@ -763,7 +764,6 @@ textarea:focus {
                             localStorage.setItem('ideas', JSON.stringify(ideas));
                             renderIdeas();
                             updateTagCloud();
-                            alert('所有数据已清空');
                         }
                     }
                 });
