@@ -38,8 +38,7 @@
         /* 标题样式优化 */
         .page-title {
             text-align: center;
-            margin-bottom: 10px;
-            padding: 20px 0;
+            padding: 10px 0;
         }
         .page-title a {
             color: #2c3e50;
@@ -284,7 +283,6 @@
                 box-shadow: none;  /* 移除阴影 */
             }
             .page-title {
-                margin-bottom: 15px;
                 padding: 10px 0;
             }
             .page-title a {
@@ -310,7 +308,7 @@
                 text-overflow: ellipsis;
             }
             .copy-btn {
-                padding: 6px 8px;
+                padding: 8px 12px;
                 font-size: 12px;
                 white-space: nowrap;
             }
@@ -324,6 +322,29 @@
             .link-wrapper {
                 flex-direction: column;
                 gap: 6px;
+            }
+        }
+        /* 版权声明样式 */
+        .copyright-notice {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        /* 在暗色模式中更新提示文字颜色 */
+        @media (prefers-color-scheme: dark) {
+            .copyright-notice {
+                color: #999;
+            }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .copyright-notice {
+                font-size: 11px;
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -369,6 +390,9 @@
     <div class="container">
         <div class="page-title">
             <a href="http://yilingyaoling.xyz" target="_blank">网盘资源分享</a>
+        </div>
+        <div class="copyright-notice">
+            如有侵权，请联系删除：【QQ】850907478@qq.com
         </div>
         
         <div class="share-item">
