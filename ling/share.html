@@ -1,12 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <!-- 在head标签内添加图标字体链接 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>网盘分享</title>
     <link rel="shortcut icon" href="../img/xininn.ico" />
     <style>
         /* 基础样式优化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
@@ -90,10 +98,69 @@
         .share-item:nth-child(4) { animation-delay: 0.4s; }
 
         /* 链接样式优化 */
+        /* 链接样式优化 */
         .link-wrapper {
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+        
+        .link {
+            flex: 1;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .link-wrapper {
+                display: flex;
+                flex-direction: row !important;  /* 强制保持水平布局 */
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .link {
+                flex: 1;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            
+            .copy-btn {
+                flex: none;
+                width: auto;
+                padding: 8px;
+                background: transparent;
+                box-shadow: none;
+                margin-left: 4px;
+            }
+            
+            .copy-btn i {
+                display: inline-block;
+                font-size: 18px;
+                color: #3498db;
+            }
+            
+            .btn-text {
+                display: none;
+            }
+        }
+        
+        /* 针对更小屏幕的优化 */
+        @media (max-width: 480px) {
+            .link-wrapper {
+                flex-direction: row !important;
+            }
+            .copy-btn {
+                width: auto;
+            }
         }
         .link {
             flex: 1;
@@ -131,7 +198,27 @@
             border: none;
             transition: all 0.3s ease;
             flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.2);
+        }
+        .copy-btn i {
+            display: none;
+        }
+        .btn-text {
+            display: inline-block;
+        }
+
+        /* 移动端适配中的按钮样式 */
+        @media (max-width: 768px) {
+            .copy-btn {
+                padding: 8px;
+                width: auto;
+            }
+            .copy-btn i {
+                display: inline-block;
+                font-size: 18px;
+            }
+            .btn-text {
+                display: none;
+            }
         }
         .copy-btn:hover {
             background-color: #2980b9;
@@ -184,17 +271,59 @@
             }
         }
 
-        /* 移动端适配 */
+        /* 移动端适配优化 */
         @media (max-width: 768px) {
-            .container { padding: 20px; }
-            .share-item { padding: 15px; }
+            body {
+                padding: 0;  /* 移除body的内边距 */
+            }
+            .container { 
+                width: 100%;  /* 设置容器宽度为100% */
+                padding: 15px;
+                margin: 0;    /* 移除容器外边距 */
+                border-radius: 0;  /* 移除圆角 */
+                box-shadow: none;  /* 移除阴影 */
+            }
+            .page-title {
+                margin-bottom: 15px;
+                padding: 10px 0;
+            }
+            .page-title a {
+                font-size: 24px;
+            }
+            .share-item { 
+                padding: 12px;
+                margin-bottom: 8px;
+            }
+            h3 {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
             .link-wrapper {
-                flex-direction: column;
-                gap: 10px;
+                flex-direction: row;  /* 保持水平布局 */
+                gap: 8px;
+            }
+            .link {
+                font-size: 12px;
+                padding: 8px 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .copy-btn {
-                width: 100%;
-                margin-left: 0;
+                padding: 6px 8px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        /* 针对更小屏幕的优化 */
+        @media (max-width: 480px) {
+            .container {
+                min-height: 100vh;  /* 确保容器至少占满整个视口高度 */
+            }
+            .link-wrapper {
+                flex-direction: column;
+                gap: 6px;
             }
         }
     </style>
@@ -202,37 +331,32 @@
 <script>
     function copyLink(button) {
         const link = button.previousElementSibling.href;
-        navigator.clipboard.writeText(link).then(() => {
-            const originalText = button.textContent;
-            button.textContent = '已复制';
-            button.style.backgroundColor = '#2ecc71';
-            button.style.boxShadow = '0 2px 6px rgba(46, 204, 113, 0.2)';
+        const tempInput = document.createElement('input');
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        
+        try {
+            document.execCommand('copy');
+            const originalIcon = button.querySelector('i').className;
+            const originalText = button.querySelector('.btn-text').textContent;
             
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.backgroundColor = '';
-                button.style.boxShadow = '';
-            }, 2000);
-        });
-    }
-</script>
-<script>
-    function copyLink(button) {
-        const link = button.previousElementSibling.href;
-        navigator.clipboard.writeText(link).then(() => {
-            const originalText = button.textContent;
-            button.textContent = '已复制';
+            button.querySelector('i').className = 'ri-check-line';
+            button.querySelector('.btn-text').textContent = '已复制';
             button.style.backgroundColor = '#2ecc71';
-            button.style.borderColor = '#2ecc71';
             button.style.color = '#ffffff';
             
             setTimeout(() => {
-                button.textContent = originalText;
+                button.querySelector('i').className = originalIcon;
+                button.querySelector('.btn-text').textContent = originalText;
                 button.style.backgroundColor = '';
-                button.style.borderColor = '';
                 button.style.color = '';
             }, 2000);
-        });
+        } catch (err) {
+            console.error('复制失败:', err);
+        }
+        
+        document.body.removeChild(tempInput);
     }
 
     // 添加页面加载完成后的动画触发
@@ -251,7 +375,10 @@
             <h3>交个朋友电商运营课程大合集</h3>
             <div class="link-wrapper">
                 <a href="https://pan.quark.cn/s/14d7aa75d7d3" class="link" target="_blank">https://pan.quark.cn/s/14d7aa75d7d3</a>
-                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+                <button class="copy-btn" onclick="copyLink(this)">
+                    <i class="ri-file-copy-line"></i>
+                    <span class="btn-text">复制链接</span>
+                </button>
             </div>
         </div>
         
@@ -259,7 +386,10 @@
             <h3>财务EXCEL从入门到精通系统学习班-财会成长学苑</h3>
             <div class="link-wrapper">
                 <a href="https://pan.quark.cn/s/9d46de5b4f63" class="link" target="_blank">https://pan.quark.cn/s/9d46de5b4f63</a>
-                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+                <button class="copy-btn" onclick="copyLink(this)">
+                    <i class="ri-file-copy-line"></i>
+                    <span class="btn-text">复制链接</span>
+                </button>
             </div>
         </div>
         
@@ -267,7 +397,10 @@
             <h3>网易云课堂教程：女神经叫你玩WPS（共50课）</h3>
             <div class="link-wrapper">
                 <a href="https://pan.quark.cn/s/cd318479cd21" class="link" target="_blank">https://pan.quark.cn/s/cd318479cd21</a>
-                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+                <button class="copy-btn" onclick="copyLink(this)">
+                    <i class="ri-file-copy-line"></i>
+                    <span class="btn-text">复制链接</span>
+                </button>
             </div>
         </div>
         
@@ -275,7 +408,10 @@
             <h3>Adobe2025</h3>
             <div class="link-wrapper">
                 <a href="https://pan.quark.cn/s/9e85fa24433d" class="link" target="_blank">https://pan.quark.cn/s/9e85fa24433d</a>
-                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+                <button class="copy-btn" onclick="copyLink(this)">
+                    <i class="ri-file-copy-line"></i>
+                    <span class="btn-text">复制链接</span>
+                </button>
             </div>
         </div>
 
@@ -283,9 +419,50 @@
             <h3>韩学杰中医驻颜养生课，90个逆龄古方抗衰老（完结）</h3>
             <div class="link-wrapper">
                 <a href="https://pan.quark.cn/s/ca01077e5846" class="link" target="_blank">https://pan.quark.cn/s/ca01077e5846</a>
-                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+                <button class="copy-btn" onclick="copyLink(this)">
+                    <i class="ri-file-copy-line"></i>
+                    <span class="btn-text">复制链接</span>
+                </button>
             </div>
         </div>
     </div>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
