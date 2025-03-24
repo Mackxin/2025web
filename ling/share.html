@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网盘分享</title>
+    <link rel="shortcut icon" href="../img/xininn.ico" />
+    <style>
+        /* 基础样式优化 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 容器样式 */
+        .container {
+            background-color: #ffffff;
+            max-width: 800px;
+            width: 100%;
+            padding: 10px 30px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 标题样式优化 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 20px 0;
+        }
+        .page-title a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        .page-title a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: #3498db;
+            transition: all 0.3s ease;
+        }
+        .page-title a:hover {
+            color: #3498db;
+        }
+        .page-title a:hover::after {
+            width: 100%;
+        }
+
+        /* 分享项目样式优化 */
+        .share-item {
+            margin-bottom: 6px;  /* 减小底部间距 */
+            padding: 8px 16px;    /* 减小内边距 */
+            border-radius: 12px;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* 标题样式 */
+        h3 {
+            color: #1a1a1a;
+            margin: 0 0 10px 0;   /* 减小底部间距 */
+            font-size: 16px;      /* 减小字体大小 */
+            font-weight: 500;
+        }
+
+        /* 在暗色模式中更新标题选择器 */
+        @media (prefers-color-scheme: dark) {
+            h3, .page-title a { color: #ffffff; }
+        }
+        .share-item:nth-child(1) { animation-delay: 0.1s; }
+        .share-item:nth-child(2) { animation-delay: 0.2s; }
+        .share-item:nth-child(3) { animation-delay: 0.3s; }
+        .share-item:nth-child(4) { animation-delay: 0.4s; }
+
+        /* 链接样式优化 */
+        .link-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .link {
+            flex: 1;
+            color: #3498db;  /* 更改链接颜色为蓝色 */
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .link:hover {
+            color: #2980b9;  /* 悬停时加深颜色 */
+        }
+
+        /* 在暗色模式中的链接样式 */
+        @media (prefers-color-scheme: dark) {
+            .link {
+                background-color: rgba(52, 152, 219, 0.1);
+                color: #60a5fa;
+                border-color: rgba(96, 165, 250, 0.2);
+            }
+            .link:hover {
+                background-color: rgba(52, 152, 219, 0.15);
+                color: #93c5fd;
+            }
+        }
+        /* 按钮样式优化 */
+        .copy-btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.2);
+        }
+        .copy-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* 暗色模式下的按钮样式 */
+        @media (prefers-color-scheme: dark) {
+            .copy-btn {
+                background-color: #3498db;
+                color: #ffffff;
+                box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+            }
+            .copy-btn:hover {
+                background-color: #2980b9;
+            }
+        }
+        .copy-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #d0d0d0;
+            color: #333;
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 暗色模式优化 */
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #1a1a1a; }
+            .container { background-color: #2d2d2d; }
+            .share-item { 
+                background-color: #363636;
+                border-color: #404040;
+            }
+            .share-item:hover { background-color: #404040; }
+            h1, .page-title a { color: #ffffff; }
+            .link {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border-color: #404040;
+            }
+            .copy-btn {
+                background-color: #363636;
+                color: #e0e0e0;
+                border-color: #404040;
+            }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .share-item { padding: 15px; }
+            .link-wrapper {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .copy-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<script>
+    function copyLink(button) {
+        const link = button.previousElementSibling.href;
+        navigator.clipboard.writeText(link).then(() => {
+            const originalText = button.textContent;
+            button.textContent = '已复制';
+            button.style.backgroundColor = '#2ecc71';
+            button.style.boxShadow = '0 2px 6px rgba(46, 204, 113, 0.2)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+                button.style.boxShadow = '';
+            }, 2000);
+        });
+    }
+</script>
+<script>
+    function copyLink(button) {
+        const link = button.previousElementSibling.href;
+        navigator.clipboard.writeText(link).then(() => {
+            const originalText = button.textContent;
+            button.textContent = '已复制';
+            button.style.backgroundColor = '#2ecc71';
+            button.style.borderColor = '#2ecc71';
+            button.style.color = '#ffffff';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+                button.style.borderColor = '';
+                button.style.color = '';
+            }, 2000);
+        });
+    }
+
+    // 添加页面加载完成后的动画触发
+    document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.share-item');
+        items.forEach(item => item.style.opacity = '1');
+    });
+</script>
+<body>
+    <div class="container">
+        <div class="page-title">
+            <a href="http://yilingyaoling.xyz" target="_blank">网盘资源分享</a>
+        </div>
+        
+        <div class="share-item">
+            <h3>交个朋友电商运营课程大合集</h3>
+            <div class="link-wrapper">
+                <a href="https://pan.quark.cn/s/14d7aa75d7d3" class="link" target="_blank">https://pan.quark.cn/s/14d7aa75d7d3</a>
+                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+            </div>
+        </div>
+        
+        <div class="share-item">
+            <h3>财务EXCEL从入门到精通系统学习班-财会成长学苑</h3>
+            <div class="link-wrapper">
+                <a href="https://pan.quark.cn/s/9d46de5b4f63" class="link" target="_blank">https://pan.quark.cn/s/9d46de5b4f63</a>
+                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+            </div>
+        </div>
+        
+        <div class="share-item">
+            <h3>网易云课堂教程：女神经叫你玩WPS（共50课）</h3>
+            <div class="link-wrapper">
+                <a href="https://pan.quark.cn/s/cd318479cd21" class="link" target="_blank">https://pan.quark.cn/s/cd318479cd21</a>
+                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+            </div>
+        </div>
+        
+        <div class="share-item">
+            <h3>Adobe2025</h3>
+            <div class="link-wrapper">
+                <a href="https://pan.quark.cn/s/9e85fa24433d" class="link" target="_blank">https://pan.quark.cn/s/9e85fa24433d</a>
+                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+            </div>
+        </div>
+
+        <div class="share-item">
+            <h3>韩学杰中医驻颜养生课，90个逆龄古方抗衰老（完结）</h3>
+            <div class="link-wrapper">
+                <a href="https://pan.quark.cn/s/ca01077e5846" class="link" target="_blank">https://pan.quark.cn/s/ca01077e5846</a>
+                <button class="copy-btn" onclick="copyLink(this)">复制链接</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
