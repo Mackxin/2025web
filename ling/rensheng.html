@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/xininn.ico" />
+    <title>人生学岩</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #333;
+            padding: 20px 0;
+        }
+    
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    
+        /* 导航和Logo样式 */
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2c3e50; /* 更深的颜色 */
+            font-size: 15px;
+        }
+    
+        .logo-container svg {
+            width: 16px;
+            height: 16px;
+            fill: #2c3e50; /* 图标颜色与文字保持一致 */
+        }
+    
+        .logo-container span {
+            padding: 10px 0;
+        }
+            
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+            font-size: 17px;
+        }
+    
+        .logo-container svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+    
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+    
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+    
+        .nav-links a:hover {
+            background: #f0f0f0;
+            color: #333;
+            transform: translateY(-2px);
+        }
+    
+
+    
+        /* 搜索框样式 */
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+    
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background-color: #f5f5f5;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    
+        .clear-input {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: none;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+            color: #666;
+            text-align: center;
+            line-height: 20px;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+    
+        .clear-input:hover {
+            opacity: 1;
+        }
+
+        
+            /* 标签样式 */
+            .section {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+        
+            .section-title {
+                text-align: center;
+                margin-bottom: 15px;
+                font-size: 28px;
+                font-weight: 600;
+                color: #2c3e50;
+                position: relative;
+                display: inline-block;
+                transition: opacity 0.3s ease;  /* 添加透明度过渡效果 */
+            }
+        
+            .section-title::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: #3498db;
+                border-radius: 3px;
+            }
+        
+            .tags-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: center;
+                padding: 10px;
+                opacity: 1;
+                max-height: 1000px;
+                transition: all 1s ease;
+                overflow: hidden;
+            }
+        
+            .tags-container.hidden {
+                opacity: 0;
+                max-height: 0;
+                padding: 0;
+            }
+        
+            .tag {
+                padding: 10px 20px;
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                font-size: 15px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .tag.liked {
+                background: #e1f5fe;
+                color: #0288d1;
+                border: 1px solid #b3e5fc;
+            }
+        
+            .tag:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+        
+            .tag.copied::after {
+                content: '已复制';
+                position: absolute;
+                bottom: 120%;
+                left: 50%;
+                transform: translate(-50%, 0);
+                padding: 4px 12px;
+                background: rgba(0,0,0,0.8);
+                color: white;
+                border-radius: 6px;
+                font-size: 12px;
+                white-space: nowrap;
+                pointer-events: none;
+                z-index: 100;
+                animation: copyAnimation 1s ease-in-out;
+            }
+        
+            @keyframes copyAnimation {
+                0% {
+                    opacity: 0;
+                    transform: translate(-50%, 10px);
+                }
+                20% {
+                    opacity: 1;
+                    transform: translate(-50%, 0);
+                }
+                80% {
+                    opacity: 1;
+                    transform: translate(-50%, 0);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(-50%, -10px);
+                }
+            }
+
+        /* 移动端样式 */
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+    
+            .logo-container {
+                margin-bottom: 5px;
+            }
+    
+            .nav-menu {
+                display: flex;
+                gap: 15px;
+            }
+    
+            .nav-links a {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+    
+            .tags-container {
+                gap: 10px;
+                padding: 5px;
+            }
+    
+            .section-title {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+        }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <nav class="nav-links">
+                <div class="logo-container">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                    </svg>
+                    <span>人生学岩</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="../index.html" target="_blank">首页</a>
+                    <a href="../naver.html" target="_blank">小航</a>
+                    <a href="../bobo.html" target="_blank">小报</a>
+                </div>
+            </nav>
+        
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="人生搜索">
+                <span class="clear-input" id="clearSearch">×</span>
+            </div>
+        
+            <div class="section">
+                <h2 class="section-title">人生电影</h2>
+                <div class="tags-container">
+                    <div class="tag">周星驰-功夫</div>
+                    <div class="tag">成龙</div>
+                    <div class="tag">周润发</div>
+                    <div class="tag">林正英</div>
+                </div>
+            </div>
+        
+            <div class="section">
+                <h2 class="section-title">喜欢动画</h2>
+                <div class="tags-container">
+                    <div class="tag">仙逆</div>
+                    <div class="tag">凡人修仙传</div>
+                    <div class="tag">完美世界</div>
+                    <div class="tag">斩神之凡尘神域</div>
+                    <div class="tag">师兄啊师兄</div>
+                    <div class="tag">遮天</div>
+                    <div class="tag">牧神记</div>
+                    <div class="tag">长生界</div>
+                </div>
+            </div>
+        
+            <div class="section">
+                <h2 class="section-title">抖音博主</h2>
+                <div class="tags-container">
+                    <div class="tag">路过我的生活</div>
+                    <div class="tag">南门录像厅</div>
+                    <div class="tag">你的不秃头</div>
+                    <div class="tag">王松傲寒</div>
+                </div>
+            </div>
+        </div>
+                
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const elements = {
+                        searchInput: document.getElementById('searchInput'),
+                        clearSearch: document.getElementById('clearSearch'),
+                        tags: document.querySelectorAll('.tag'),
+                        sections: document.querySelectorAll('.section'),
+                        sectionTitles: document.querySelectorAll('.section-title'),
+                        tagsContainers: document.querySelectorAll('.tags-container'),
+                        body: document.body,
+                        container: document.querySelector('.container')
+                    };
+                    
+                    // 修改处理标签点击的函数
+                    const handleTagClick = (tag) => {
+                        let clickCount = 0;
+                        let clickTimer = null;
+                    
+                        return async () => {
+                            clickCount++;
+                            if (clickCount === 1) {
+                                clickTimer = setTimeout(async () => {
+                                    try {
+                                        await navigator.clipboard.writeText(tag.textContent);
+                                    } catch (err) {
+                                        console.error('复制失败:', err);
+                                    }
+                                    clickCount = 0;
+                                }, 300);
+                            } else {
+                                clearTimeout(clickTimer);
+                                tag.classList.toggle('liked');
+                                clickCount = 0;
+                            }
+                        };
+                    };
+                    
+                    // 初始化事件监听
+                    elements.tags.forEach(tag => {
+                        tag.addEventListener('click', handleTagClick(tag));
+                    });
+        
+                    // 搜索功能
+                    elements.searchInput.addEventListener('input', () => {
+                        elements.clearSearch.style.display = elements.searchInput.value ? 'block' : 'none';
+                        const searchTerm = elements.searchInput.value.toLowerCase();
+                        
+                        elements.tags.forEach(tag => {
+                            const isMatch = tag.textContent.toLowerCase().includes(searchTerm);
+                            tag.style.display = isMatch ? '' : 'none';
+                            
+                            if (searchTerm && isMatch) {
+                                const container = tag.closest('.tags-container');
+                                container.classList.remove('hidden');
+                                const title = container.previousElementSibling;
+                                title.style.opacity = '1';
+                            }
+                        });
+                    });
+        
+                    // 清除按钮点击事件
+                    elements.clearSearch.addEventListener('click', () => {
+                        elements.searchInput.value = '';
+                        elements.clearSearch.style.display = 'none';
+                        elements.tags.forEach(tag => tag.style.display = '');
+                    });
+        
+                    // 标题点击事件
+                    elements.sectionTitles.forEach(title => {
+                        title.style.cursor = 'pointer';
+                        title.addEventListener('click', () => {
+                            const container = title.nextElementSibling;
+                            container.classList.toggle('hidden');
+                            title.style.opacity = container.classList.contains('hidden') ? '0.6' : '1';
+                        });
+                    });
+        
+                    // 双击页面事件
+                    // 将双击事件监听器从 container 移到 body
+                    let isAllVisible = true;
+                    document.body.addEventListener('dblclick', (e) => {
+                    // 检查点击位置是否为空白区域
+                    if (e.target === document.body || 
+                        (e.target.classList.contains('container') && 
+                         !e.target.closest('.tag') && 
+                         !e.target.closest('.nav-links') && 
+                         !e.target.closest('.search-box') && 
+                         !e.target.closest('.section'))) {
+                        isAllVisible = !isAllVisible;
+                        elements.tagsContainers.forEach(container => {
+                            container.classList.toggle('hidden', !isAllVisible);
+                        });
+                        elements.sectionTitles.forEach(title => {
+                            title.style.opacity = isAllVisible ? '1' : '0.6';
+                        });
+                    }
+                    });
+                });
+            </script>
+        </div>
+    </body>
+    </html>
+
