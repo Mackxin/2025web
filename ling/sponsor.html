@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/xininn.ico" />
-    <title>赞助支持 - 人生学岩</title>
+    <title>赞助支持</title>
     <style>
         * {
             margin: 0;
@@ -286,25 +286,41 @@
 
             .sponsor-table {
                 display: block;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                white-space: nowrap;
-                font-size: 14px;
+                background: none;
+                border-radius: 0;
             }
 
-            .sponsor-table th,
+            .sponsor-table thead {
+                display: none;
+            }
+
+            .sponsor-table tbody tr {
+                display: block;
+                /* background: rgba(255, 255, 255, 0.05); */
+                /* margin-bottom: 15px; */
+                padding: 15px;
+                border-radius: 12px;
+            }
+
             .sponsor-table td {
-                padding: 12px 15px;
-                min-width: 100px;
+                display: flex;
+                padding: 8px 0;
+                border: none;
+                align-items: center;
             }
 
-            .sponsor-table td:last-child {
-                min-width: 150px;
+            .sponsor-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                width: 80px;
+                min-width: 80px;
+                color: rgba(255, 255, 255, 0.8);
             }
 
-            .thank-you {
-                font-size: 1em;
-                margin-top: 30px;
+            .sponsor-table tr:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+                transition: all 0.3s ease;
             }
         }
 
@@ -412,7 +428,7 @@
         }
         .sponsor-list {
         margin-top: 60px;
-        padding: 30px;
+        /* padding: 30px; */
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border-radius: 20px;
@@ -429,14 +445,14 @@
         width: 100%;
         border-collapse: collapse;
         margin: 0 auto;
-        background: rgba(255, 255, 255, 0.05);
+        /* background: rgba(255, 255, 255, 0.05); */
         border-radius: 15px;
         overflow: hidden;
     }
 
     .sponsor-table th,
     .sponsor-table td {
-        padding: 15px;
+        /* padding: 15px; */
         text-align: left;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
@@ -508,13 +524,13 @@
     <div class="container">
         <nav class="nav-links">
             <div class="logo-container">
-                <span>一天一休</span>
+                <span>支持壹零</span>
             </div>
             <div class="nav-menu">
-                <a href="../index.html">首页</a>
-                <a href="linggan.html">灵感</a>
-                <a href="share.html">分享</a>
-                <a href="rensheng.html">人生</a>
+                <a href="../index.html" target="_blank">首页</a>
+                <a href="linggan.html" target="_blank">灵感</a>
+                <a href="share.html" target="_blank">分享</a>
+                <a href="rensheng.html" target="_blank">人生</a>
             </div>
         </nav>
 
@@ -554,22 +570,22 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>张*治</td>
-                            <td class="amount">¥100.00</td>
-                            <td>2025-01-15</td>
-                            <td>加油！继续创作！</td>
+                            <td data-label="支持者">张*治</td>
+                            <td data-label="金额" class="amount">¥100.00</td>
+                            <td data-label="时间">2025-01-15</td>
+                            <td data-label="留言">加油！继续创作！</td>
                         </tr>
                         <tr>
-                            <td>李*</td>
-                            <td class="amount">¥20.00</td>
-                            <td>2025-01-14</td>
-                            <td>内容很棒</td>
+                            <td data-label="支持者">李*</td>
+                            <td data-label="金额" class="amount">¥20.00</td>
+                            <td data-label="时间">2025-01-14</td>
+                            <td data-label="留言">内容很棒</td>
                         </tr>
                         <tr>
-                            <td>王**</td>
-                            <td class="amount">¥100.00</td>
-                            <td>2025-01-13</td>
-                            <td>支持一下，继续加油</td>
+                            <td data-label="支持者">王**</td>
+                            <td data-label="金额" class="amount">¥30.00</td>
+                            <td data-label="时间">2025-01-13</td>
+                            <td data-label="留言">支持一下，继续加油</td>
                         </tr>
                     </tbody>
                 </table>
