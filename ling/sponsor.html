@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/xininn.ico" />
+    <title>赞助支持 - 人生学岩</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 12px 25px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container svg {
+            width: 20px;
+            height: 20px;
+            fill: #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a:hover::after {
+            width: 80%;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: row;
+                padding: 10px 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .nav-menu {
+                margin-left: 0;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .sponsor-content {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .sponsor-title {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sponsor-description {
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            perspective: 1000px;
+        }
+
+        .payment-method {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            width: 320px;
+            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .payment-method h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .qr-code {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thank-you {
+            margin-top: 50px;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .sponsor-list {
+        margin-top: 60px;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sponsor-list h2 {
+        font-size: 1.8em;
+        margin-bottom: 25px;
+        color: #fff;
+    }
+
+    .sponsor-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .sponsor-table th,
+    .sponsor-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sponsor-table th {
+        background: rgba(255, 255, 255, 0.1);
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .sponsor-table tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sponsor-table td {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .amount {
+        color: #ffd700;
+        font-weight: 600;
+    }
+
+        @media (max-width: 768px) {
+            .payment-methods {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+
+            .payment-method {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .sponsor-title {
+                font-size: 2.2em;
+            }
+
+            .sponsor-description {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .nav-menu {
+                margin-left: 0;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .sponsor-list {
+                padding: 20px 15px;
+                margin-top: 40px;
+            }
+
+            .sponsor-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+                font-size: 14px;
+            }
+
+            .sponsor-table th,
+            .sponsor-table td {
+                padding: 12px 15px;
+                min-width: 100px;
+            }
+
+            .sponsor-table td:last-child {
+                min-width: 150px;
+            }
+
+            .thank-you {
+                font-size: 1em;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sponsor-title {
+                font-size: 1.8em;
+            }
+
+            .payment-method {
+                padding: 20px;
+            }
+
+            .qr-code {
+                width: 200px;
+                height: 200px;
+            }
+        }
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .sponsor-content {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .sponsor-title {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sponsor-description {
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            perspective: 1000px;
+        }
+
+        .payment-method {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            width: 320px;
+            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .payment-method h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .qr-code {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thank-you {
+            margin-top: 50px;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .sponsor-list {
+        margin-top: 60px;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sponsor-list h2 {
+        font-size: 1.8em;
+        margin-bottom: 25px;
+        color: #fff;
+    }
+
+    .sponsor-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .sponsor-table th,
+    .sponsor-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sponsor-table th {
+        background: rgba(255, 255, 255, 0.1);
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .sponsor-table tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sponsor-table td {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .amount {
+        color: #ffd700;
+        font-weight: 600;
+    }
+
+        @media (max-width: 768px) {
+            .payment-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .payment-method {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .sponsor-title {
+                font-size: 2.5em;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* 添加炫酷动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .payment-method {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .payment-method:nth-child(2) {
+            animation-delay: -3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-links">
+            <div class="logo-container">
+                <span>一天一休</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html">首页</a>
+                <a href="linggan.html">灵感</a>
+                <a href="share.html">分享</a>
+                <a href="rensheng.html">人生</a>
+            </div>
+        </nav>
+
+        <div class="sponsor-content">
+            <h1 class="sponsor-title">支持我们</h1>
+            <p class="sponsor-description">
+                您的每一份支持都是我们前进的动力<br>
+                一起来创造更多精彩内容
+            </p>
+
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <h3>微信支付</h3>
+                    <div class="qr-code">
+                        <img src="../img/weixin.png" alt="微信收款码">
+                    </div>
+                </div>
+
+                <div class="payment-method">
+                    <h3>支付宝</h3>
+                    <div class="qr-code">
+                        <img src="../img/zhifubao.png" alt="支付宝收款码">
+                    </div>
+                </div>
+            </div>
+
+            <div class="sponsor-list">
+                <h2>赞助者名单</h2>
+                <table class="sponsor-table">
+                    <thead>
+                        <tr>
+                            <th>支持者</th>
+                            <th>金额</th>
+                            <th>时间</th>
+                            <th>留言</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>张*治</td>
+                            <td class="amount">¥100.00</td>
+                            <td>2025-01-15</td>
+                            <td>加油！继续创作！</td>
+                        </tr>
+                        <tr>
+                            <td>李*</td>
+                            <td class="amount">¥20.00</td>
+                            <td>2025-01-14</td>
+                            <td>内容很棒</td>
+                        </tr>
+                        <tr>
+                            <td>王**</td>
+                            <td class="amount">¥100.00</td>
+                            <td>2025-01-13</td>
+                            <td>支持一下，继续加油</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="thank-you">✨ 感谢您的支持，让我们一起成长 ✨</p>
+        </div>
+    </div>
+
+    
+</body>
+</html>
