@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国漫每周更新时间</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1', // 主色调：靛蓝色
+                        secondary: '#ec4899', // 辅助色：粉色
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-all;
+            }
+            .btn-secondary {
+                @apply bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary/90 transition-all;
+            }
+            .input-field {
+                @apply w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50;
+            }
+            .day-badge {
+                @apply px-3 py-1 rounded-full text-sm font-medium;
+            }
+            .search-container {
+                @apply relative w-full md:w-64;
+            }
+            .search-input {
+                @apply input-field pl-10; /* 增加左侧内边距，为图标留出空间 */
+            }
+            .search-icon {
+                @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-400;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-md sticky top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-play-circle text-primary text-3xl"></i>
+                <h1 class="text-2xl font-bold text-dark">国漫更新时间</h1>
+            </div>
+            
+            <nav class="hidden md:flex space-x-6">
+                <a href="#home" class="text-gray-600 hover:text-primary transition-colors">首页</a>
+                <a href="#animes" class="text-gray-600 hover:text-primary transition-colors">更新表</a>
+                <a href="#add" class="text-gray-600 hover:text-primary transition-colors">添加国漫</a>
+            </nav>
+            
+            <button class="md:hidden text-gray-600" id="menuToggle">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white w-full border-t" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#home" class="py-2 text-gray-600 hover:text-primary transition-colors">首页</a>
+                <a href="#animes" class="py-2 text-gray-600 hover:text-primary transition-colors">更新表</a>
+                <a href="#add" class="py-2 text-gray-600 hover:text-primary transition-colors">添加国漫</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section id="home" class="bg-gradient-to-r from-primary/90 to-primary py-16 md:py-24 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4">国漫每周更新时间</h2>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto opacity-90 mb-8">
+                掌握您喜爱的国漫每周更新的具体时间，不错过任何一集精彩内容
+            </p>
+            <div class="flex justify-center">
+                <a href="#animes" class="btn-secondary inline-flex items-center">
+                    查看更新表 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 国漫列表区域 -->
+    <section id="animes" class="py-16 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">国漫每周更新表</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    按星期分类展示国漫更新时间，点击卡片可查看详情或编辑信息
+                </p>
+            </div>
+            
+            <!-- 搜索和筛选 -->
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <!-- 修复搜索框图标与文字重叠问题 -->
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="搜索国漫..." 
+                        class="search-input"
+                    >
+                    <i class="fa fa-search search-icon"></i>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button class="btn-primary" id="sortByName">
+                        <i class="fa fa-sort-alpha-asc mr-1"></i> 按名称排序
+                    </button>
+                    <button class="btn-primary" id="sortByDay">
+                        <i class="fa fa-calendar mr-1"></i> 按星期排序
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 星期标签筛选器 -->
+            <div class="mb-8 flex flex-wrap gap-2 justify-center">
+                <button class="day-filter-btn btn-primary" data-day="all">全部</button>
+                <button class="day-filter-btn day-badge bg-blue-100 text-blue-800" data-day="周一">周一</button>
+                <button class="day-filter-btn day-badge bg-purple-100 text-purple-800" data-day="周二">周二</button>
+                <button class="day-filter-btn day-badge bg-pink-100 text-pink-800" data-day="周三">周三</button>
+                <button class="day-filter-btn day-badge bg-red-100 text-red-800" data-day="周四">周四</button>
+                <button class="day-filter-btn day-badge bg-orange-100 text-orange-800" data-day="周五">周五</button>
+                <button class="day-filter-btn day-badge bg-yellow-100 text-yellow-800" data-day="周六">周六</button>
+                <button class="day-filter-btn day-badge bg-green-100 text-green-800" data-day="周日">周日</button>
+            </div>
+            
+            <!-- 国漫卡片容器 -->
+            <div id="animeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 国漫卡片将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 空状态提示 -->
+            <div id="emptyState" class="hidden text-center py-16">
+                <i class="fa fa-film text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg">暂无国漫数据，请添加国漫信息</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 添加/编辑国漫区域 -->
+    <section id="add" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-dark mb-6 text-center" id="formTitle">添加新国漫</h2>
+                
+                <form id="animeForm" class="space-y-4">
+                    <input type="hidden" id="animeId">
+                    
+                    <div>
+                        <label for="name" class="block text-gray-700 mb-1">国漫名称 <span class="text-red-500">*</span></label>
+                        <input type="text" id="name" class="input-field" required>
+                    </div>
+                    
+                    <div>
+                        <label for="latestEpisode" class="block text-gray-700 mb-1">最新集数 <span class="text-red-500">*</span></label>
+                        <input type="text" id="latestEpisode" class="input-field" required placeholder="例如：第36集">
+                    </div>
+                    
+                    <div>
+                        <label for="updateDay" class="block text-gray-700 mb-1">每周更新星期 <span class="text-red-500">*</span></label>
+                        <select id="updateDay" class="input-field" required>
+                            <option value="">请选择星期</option>
+                            <option value="周一">周一</option>
+                            <option value="周二">周二</option>
+                            <option value="周三">周三</option>
+                            <option value="周四">周四</option>
+                            <option value="周五">周五</option>
+                            <option value="周六">周六</option>
+                            <option value="周日">周日</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="updateTime" class="block text-gray-700 mb-1">更新时间 <span class="text-red-500">*</span></label>
+                        <input type="time" id="updateTime" class="input-field" required>
+                    </div>
+                    
+                    <div>
+                        <label for="platform" class="block text-gray-700 mb-1">播放平台</label>
+                        <input type="text" id="platform" class="input-field" placeholder="例如：B站、腾讯视频等">
+                    </div>
+                    
+                    <div>
+                        <label for="notes" class="block text-gray-700 mb-1">备注信息</label>
+                        <textarea id="notes" rows="3" class="input-field" placeholder="添加额外信息..."></textarea>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-2">
+                        <button type="submit" class="btn-primary flex-1">保存</button>
+                        <button type="button" id="cancelBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-all">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详情模态框 -->
+    <div id="detailModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-auto transform transition-all">
+            <div class="p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-dark" id="modalTitle">国漫详情</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6" id="modalContent">
+                <!-- 详情内容将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="p-4 border-t flex justify-end gap-3">
+                <button id="editBtn" class="btn-primary">
+                    <i class="fa fa-pencil mr-1"></i> 编辑
+                </button>
+                <button id="deleteBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all">
+                    <i class="fa fa-trash mr-1"></i> 删除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认删除模态框 -->
+    <div id="confirmDeleteModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 transform transition-all">
+            <h3 class="text-xl font-bold text-dark mb-4">确认删除</h3>
+            <p class="text-gray-600 mb-6">您确定要删除这部国漫的信息吗？此操作无法撤销。</p>
+            
+            <div class="flex gap-3">
+                <button id="cancelDeleteBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-all flex-1">取消</button>
+                <button id="confirmDeleteBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all flex-1">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div id="notification" class="fixed bottom-4 right-4 bg-dark text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center">
+        <i id="notificationIcon" class="fa fa-check-circle mr-2"></i>
+        <span id="notificationText">操作成功</span>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center space-x-2 mb-4">
+                <i class="fa fa-play-circle text-primary text-2xl"></i>
+                <h2 class="text-xl font-bold">国漫更新时间</h2>
+            </div>
+            <p class="text-gray-400 mb-4">掌握国漫每周更新时间，不错过任何精彩内容</p>
+            <div class="flex justify-center space-x-4 mb-6">
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fa fa-github text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fa fa-twitter text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fa fa-weixin text-xl"></i></a>
+            </div>
+            <p class="text-gray-500 text-sm">&copy; 2023 国漫更新时间 - 所有数据仅供参考</p>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化数据 - 包含每周更新的星期和具体时间
+        let animes = [
+            {
+                id: 1,
+                name: "凡人修仙传",
+                latestEpisode: "第176集",
+                updateDay: "周六",
+                updateTime: "10:00",
+                platform: "B站",
+                notes: "改编自忘语同名小说，讲述了韩立从一个普通少年修仙问道的故事。"
+            },
+            {
+                id: 2,
+                name: "灵笼",
+                latestEpisode: "第16集",
+                updateDay: "周五",
+                updateTime: "12:00",
+                platform: "B站",
+                notes: "末日题材科幻动画，讲述人类在末世中的生存与挣扎。"
+            },
+            {
+                id: 3,
+                name: "仙逆",
+                latestEpisode: "第42集",
+                updateDay: "周四",
+                updateTime: "09:30",
+                platform: "腾讯视频",
+                notes: "改编自耳根同名小说，讲述王林逆天改命的修仙之路。"
+            },
+            {
+                id: 4,
+                name: "遮天",
+                latestEpisode: "第58集",
+                updateDay: "周三",
+                updateTime: "11:00",
+                platform: "腾讯视频",
+                notes: "改编自辰东同名小说，讲述叶凡等一群人意外被九龙拉棺带往北斗星域后的传奇故事。"
+            },
+            {
+                id: 5,
+                name: "完美世界",
+                latestEpisode: "第132集",
+                updateDay: "周二",
+                updateTime: "10:00",
+                platform: "腾讯视频",
+                notes: "改编自辰东同名小说，讲述石昊从大荒走出，逆天而行的传奇一生。"
+            },
+            {
+                id: 6,
+                name: "牧神记",
+                latestEpisode: "第36集",
+                updateDay: "周一",
+                updateTime: "15:00",
+                platform: "B站",
+                notes: "改编自宅猪同名小说，讲述了普通少年成为牧神的成长之路。"
+            },
+            {
+                id: 7,
+                name: "师兄啊师兄",
+                latestEpisode: "第24集",
+                updateDay: "周日",
+                updateTime: "10:00",
+                platform: "B站",
+                notes: "改编自言归正传同名小说，讲述了李长寿为了长生不老而步步为营的修仙故事。"
+            }
+        ];
+
+        // DOM元素
+        const animeGrid = document.getElementById('animeGrid');
+        const emptyState = document.getElementById('emptyState');
+        const animeForm = document.getElementById('animeForm');
+        const formTitle = document.getElementById('formTitle');
+        const animeIdInput = document.getElementById('animeId');
+        const nameInput = document.getElementById('name');
+        const latestEpisodeInput = document.getElementById('latestEpisode');
+        const updateDayInput = document.getElementById('updateDay');
+        const updateTimeInput = document.getElementById('updateTime');
+        const platformInput = document.getElementById('platform');
+        const notesInput = document.getElementById('notes');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const detailModal = document.getElementById('detailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        const editBtn = document.getElementById('editBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const notification = document.getElementById('notification');
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationText = document.getElementById('notificationText');
+        const searchInput = document.getElementById('searchInput');
+        const sortByNameBtn = document.getElementById('sortByName');
+        const sortByDayBtn = document.getElementById('sortByDay');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navbar = document.getElementById('navbar');
+        const dayFilterBtns = document.querySelectorAll('.day-filter-btn');
+
+        // 当前选中的动漫ID和筛选条件
+        let currentAnimeId = null;
+        let currentDayFilter = 'all';
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 从本地存储加载数据
+            loadFromLocalStorage();
+            
+            // 渲染动漫列表
+            renderAnimeGrid();
+            
+            // 设置表单提交事件
+            animeForm.addEventListener('submit', handleFormSubmit);
+            
+            // 设置取消按钮事件
+            cancelBtn.addEventListener('click', resetForm);
+            
+            // 设置模态框关闭事件
+            closeModal.addEventListener('click', closeDetailModal);
+            
+            // 设置编辑按钮事件
+            editBtn.addEventListener('click', handleEdit);
+            
+            // 设置删除按钮事件
+            deleteBtn.addEventListener('click', openConfirmDeleteModal);
+            
+            // 设置取消删除按钮事件
+            cancelDeleteBtn.addEventListener('click', closeConfirmDeleteModal);
+            
+            // 设置确认删除按钮事件
+            confirmDeleteBtn.addEventListener('click', handleDelete);
+            
+            // 设置搜索事件
+            searchInput.addEventListener('input', handleSearch);
+            
+            // 设置排序事件
+            sortByNameBtn.addEventListener('click', () => sortAnimes('name'));
+            sortByDayBtn.addEventListener('click', () => sortAnimes('day'));
+            
+            // 设置星期筛选事件
+            dayFilterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentDayFilter = btn.dataset.day;
+                    updateDayFilterButtons();
+                    renderAnimeGrid();
+                });
+            });
+            
+            // 设置移动端菜单切换事件
+            menuToggle.addEventListener('click', toggleMobileMenu);
+            
+            // 设置滚动事件（导航栏效果）
+            window.addEventListener('scroll', handleScroll);
+        });
+
+        // 更新星期筛选按钮样式
+        function updateDayFilterButtons() {
+            dayFilterBtns.forEach(btn => {
+                if (btn.dataset.day === currentDayFilter) {
+                    // 激活状态
+                    if (currentDayFilter === 'all') {
+                        btn.className = 'day-filter-btn btn-primary';
+                    } else {
+                        btn.className = `day-filter-btn btn-primary`;
+                    }
+                } else {
+                    // 非激活状态
+                    if (btn.dataset.day === 'all') {
+                        btn.className = 'day-filter-btn day-badge bg-gray-100 text-gray-800';
+                    } else {
+                        const dayClasses = {
+                            '周一': 'bg-blue-100 text-blue-800',
+                            '周二': 'bg-purple-100 text-purple-800',
+                            '周三': 'bg-pink-100 text-pink-800',
+                            '周四': 'bg-red-100 text-red-800',
+                            '周五': 'bg-orange-100 text-orange-800',
+                            '周六': 'bg-yellow-100 text-yellow-800',
+                            '周日': 'bg-green-100 text-green-800'
+                        };
+                        btn.className = `day-filter-btn day-badge ${dayClasses[btn.dataset.day]}`;
+                    }
+                }
+            });
+        }
+
+        // 从本地存储加载数据
+        function loadFromLocalStorage() {
+            const savedAnimes = localStorage.getItem('animes');
+            if (savedAnimes) {
+                animes = JSON.parse(savedAnimes);
+            }
+        }
+
+        // 保存数据到本地存储
+        function saveToLocalStorage() {
+            localStorage.setItem('animes', JSON.stringify(animes));
+        }
+
+        // 获取星期对应的样式类
+        function getDayClass(day) {
+            const dayClasses = {
+                '周一': 'bg-blue-100 text-blue-800',
+                '周二': 'bg-purple-100 text-purple-800',
+                '周三': 'bg-pink-100 text-pink-800',
+                '周四': 'bg-red-100 text-red-800',
+                '周五': 'bg-orange-100 text-orange-800',
+                '周六': 'bg-yellow-100 text-yellow-800',
+                '周日': 'bg-green-100 text-green-800'
+            };
+            return dayClasses[day] || 'bg-gray-100 text-gray-800';
+        }
+
+        // 获取星期的排序值
+        function getDayOrder(day) {
+            const dayOrders = {
+                '周一': 1,
+                '周二': 2,
+                '周三': 3,
+                '周四': 4,
+                '周五': 5,
+                '周六': 6,
+                '周日': 7
+            };
+            return dayOrders[day] || 0;
+        }
+
+        // 渲染动漫列表
+        function renderAnimeGrid() {
+            // 清空网格
+            animeGrid.innerHTML = '';
+            
+            // 应用筛选
+            let filteredAnimes = [...animes];
+            if (currentDayFilter !== 'all') {
+                filteredAnimes = filteredAnimes.filter(anime => anime.updateDay === currentDayFilter);
+            }
+            
+            // 检查是否有数据
+            if (filteredAnimes.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            // 隐藏空状态
+            emptyState.classList.add('hidden');
+            
+            // 渲染每个动漫卡片
+            filteredAnimes.forEach(anime => {
+                const dayClass = getDayClass(anime.updateDay);
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow p-6 card-hover';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-dark">${anime.name}</h3>
+                        <span class="day-badge ${dayClass}">
+                            ${anime.updateDay}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 mb-2"><i class="fa fa-play-circle text-primary mr-1"></i> 最新: ${anime.latestEpisode}</p>
+                    <p class="text-gray-600 mb-2"><i class="fa fa-clock-o text-primary mr-1"></i> 更新时间: ${anime.updateTime}</p>
+                    <p class="text-gray-600 mb-4"><i class="fa fa-television text-primary mr-1"></i> ${anime.platform || '未指定平台'}</p>
+                    <button class="w-full text-primary hover:text-primary/80 transition-colors flex items-center justify-center view-details" data-id="${anime.id}">
+                        查看详情 <i class="fa fa-arrow-right ml-1"></i>
+                    </button>
+                `;
+                animeGrid.appendChild(card);
+                
+                // 添加查看详情事件
+                card.querySelector('.view-details').addEventListener('click', () => {
+                    openDetailModal(anime.id);
+                });
+            });
+        }
+
+        // 处理表单提交
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const animeData = {
+                name: nameInput.value.trim(),
+                latestEpisode: latestEpisodeInput.value.trim(),
+                updateDay: updateDayInput.value,
+                updateTime: updateTimeInput.value,
+                platform: platformInput.value.trim(),
+                notes: notesInput.value.trim()
+            };
+            
+            const animeId = animeIdInput.value;
+            
+            if (animeId) {
+                // 更新现有动漫
+                const index = animes.findIndex(a => a.id === parseInt(animeId));
+                if (index !== -1) {
+                    animes[index] = { ...animes[index], ...animeData };
+                    showNotification('更新成功', 'success');
+                }
+            } else {
+                // 添加新动漫
+                const newId = animes.length > 0 ? Math.max(...animes.map(a => a.id)) + 1 : 1;
+                animes.push({ id: newId, ...animeData });
+                showNotification('添加成功', 'success');
+            }
+            
+            // 保存数据并重新渲染
+            saveToLocalStorage();
+            renderAnimeGrid();
+            
+            // 重置表单
+            resetForm();
+            
+            // 滚动到动漫列表
+            document.getElementById('animes').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 重置表单
+        function resetForm() {
+            animeForm.reset();
+            animeIdInput.value = '';
+            formTitle.textContent = '添加新国漫';
+        }
+
+        // 打开详情模态框
+        function openDetailModal(id) {
+            currentAnimeId = id;
+            const anime = animes.find(a => a.id === id);
+            
+            if (anime) {
+                modalTitle.textContent = anime.name;
+                const dayClass = getDayClass(anime.updateDay);
+                
+                modalContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-gray-500 text-sm">最新集数</p>
+                            <p class="font-medium">${anime.latestEpisode}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">每周更新</p>
+                            <p class="font-medium">
+                                <span class="day-badge ${dayClass}">${anime.updateDay}</span>
+                                ${anime.updateTime}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">播放平台</p>
+                            <p class="font-medium">${anime.platform || '未指定'}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">备注信息</p>
+                            <p class="font-medium">${anime.notes || '无'}</p>
+                        </div>
+                    </div>
+                `;
+                
+                detailModal.classList.remove('hidden');
+                // 防止背景滚动
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // 关闭详情模态框
+        function closeDetailModal() {
+            detailModal.classList.add('hidden');
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+            currentAnimeId = null;
+        }
+
+        // 处理编辑
+        function handleEdit() {
+            const anime = animes.find(a => a.id === currentAnimeId);
+            
+            if (anime) {
+                formTitle.textContent = `编辑 ${anime.name}`;
+                animeIdInput.value = anime.id;
+                nameInput.value = anime.name;
+                latestEpisodeInput.value = anime.latestEpisode;
+                updateDayInput.value = anime.updateDay;
+                updateTimeInput.value = anime.updateTime;
+                platformInput.value = anime.platform || '';
+                notesInput.value = anime.notes || '';
+                
+                // 关闭详情模态框
+                closeDetailModal();
+                
+                // 滚动到表单
+                document.getElementById('add').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 打开确认删除模态框
+        function openConfirmDeleteModal() {
+            closeDetailModal();
+            confirmDeleteModal.classList.remove('hidden');
+            // 防止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭确认删除模态框
+        function closeConfirmDeleteModal() {
+            confirmDeleteModal.classList.add('hidden');
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+        }
+
+        // 处理删除
+        function handleDelete() {
+            animes = animes.filter(a => a.id !== currentAnimeId);
+            saveToLocalStorage();
+            renderAnimeGrid();
+            closeConfirmDeleteModal();
+            showNotification('删除成功', 'success');
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            notificationText.textContent = message;
+            
+            if (type === 'success') {
+                notificationIcon.className = 'fa fa-check-circle mr-2';
+                notification.classList.add('bg-green-600');
+                notification.classList.remove('bg-red-600', 'bg-yellow-600');
+            } else if (type === 'error') {
+                notificationIcon.className = 'fa fa-exclamation-circle mr-2';
+                notification.classList.add('bg-red-600');
+                notification.classList.remove('bg-green-600', 'bg-yellow-600');
+            } else if (type === 'warning') {
+                notificationIcon.className = 'fa fa-exclamation-triangle mr-2';
+                notification.classList.add('bg-yellow-600');
+                notification.classList.remove('bg-green-600', 'bg-red-600');
+            }
+            
+            // 显示通知
+            notification.classList.remove('translate-y-20', 'opacity-0');
+            
+            // 3秒后隐藏通知
+            setTimeout(() => {
+                notification.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 处理搜索
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                // 如果搜索为空，重新渲染所有
+                renderAnimeGrid();
+                return;
+            }
+            
+            // 过滤动漫
+            let filteredAnimes = animes.filter(anime => 
+                anime.name.toLowerCase().includes(searchTerm) ||
+                anime.platform.toLowerCase().includes(searchTerm) ||
+                anime.notes.toLowerCase().includes(searchTerm) ||
+                anime.updateDay.toLowerCase().includes(searchTerm)
+            );
+            
+            // 应用星期筛选
+            if (currentDayFilter !== 'all') {
+                filteredAnimes = filteredAnimes.filter(anime => anime.updateDay === currentDayFilter);
+            }
+            
+            // 清空网格
+            animeGrid.innerHTML = '';
+            
+            // 检查是否有结果
+            if (filteredAnimes.length === 0) {
+                animeGrid.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <i class="fa fa-search text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">未找到匹配的国漫</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 渲染过滤后的结果
+            filteredAnimes.forEach(anime => {
+                const dayClass = getDayClass(anime.updateDay);
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow p-6 card-hover';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-dark">${anime.name}</h3>
+                        <span class="day-badge ${dayClass}">
+                            ${anime.updateDay}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 mb-2"><i class="fa fa-play-circle text-primary mr-1"></i> 最新: ${anime.latestEpisode}</p>
+                    <p class="text-gray-600 mb-2"><i class="fa fa-clock-o text-primary mr-1"></i> 更新时间: ${anime.updateTime}</p>
+                    <p class="text-gray-600 mb-4"><i class="fa fa-television text-primary mr-1"></i> ${anime.platform || '未指定平台'}</p>
+                    <button class="w-full text-primary hover:text-primary/80 transition-colors flex items-center justify-center view-details" data-id="${anime.id}">
+                        查看详情 <i class="fa fa-arrow-right ml-1"></i>
+                    </button>
+                `;
+                animeGrid.appendChild(card);
+                
+                // 添加查看详情事件
+                card.querySelector('.view-details').addEventListener('click', () => {
+                    openDetailModal(anime.id);
+                });
+            });
+        }
+
+        // 排序动漫
+        function sortAnimes(type) {
+            if (type === 'name') {
+                animes.sort((a, b) => a.name.localeCompare(b.name));
+                showNotification('已按名称排序');
+            } else if (type === 'day') {
+                animes.sort((a, b) => getDayOrder(a.updateDay) - getDayOrder(b.updateDay));
+                showNotification('已按星期排序');
+            }
+            
+            saveToLocalStorage();
+            renderAnimeGrid();
+        }
+
+        // 切换移动端菜单
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // 处理滚动事件（导航栏效果）
+        function handleScroll() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                navbar.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // 关闭移动端菜单（如果打开）
+                mobileMenu.classList.add('hidden');
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+    
