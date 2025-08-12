@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超值流量卡 - 高速上网，省心省钱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        muted: '#86909C'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-dark bg-gray-50">
+    <!-- 导航栏 -->
+    <header class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fa fa-signal text-primary text-2xl mr-2"></i>
+                <span class="text-xl font-bold text-primary">流量优选</span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="text-dark hover:text-primary transition-colors">核心优势</a>
+                <a href="#plans" class="text-dark hover:text-primary transition-colors">套餐详情</a>
+                <a href="#faq" class="text-dark hover:text-primary transition-colors">常见问题</a>
+                <a href="#reviews" class="text-dark hover:text-primary transition-colors">用户评价</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="menuBtn" class="text-dark hover:text-primary">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="#features" class="text-dark hover:text-primary transition-colors py-2">核心优势</a>
+                <a href="#plans" class="text-dark hover:text-primary transition-colors py-2">套餐详情</a>
+                <a href="#faq" class="text-dark hover:text-primary transition-colors py-2">常见问题</a>
+                <a href="#reviews" class="text-dark hover:text-primary transition-colors py-2">用户评价</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-primary/5 to-primary/10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark mb-4">
+                        高速流量卡<br>
+                        <span class="text-primary">省心又省钱</span>
+                    </h1>
+                    <p class="text-lg text-muted mb-8 max-w-lg">
+                        告别流量焦虑，畅享高速网络！全国通用，不限速，多种套餐满足您的所有需求。现在办理更有超值优惠！
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-8 rounded-full text-center transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            立即办理 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#plans" class="bg-white hover:bg-gray-50 text-primary border border-primary font-medium py-3 px-8 rounded-full text-center transition-all shadow hover:shadow-md">
+                            查看套餐
+                        </a>
+                    </div>
+                    <div class="mt-8 flex items-center text-muted">
+                        <i class="fa fa-check-circle text-primary mr-2"></i>
+                        <span>全国通用 · 无需合约 · 即插即用</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <img src="https://picsum.photos/id/1/600/400" alt="高速流量卡展示图" class="w-full h-auto">
+                    </div>
+                    <div class="absolute top-1/4 -right-4 w-32 h-32 bg-secondary/20 rounded-full blur-2xl -z-10"></div>
+                    <div class="absolute bottom-1/4 -left-8 w-40 h-40 bg-primary/20 rounded-full blur-3xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 信任标志 -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-4">
+            <p class="text-center text-muted mb-6">值得信赖的运营商合作伙伴</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70">
+                <div class="text-3xl font-bold text-gray-400">中国移动</div>
+                <div class="text-3xl font-bold text-gray-400">中国联通</div>
+                <div class="text-3xl font-bold text-gray-400">中国电信</div>
+                <div class="text-3xl font-bold text-gray-400">全国覆盖</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心优势 -->
+    <section id="features" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">为什么选择我们的流量卡</h2>
+                <p class="text-muted max-w-2xl mx-auto">我们的流量卡提供卓越的网络体验，让您随时随地畅享高速网络，无需担心流量耗尽</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 优势1 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-bolt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">高速不限速</h3>
+                    <p class="text-muted">4G/5G高速网络，全程不限速，让您畅享流畅视频、游戏体验</p>
+                </div>
+                
+                <!-- 优势2 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-map-marker text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">全国通用</h3>
+                    <p class="text-muted">覆盖全国31个省市，无论是城市还是乡村，都能享受稳定网络</p>
+                </div>
+                
+                <!-- 优势3 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-money text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">价格实惠</h3>
+                    <p class="text-muted">相比传统运营商套餐，价格更优惠，流量更多，性价比更高</p>
+                </div>
+                
+                <!-- 优势4 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-check-circle text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">无需合约</h3>
+                    <p class="text-muted">无需签订长期合约，灵活选择套餐，随时可更换，自由无束缚</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 套餐详情 -->
+    <section id="plans" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">超值套餐选择</h2>
+                <p class="text-muted max-w-2xl mx-auto">多种套餐满足不同需求，总有一款适合您</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[768px] bg-white rounded-xl shadow-sm">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-4 px-6 text-left font-semibold">套餐类型</th>
+                            <th class="py-4 px-6 text-center font-semibold">月流量</th>
+                            <th class="py-4 px-6 text-center font-semibold">网速</th>
+                            <th class="py-4 px-6 text-center font-semibold">有效期</th>
+                            <th class="py-4 px-6 text-center font-semibold">价格</th>
+                            <th class="py-4 px-6 text-center font-semibold">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-6 font-medium">基础套餐</td>
+                            <td class="py-4 px-6 text-center">100GB</td>
+                            <td class="py-4 px-6 text-center">4G高速</td>
+                            <td class="py-4 px-6 text-center">30天</td>
+                            <td class="py-4 px-6 text-center font-semibold">¥29</td>
+                            <td class="py-4 px-6 text-center">
+                                <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="text-primary hover:text-primary/80 transition-colors">
+                                    立即办理
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-6 font-medium">畅玩套餐</td>
+                            <td class="py-4 px-6 text-center">200GB</td>
+                            <td class="py-4 px-6 text-center">4G高速</td>
+                            <td class="py-4 px-6 text-center">30天</td>
+                            <td class="py-4 px-6 text-center font-semibold">¥49</td>
+                            <td class="py-4 px-6 text-center">
+                                <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="text-primary hover:text-primary/80 transition-colors">
+                                    立即办理
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-6 font-medium">尊享套餐</td>
+                            <td class="py-4 px-6 text-center">300GB</td>
+                            <td class="py-4 px-6 text-center">5G高速</td>
+                            <td class="py-4 px-6 text-center">30天</td>
+                            <td class="py-4 px-6 text-center font-semibold">¥69</td>
+                            <td class="py-4 px-6 text-center">
+                                <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="text-primary hover:text-primary/80 transition-colors">
+                                    立即办理
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-6 font-medium">季度套餐</td>
+                            <td class="py-4 px-6 text-center">1000GB</td>
+                            <td class="py-4 px-6 text-center">5G高速</td>
+                            <td class="py-4 px-6 text-center">90天</td>
+                            <td class="py-4 px-6 text-center font-semibold">¥199</td>
+                            <td class="py-4 px-6 text-center">
+                                <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="text-primary hover:text-primary/80 transition-colors">
+                                    立即办理
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-12 bg-primary/5 rounded-xl p-6 md:p-8 border border-primary/20">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-2/3 mb-6 md:mb-0 md:pr-8">
+                        <h3 class="text-xl font-bold mb-2">首次办理专享优惠</h3>
+                        <p class="text-muted mb-0">新用户首次办理任意套餐，立享8折优惠，还送10GB额外流量！</p>
+                    </div>
+                    <div class="md:w-1/3">
+                        <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-8 rounded-full inline-block w-full md:w-auto text-center transition-all shadow hover:shadow-md">
+                            领取优惠
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用场景 -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">多种场景，畅爽体验</h2>
+                <p class="text-muted max-w-2xl mx-auto">无论您在哪里，做什么，我们的流量卡都能满足您的网络需求</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="rounded-xl overflow-hidden shadow-sm group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/id/26/600/400" alt="旅行途中使用流量卡" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">旅行途中</h3>
+                        <p class="text-muted">出差旅行，随时导航，分享美景，与家人朋友保持联系</p>
+                    </div>
+                </div>
+                
+                <div class="rounded-xl overflow-hidden shadow-sm group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/id/48/600/400" alt="居家上网使用流量卡" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">居家上网</h3>
+                        <p class="text-muted">作为家庭备用网络，追剧、游戏、视频会议，稳定流畅</p>
+                    </div>
+                </div>
+                
+                <div class="rounded-xl overflow-hidden shadow-sm group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/id/60/600/400" alt="户外办公使用流量卡" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">户外办公</h3>
+                        <p class="text-muted">移动办公，视频会议，文件传输，高效稳定，不卡顿</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="faq" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">常见问题</h2>
+                <p class="text-muted max-w-2xl mx-auto">我们整理了用户最常问的问题，希望能解答您的疑惑</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="space-y-4">
+                    <!-- 问题1 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none">
+                            <span class="font-medium text-lg">流量卡支持哪些设备使用？</span>
+                            <i class="fa fa-chevron-down text-muted transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-6">
+                            <p class="text-muted">我们的流量卡支持所有 unlocked 的手机、平板、随身WiFi（MiFi）、笔记本电脑等设备，只要设备支持中国的4G/5G网络频段即可使用。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 问题2 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none">
+                            <span class="font-medium text-lg">如何激活流量卡？</span>
+                            <i class="fa fa-chevron-down text-muted transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-6">
+                            <p class="text-muted">收到流量卡后，按照卡片上的说明进行操作即可。通常只需将卡片插入设备，开启数据漫游（如有需要），即可自动激活使用。部分套餐可能需要通过微信公众号或官方网站进行简单激活。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 问题3 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none">
+                            <span class="font-medium text-lg">流量可以累积到下个月使用吗？</span>
+                            <i class="fa fa-chevron-down text-muted transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-6">
+                            <p class="text-muted">月套餐的流量仅限当月使用，未使用完的部分不会累积到下个月。季度套餐的流量在90天有效期内可以累积使用，直至有效期结束。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 问题4 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none">
+                            <span class="font-medium text-lg">是否需要实名认证？</span>
+                            <i class="fa fa-chevron-down text-muted transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-6">
+                            <p class="text-muted">根据国家相关规定，所有电信服务均需进行实名认证。您需要提供有效的身份证件信息完成认证，认证过程简单快捷，仅需几分钟即可完成。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 问题5 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none">
+                            <span class="font-medium text-lg">如何查询剩余流量和有效期？</span>
+                            <i class="fa fa-chevron-down text-muted transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-6">
+                            <p class="text-muted">您可以通过以下方式查询：1) 关注官方微信公众号，绑定手机号后查询；2) 登录官方网站查询；3) 发送特定短信指令到指定号码查询（具体指令见流量卡说明）。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户评价 -->
+    <section id="reviews" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">用户真实评价</h2>
+                <p class="text-muted max-w-2xl mx-auto">看看其他用户对我们流量卡的使用体验</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 评价1 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/id/64/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">张先生</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted">"流量很充足，网速也很快，我经常出差，全国各个地方都能用，信号很稳定。价格比我之前用的运营商套餐便宜多了，非常满意！"</p>
+                </div>
+                
+                <!-- 评价2 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/id/65/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">李女士</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted">"作为备用流量卡非常合适，我买的季度套餐很划算。激活过程简单，客服响应也很及时，有一次遇到问题很快就解决了，值得推荐。"</p>
+                </div>
+                
+                <!-- 评价3 -->
+                <div class="bg-light rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/id/91/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">王先生</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted">"网速确实不错，看视频不卡顿。我主要是给平板用的，套餐流量很充足，一个月完全够用。唯一的小缺点是查询流量不太方便，希望能改进。"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行动召唤 -->
+    <section class="py-16 md:py-24 bg-primary">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6 text-white">立即办理，畅享高速网络</h2>
+            <p class="text-white/80 max-w-2xl mx-auto mb-10 text-lg">新用户首次办理即享8折优惠，还送10GB额外流量，数量有限，先到先得！</p>
+            <a href="https://h5.lot-ml.com/ProductEn/Index/45f704d8743b76f6" target="_blank" class="bg-white hover:bg-gray-100 text-primary font-medium py-4 px-10 rounded-full text-lg inline-block transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                立即办理 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            <p class="text-white/60 mt-6">全国客服热线：400-123-4567（工作日 9:00-18:00）</p>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white/80 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fa fa-signal text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-white">流量优选</span>
+                    </div>
+                    <p class="mb-4">提供高速、稳定、实惠的流量服务，让您随时随地畅享网络世界。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white/60 hover:text-primary transition-colors">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white/60 hover:text-primary transition-colors">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white/60 hover:text-primary transition-colors">
+                            <i class="fa fa-qq text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="hover:text-primary transition-colors">核心优势</a></li>
+                        <li><a href="#plans" class="hover:text-primary transition-colors">套餐详情</a></li>
+                        <li><a href="#faq" class="hover:text-primary transition-colors">常见问题</a></li>
+                        <li><a href="#reviews" class="hover:text-primary transition-colors">用户评价</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">帮助中心</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-primary transition-colors">如何激活</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">充值指南</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">流量查询</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">售后服务</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">联系我们</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-2 text-primary"></i>
+                            <span>400-123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope mr-2 text-primary"></i>
+                            <span>service@流量优选.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker mr-2 text-primary"></i>
+                            <span>北京市朝阳区XX大厦</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
+                <p>© 2023 流量优选. 保留所有权利. 电信业务经营许可证：XXXXXX</p>
+                <p class="mt-2">本产品由合作运营商提供服务，最终解释权归本公司所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动端菜单
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+        
+        // FAQ 折叠功能
+        document.querySelectorAll('.faq-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                // 切换当前FAQ的显示状态
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+                
+                // 关闭其他打开的FAQ
+                document.querySelectorAll('.faq-toggle').forEach(otherToggle => {
+                    if (otherToggle !== toggle) {
+                        otherToggle.nextElementSibling.classList.add('hidden');
+                        otherToggle.querySelector('i').classList.remove('rotate-180');
+                    }
+                });
+            });
+        });
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('py-2', 'shadow');
+                header.classList.remove('py-3', 'shadow-sm');
+            } else {
+                header.classList.add('py-3', 'shadow-sm');
+                header.classList.remove('py-2', 'shadow');
+            }
+        });
+        
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            document.body.classList.add('opacity-100');
+            document.body.classList.remove('opacity-0');
+        });
+    </script>
+</body>
+</html>
