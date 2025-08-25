@@ -3,1645 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>访客留言</title>
+    <title>匿名留言板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script>
-        // 配色方案优化
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2563EB',      // 主色：纯净蓝
-                        secondary: '#F8FAFC',    // 背景色：超浅灰
-                        dark: '#0F172A',         // 深色模式背景
-                        darkCard: '#1E293B',     // 深色模式卡片
-                        darkHeader: '#1E293B',   // 深色模式导航栏
-                        accent: '#3B82F6',       // 强调色
-                        success: '#10B981',      // 成功色
-                        warning: '#F59E0B',      // 警告色
-                        error: '#EF4444',        // 错误色
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'card': '0 2px 10px rgba(0, 0, 0, 0.05)',
-                        'elevated': '0 10px 25px -5px rgba(0, 0, 0, 0.05)',
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
                     }
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .transition-elegant {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            .text-gradient {
-                background-clip: text;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-            .card-hover {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-4px);
-            }
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-            .animate-float {
-                animation: float 3s ease-in-out infinite;
-            }
-            @keyframes float {
-                0% { transform: translateY(0px); }
-                50% { transform: translateY(-10px); }
-                100% { transform: translateY(0px); }
-            }
-            .error-details {
-                background-color: rgba(239, 68, 68, 0.1);
-                border-left: 3px solid #EF4444;
-            }
-            .config-check {
-                background-color: rgba(59, 130, 246, 0.1);
-                border-left: 3px solid #3B82F6;
-            }
-        }
-    </style>
 </head>
-<body class="bg-secondary text-gray-800 min-h-screen font-sans transition-elegant">
-    <!-- 顶部导航栏 -->
-    <header id="main-header" class="sticky top-0 z-40 bg-white/80 dark:bg-darkHeader/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 transition-elegant">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-bold bg-gradient-to-r from-primary to-accent text-gradient">访客留言</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <!-- 访客统计 -->
-                    <div class="hidden md:flex items-center text-sm text-gray-600 dark:text-gray-300">
-                        <i class="fa fa-users mr-1"></i>
-                        <span id="visitor-count">总访客: 0</span>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-primary mb-2">匿名留言板</h1>
+            <p class="text-gray-600">无需登录，直接留言，数据安全存储在Gitee</p>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- 留言表单 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary flex items-center">
+                    <i class="fa fa-pencil-square-o mr-2"></i> 发表留言
+                </h2>
+                
+                <form id="messageForm" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">昵称 (选填)</label>
+                        <input type="text" id="name" placeholder="您的昵称" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary/50">
                     </div>
                     
-                    <!-- 配置检查按钮 -->
-                    <button id="config-check-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-elegant text-sm">
-                        <i class="fa fa-cog text-gray-600 dark:text-gray-300"></i>
-                    </button>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">留言内容 <span class="text-red-500">*</span></label>
+                        <textarea id="message" rows="4" placeholder="请输入您的留言..." 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary/50"
+                                  required></textarea>
+                        <div class="flex justify-between mt-1">
+                            <span id="charCount" class="text-xs text-gray-500">0/300</span>
+                        </div>
+                    </div>
                     
-                    <!-- 主题切换 -->
-                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-elegant">
-                        <i class="fa fa-moon-o dark:hidden text-gray-600"></i>
-                        <i class="fa fa-sun-o hidden dark:block text-yellow-400"></i>
+                    <button type="submit" id="submitBtn" 
+                            class="w-full bg-secondary hover:bg-secondary/90 text-white py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2">
+                        <i class="fa fa-paper-plane"></i>
+                        <span>提交留言</span>
                     </button>
+                </form>
+            </div>
+
+            <!-- 留言列表 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-primary flex items-center">
+                        <i class="fa fa-comments mr-2"></i> 留言列表
+                    </h2>
+                    <button id="refreshBtn" class="text-sm text-gray-600 hover:text-secondary transition-colors">
+                        <i class="fa fa-refresh mr-1"></i> 刷新
+                    </button>
+                </div>
+                
+                <div id="loadingState" class="py-12 text-center hidden">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
+                    <p class="mt-2 text-gray-600">加载中...</p>
+                </div>
+                
+                <div id="emptyState" class="py-12 text-center">
+                    <i class="fa fa-comment-o text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500">暂无留言，成为第一个留言的人吧！</p>
+                </div>
+                
+                <div id="errorState" class="py-12 text-center hidden">
+                    <i class="fa fa-exclamation-triangle text-4xl text-yellow-500 mb-3"></i>
+                    <p class="text-red-500 mb-2" id="errorText">加载失败</p>
+                    <p class="text-sm text-gray-500 mb-4" id="errorDetails">请检查网络连接</p>
+                    <button id="retryBtn" class="text-sm bg-secondary text-white px-3 py-1 rounded hover:bg-secondary/90">
+                        重试
+                    </button>
+                </div>
+                
+                <div id="messagesList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 hidden">
+                    <!-- 留言将在这里显示 -->
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- 配置检查面板 -->
-    <div id="config-check-panel" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-darkCard rounded-xl shadow-elevated max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold">配置检查</h3>
-                <button id="close-config-panel" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div id="config-results" class="space-y-3">
-                    <!-- 配置检查结果将在这里显示 -->
-                </div>
-                <div class="config-check p-3 rounded mt-4">
-                    <p class="text-sm font-medium mb-1">配置说明：</p>
-                    <ul class="text-xs text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Gist ID 是您GitHub Gist的唯一标识（如：abc123def456...）</li>
-                        <li>文件名应为您Gist中存储留言的JSON文件名</li>
-                        <li>GitHub令牌需要有gist权限，用于读写Gist数据</li>
-                        <li>如无令牌，只能读取公开Gist，且有API访问频率限制</li>
-                    </ul>
-                </div>
-            </div>
+        <!-- 调试信息区域 -->
+        <div class="mt-8 bg-gray-100 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <i class="fa fa-bug mr-1"></i> 调试信息
+            </h3>
+            <pre id="debugLog" class="text-xs text-gray-600 bg-gray-50 p-3 rounded h-32 overflow-y-auto"></pre>
         </div>
     </div>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- 左侧边栏：统计和心情分析 -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- 统计卡片 -->
-                <div class="bg-white dark:bg-darkCard rounded-xl shadow-card p-5 transition-elegant">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <i class="fa fa-bar-chart text-primary mr-2"></i>
-                        留言统计
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">总留言数</span>
-                            <span id="total-messages" class="font-medium">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">今日新增</span>
-                            <span id="today-messages" class="font-medium">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">总点赞数</span>
-                            <span id="total-likes" class="font-medium">0</span>
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-2">
-                            <div id="messages-growth" class="bg-primary h-2 rounded-full" style="width: 0%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">较昨日增长 <span id="growth-percentage">0%</span></p>
-                    </div>
-                </div>
-                
-                <!-- 访客统计卡片 -->
-                <div class="bg-white dark:bg-darkCard rounded-xl shadow-card p-5 transition-elegant">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <i class="fa fa-eye text-accent mr-2"></i>
-                        访客分析
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">今日访客</span>
-                            <span id="today-visitors" class="font-medium">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">本周访客</span>
-                            <span id="week-visitors" class="font-medium">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 dark:text-gray-300">本月访客</span>
-                            <span id="month-visitors" class="font-medium">0</span>
-                        </div>
-                        <div class="h-24 mt-2">
-                            <canvas id="visitors-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 随机精选 -->
-                <div class="bg-white dark:bg-darkCard rounded-xl shadow-card p-5 transition-elegant">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <i class="fa fa-star text-warning mr-2"></i>
-                        随机精选
-                    </h3>
-                    <div id="random-message" class="text-sm text-gray-600 dark:text-gray-300 italic">
-                        加载中...
-                    </div>
-                </div>
+    <!-- 提交状态弹窗 -->
+    <div id="submitModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div id="modalLoading" class="text-center py-6">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-secondary mb-4"></div>
+                <p class="text-gray-700">正在提交留言...</p>
             </div>
             
-            <!-- 右侧主内容：留言区 -->
-            <div class="lg:col-span-2 space-y-8">
-                <!-- 欢迎信息 -->
-                <div class="bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 rounded-2xl p-6 border border-primary/10">
-                    <h2 class="text-2xl font-bold mb-2">欢迎留下您的足迹</h2>
-                    <p class="text-gray-600 dark:text-gray-300 max-w-xl">
-                        每一条留言都是珍贵的交流，无论是建议、感谢还是简单的问候，我们都期待听到您的声音。
-                    </p>
+            <div id="modalSuccess" class="text-center py-6 hidden">
+                <div class="inline-block bg-green-100 rounded-full p-3 mb-4">
+                    <i class="fa fa-check text-2xl text-green-500"></i>
                 </div>
-                
-                <!-- 留言输入区 -->
-                <div class="bg-white dark:bg-darkCard rounded-xl shadow-card p-6 transition-elegant card-hover">
-                    <h3 class="text-xl font-semibold mb-5">写下留言</h3>
-                    
-                    <form id="message-form" class="space-y-5">
-                        <!-- 昵称输入 -->
-                        <div>
-                            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                您的昵称
-                            </label>
-                            <input 
-                                type="text" 
-                                id="username" 
-                                placeholder="请输入您的昵称（1-12字）" 
-                                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-elegant dark:text-white"
-                                maxlength="12"
-                                required
-                            >
-                        </div>
-                        
-                        <!-- 留言内容 -->
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <label for="message-content" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    留言内容
-                                </label>
-                                <span id="char-counter" class="text-xs text-gray-500 dark:text-gray-400">0/300</span>
-                            </div>
-                            <textarea 
-                                id="message-content" 
-                                placeholder="分享您的想法、建议或感受..." 
-                                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-elegant resize-none dark:text-white"
-                                rows="4"
-                                maxlength="300"
-                                required
-                            ></textarea>
-                        </div>
-                        
-                        <!-- 留言标签选择 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                选择标签
-                            </label>
-                            <div class="flex flex-wrap gap-2">
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-elegant">
-                                    <input type="radio" name="tag" value="建议" class="mr-2 accent-primary"> 建议
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-elegant">
-                                    <input type="radio" name="tag" value="感谢" class="mr-2 accent-primary"> 感谢
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-elegant">
-                                    <input type="radio" name="tag" value="交流" class="mr-2 accent-primary"> 交流
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-elegant">
-                                    <input type="radio" name="tag" value="疑问" class="mr-2 accent-primary"> 疑问
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-elegant">
-                                    <input type="radio" name="tag" value="其他" class="mr-2 accent-primary" checked> 其他
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <!-- 表情选择器 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                选择表情
-                            </label>
-                            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="😊">😊</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="👍">👍</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="🎉">🎉</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="💬">💬</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="🌟">🌟</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="❤️">❤️</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="👏">👏</button>
-                                <button type="button" class="emoji-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-elegant text-xl" data-emoji="🤔">🤔</button>
-                            </div>
-                            <input type="hidden" id="selected-emoji" value="">
-                        </div>
-                        
-                        <!-- 提交按钮 -->
-                        <button 
-                            type="submit" 
-                            id="submit-btn" 
-                            class="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary/90 transition-elegant font-medium flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                            disabled
-                        >
-                            <span>提交留言</span>
-                            <i class="fa fa-paper-plane-o"></i>
-                        </button>
-                    </form>
+                <p class="text-gray-700 font-medium">留言提交成功！</p>
+                <button id="modalSuccessBtn" class="mt-4 bg-secondary text-white px-4 py-2 rounded hover:bg-secondary/90">
+                    确定
+                </button>
+            </div>
+            
+            <div id="modalError" class="text-center py-6 hidden">
+                <div class="inline-block bg-red-100 rounded-full p-3 mb-4">
+                    <i class="fa fa-times text-2xl text-red-500"></i>
                 </div>
-                
-                <!-- 留言列表区 -->
-                <div>
-                    <!-- 列表头部：功能区 -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                        <h3 class="text-xl font-semibold">留言列表</h3>
-                        
-                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <!-- 搜索功能 -->
-                            <div class="relative w-full sm:w-48">
-                                <input 
-                                    type="text" 
-                                    id="search-input" 
-                                    placeholder="搜索留言..." 
-                                    class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-elegant dark:text-white"
-                                >
-                                <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm"></i>
-                            </div>
-                            
-                            <!-- 筛选和排序 -->
-                            <div class="flex gap-3">
-                                <select id="filter-select" class="text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-elegant dark:text-white">
-                                    <option value="all">全部留言</option>
-                                    <option value="建议">建议</option>
-                                    <option value="感谢">感谢</option>
-                                    <option value="交流">交流</option>
-                                    <option value="疑问">疑问</option>
-                                    <option value="其他">其他</option>
-                                </select>
-                                
-                                <select id="sort-select" class="text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-elegant dark:text-white">
-                                    <option value="newest">最新优先</option>
-                                    <option value="oldest">最早优先</option>
-                                    <option value="mostLiked">点赞最多</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 状态容器：加载/空状态/错误状态 -->
-                    <div id="state-container" class="py-16 text-center">
-                        <!-- 加载状态 -->
-                        <div id="loading-state" class="block">
-                            <div class="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                            <p class="text-gray-500 dark:text-gray-400">加载留言中...</p>
-                            <p class="text-xs text-gray-400 mt-2 dark:text-gray-500">
-                                <span id="loading-details">正在连接到GitHub Gist...</span>
-                            </p>
-                        </div>
-                        
-                        <!-- 空状态 -->
-                        <div id="empty-state" class="hidden">
-                            <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto mb-4 animate-float">
-                                <i class="fa fa-comment-o text-2xl"></i>
-                            </div>
-                            <p class="text-gray-500 dark:text-gray-400 mb-2">暂无留言</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500">成为第一个留下足迹的访客吧～</p>
-                        </div>
-                        
-                        <!-- 错误状态 -->
-                        <div id="error-state" class="hidden">
-                            <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-error mx-auto mb-4">
-                                <i class="fa fa-exclamation-circle text-2xl"></i>
-                            </div>
-                            <p class="text-gray-500 dark:text-gray-400 mb-2">加载失败</p>
-                            <div id="error-details" class="error-details p-3 text-sm text-left text-gray-600 dark:text-gray-300 rounded mt-3 max-w-md mx-auto hidden">
-                                <p class="font-medium mb-1">错误详情：</p>
-                                <p id="error-message" class="text-sm"></p>
-                            </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                请检查您的Gist配置是否正确，或尝试刷新页面
-                            </p>
-                            <button id="retry-btn" class="text-sm text-primary hover:text-primary/80 transition-elegant mt-3">
-                                点击重试
-                            </button>
-                            <button id="use-local-mode" class="text-sm text-accent hover:text-accent/80 transition-elegant mt-2">
-                                切换到本地存储模式
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- 留言容器 -->
-                    <div id="messages-container" class="space-y-5 hidden"></div>
-                    
-                    <!-- 加载更多 -->
-                    <div class="flex justify-center mt-8">
-                        <button 
-                            id="load-more" 
-                            class="px-5 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-darkCard rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-elegant text-sm flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                            disabled
-                        >
-                            <span>加载更多</span>
-                            <i class="fa fa-angle-down"></i>
-                        </button>
-                    </div>
-                </div>
+                <p class="text-gray-700 font-medium mb-2">提交失败</p>
+                <p class="text-sm text-gray-500 mb-4" id="modalErrorText">请稍后重试</p>
+                <p class="text-xs text-gray-400 mb-4" id="modalErrorDetails"></p>
+                <button id="modalRetryBtn" class="bg-secondary text-white px-4 py-2 rounded hover:bg-secondary/90">
+                    重试
+                </button>
             </div>
         </div>
-    </main>
-
-    <!-- 页脚 -->
-    <footer class="bg-white dark:bg-dark border-t border-gray-100 dark:border-gray-800 py-8 mt-12">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-gray-500 dark:text-gray-400 text-sm">
-                访客留言系统 &copy; <span id="current-year"></span> | 用简洁连接彼此
-            </p>
-        </div>
-    </footer>
-
-    <!-- 通知提示 -->
-    <div id="toast" class="fixed bottom-6 right-6 px-5 py-3 bg-primary text-white rounded-lg shadow-elevated transform translate-y-20 opacity-0 transition-elegant flex items-center gap-2 z-50 max-w-xs">
-        <i id="toast-icon" class="fa fa-check-circle"></i>
-        <span id="toast-text">操作成功</span>
     </div>
 
     <script>
-        // 配置信息 - 请替换为您自己的Gist信息
+        // 配置信息 - 请确保这些信息正确
         const CONFIG = {
-            gistId: '0356e9d72ed6867fb4539c0c91feffd6', // 您的Gist ID
-            fileName: 'guestbook.json', // 存储留言的文件名
-            token: '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', // 您的GitHub令牌
-            pageSize: 6, // 每页显示的留言数量
-            useLocalStorage: false // 是否使用本地存储模式（当Gist不可用时）
-        };
-
-        // 全局状态
-        const state = {
-            messages: [],          // 所有留言数据
-            filteredMessages: [],  // 筛选后的留言
-            visitorsData: {        // 访客数据
-                total: 0,
-                today: 0,
-                week: 0,
-                month: 0,
-                history: []        // 过去7天的访客记录
-            },
-            currentPage: 1,        // 当前页码
-            hasMore: false,        // 是否有更多留言
-            isDarkMode: false,     // 是否为深色模式
-            moodChart: null,       // 心情图表实例
-            visitorsChart: null,   // 访客图表实例
-            isLocalMode: false,    // 是否处于本地存储模式
-            configCheckResults: {} // 配置检查结果
+            owner: 'baoxiaobao',                // Gitee用户名
+            repo: 'liuyan',                  // 仓库名称
+            issueId: 21574922,               // Issue ID
+            accessToken: 'b190584c44e5881c651f20ebb03c561d',  // 访问令牌
+            
+            // 代理列表 - 将按顺序尝试
+            proxies: [
+                'https://cors.bridged.cc/',
+                'https://cors-anywhere.azm.workers.dev/',
+                'https://api.allorigins.win/raw?url=',
+                'https://cors.sh/',
+                '' // 无代理（最后尝试）
+            ],
+            
+            // API端点
+            api: {
+                comments: (owner, repo, issueId) => 
+                    `https://gitee.com/api/v5/repos/${owner}/${repo}/issues/${issueId}/comments`
+            }
         };
 
         // DOM元素引用
         const elements = {
-            // 头部导航栏
-            mainHeader: document.getElementById('main-header'),
-            configCheckBtn: document.getElementById('config-check-btn'),
-            configCheckPanel: document.getElementById('config-check-panel'),
-            closeConfigPanel: document.getElementById('close-config-panel'),
-            configResults: document.getElementById('config-results'),
+            form: document.getElementById('messageForm'),
+            nameInput: document.getElementById('name'),
+            messageInput: document.getElementById('message'),
+            charCount: document.getElementById('charCount'),
+            submitBtn: document.getElementById('submitBtn'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            retryBtn: document.getElementById('retryBtn'),
+            messagesList: document.getElementById('messagesList'),
+            loadingState: document.getElementById('loadingState'),
+            emptyState: document.getElementById('emptyState'),
+            errorState: document.getElementById('errorState'),
+            errorText: document.getElementById('errorText'),
+            errorDetails: document.getElementById('errorDetails'),
+            debugLog: document.getElementById('debugLog'),
             
-            // 表单元素
-            form: document.getElementById('message-form'),
-            usernameInput: document.getElementById('username'),
-            messageInput: document.getElementById('message-content'),
-            charCounter: document.getElementById('char-counter'),
-            submitBtn: document.getElementById('submit-btn'),
-            emojiBtns: document.querySelectorAll('.emoji-btn'),
-            selectedEmoji: document.getElementById('selected-emoji'),
-            
-            // 列表元素
-            stateContainer: document.getElementById('state-container'),
-            loadingState: document.getElementById('loading-state'),
-            loadingDetails: document.getElementById('loading-details'),
-            emptyState: document.getElementById('empty-state'),
-            errorState: document.getElementById('error-state'),
-            errorDetails: document.getElementById('error-details'),
-            errorMessage: document.getElementById('error-message'),
-            retryBtn: document.getElementById('retry-btn'),
-            useLocalModeBtn: document.getElementById('use-local-mode'),
-            messagesContainer: document.getElementById('messages-container'),
-            loadMoreBtn: document.getElementById('load-more'),
-            
-            // 功能元素
-            searchInput: document.getElementById('search-input'),
-            filterSelect: document.getElementById('filter-select'),
-            sortSelect: document.getElementById('sort-select'),
-            themeToggle: document.getElementById('theme-toggle'),
-            visitorCount: document.getElementById('visitor-count'),
-            
-            // 统计元素
-            totalMessages: document.getElementById('total-messages'),
-            todayMessages: document.getElementById('today-messages'),
-            totalLikes: document.getElementById('total-likes'),
-            messagesGrowth: document.getElementById('messages-growth'),
-            growthPercentage: document.getElementById('growth-percentage'),
-            randomMessage: document.getElementById('random-message'),
-            todayVisitors: document.getElementById('today-visitors'),
-            weekVisitors: document.getElementById('week-visitors'),
-            monthVisitors: document.getElementById('month-visitors'),
-            
-            // 图表元素
-            visitorsChart: document.getElementById('visitors-chart'),
-            
-            // 提示元素
-            toast: document.getElementById('toast'),
-            toastIcon: document.getElementById('toast-icon'),
-            toastText: document.getElementById('toast-text'),
-            
-            // 页脚
-            currentYear: document.getElementById('current-year')
+            // 弹窗元素
+            submitModal: document.getElementById('submitModal'),
+            modalLoading: document.getElementById('modalLoading'),
+            modalSuccess: document.getElementById('modalSuccess'),
+            modalError: document.getElementById('modalError'),
+            modalSuccessBtn: document.getElementById('modalSuccessBtn'),
+            modalRetryBtn: document.getElementById('modalRetryBtn'),
+            modalErrorText: document.getElementById('modalErrorText'),
+            modalErrorDetails: document.getElementById('modalErrorDetails')
         };
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 设置当前年份
-            elements.currentYear.textContent = new Date().getFullYear();
-            
-            // 绑定事件监听
+            logDebug('页面加载完成，初始化应用...');
             bindEvents();
-            
-            // 初始化图表
-            initCharts();
-            
-            // 检查配置并加载留言
-            checkConfiguration().then(configValid => {
-                // 检查是否需要使用本地存储模式
-                const savedMode = localStorage.getItem('guestbook-mode');
-                if (savedMode === 'local') {
-                    state.isLocalMode = true;
-                    loadLocalMessages();
-                    showToast('已切换到本地存储模式', 'success');
-                } else if (configValid) {
-                    // 配置有效，尝试加载Gist留言
-                    loadMessages();
-                } else {
-                    // 配置无效，显示错误并提供切换选项
-                    showErrorState('检测到配置问题，请检查您的Gist设置');
-                    displayConfigCheckResults();
-                }
-            });
-            
-            // 初始化并更新访客统计
-            initVisitorTracking();
-            
-            // 检查系统主题偏好
-            checkSystemTheme();
+            loadMessages();
         });
 
-        // 绑定事件
+        // 绑定事件处理函数
         function bindEvents() {
-            // 配置检查面板
-            elements.configCheckBtn.addEventListener('click', () => {
-                checkConfiguration().then(() => {
-                    displayConfigCheckResults();
-                    elements.configCheckPanel.classList.remove('hidden');
-                    elements.configCheckPanel.classList.add('flex');
-                });
-            });
-            
-            elements.closeConfigPanel.addEventListener('click', () => {
-                elements.configCheckPanel.classList.add('hidden');
-                elements.configCheckPanel.classList.remove('flex');
-            });
-            
-            // 点击面板外部关闭
-            elements.configCheckPanel.addEventListener('click', (e) => {
-                if (e.target === elements.configCheckPanel) {
-                    elements.configCheckPanel.classList.add('hidden');
-                    elements.configCheckPanel.classList.remove('flex');
-                }
-            });
-            
-            // 表单事件
-            elements.usernameInput.addEventListener('input', validateForm);
-            elements.messageInput.addEventListener('input', (e) => {
-                // 更新字符计数
-                const length = e.target.value.length;
-                elements.charCounter.textContent = `${length}/300`;
-                validateForm();
-            });
-            
             // 表单提交
             elements.form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 submitMessage();
             });
             
-            // 表情选择
-            elements.emojiBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const emoji = e.currentTarget.dataset.emoji;
-                    elements.selectedEmoji.value = emoji;
-                    
-                    // 高亮选中的表情
-                    elements.emojiBtns.forEach(b => {
-                        b.classList.remove('bg-gray-100', 'dark:bg-gray-700');
-                    });
-                    e.currentTarget.classList.add('bg-gray-100', 'dark:bg-gray-700');
-                });
-            });
-            
-            // 加载更多
-            elements.loadMoreBtn.addEventListener('click', loadMoreMessages);
-            
-            // 重试加载
-            elements.retryBtn.addEventListener('click', () => {
-                // 隐藏错误详情
-                elements.errorDetails.classList.add('hidden');
-                if (state.isLocalMode) {
-                    loadLocalMessages();
-                } else {
-                    loadMessages();
+            // 字符计数
+            elements.messageInput.addEventListener('input', () => {
+                const length = elements.messageInput.value.length;
+                elements.charCount.textContent = `${length}/300`;
+                if (length > 300) {
+                    elements.messageInput.value = elements.messageInput.value.substring(0, 300);
+                    elements.charCount.textContent = '300/300';
                 }
             });
             
-            // 切换到本地存储模式
-            elements.useLocalModeBtn.addEventListener('click', () => {
-                state.isLocalMode = true;
-                localStorage.setItem('guestbook-mode', 'local');
-                loadLocalMessages();
-                showToast('已切换到本地存储模式', 'success');
+            // 刷新和重试按钮
+            elements.refreshBtn.addEventListener('click', loadMessages);
+            elements.retryBtn.addEventListener('click', loadMessages);
+            
+            // 弹窗按钮
+            elements.modalSuccessBtn.addEventListener('click', () => {
+                elements.submitModal.classList.add('hidden');
             });
             
-            // 搜索和筛选
-            elements.searchInput.addEventListener('input', filterAndSortMessages);
-            elements.filterSelect.addEventListener('change', filterAndSortMessages);
-            elements.sortSelect.addEventListener('change', filterAndSortMessages);
-            
-            // 主题切换
-            elements.themeToggle.addEventListener('click', toggleTheme);
-        }
-
-        // 验证表单
-        function validateForm() {
-            const username = elements.usernameInput.value.trim();
-            const message = elements.messageInput.value.trim();
-            elements.submitBtn.disabled = !(username && message && message.length <= 300);
-        }
-
-        // 检查配置有效性
-        async function checkConfiguration() {
-            elements.configResults.innerHTML = '<div class="text-center py-4"><i class="fa fa-spinner fa-spin text-primary"></i> 正在检查配置...</div>';
-            
-            let allValid = true;
-            const results = {};
-            
-            // 检查Gist ID格式
-            results.gistId = {
-                name: 'Gist ID 格式',
-                valid: /^[0-9a-fA-F]{32,}$/.test(CONFIG.gistId),
-                message: results.gistId?.valid ? 'Gist ID格式有效' : 'Gist ID格式无效，应为32位以上的十六进制字符'
-            };
-            if (!results.gistId.valid) allValid = false;
-            
-            // 检查文件名
-            results.fileName = {
-                name: '留言文件名',
-                valid: CONFIG.fileName && CONFIG.fileName.endsWith('.json'),
-                message: results.fileName?.valid ? '文件名有效（JSON格式）' : '文件名无效，应为JSON格式（如：guestbook.json）'
-            };
-            if (!results.fileName.valid) allValid = false;
-            
-            // 检查Gist可访问性
-            try {
-                elements.loadingDetails.textContent = '正在验证Gist可访问性...';
-                const url = `https://api.github.com/gists/${CONFIG.gistId}`;
-                const response = await fetch(url);
-                
-                results.gistAccess = {
-                    name: 'Gist 可访问性',
-                    valid: response.ok,
-                    message: response.ok ? 'Gist可正常访问' : `Gist访问失败 (HTTP状态: ${response.status})`
-                };
-                if (!results.gistAccess.valid) allValid = false;
-                
-                // 如果Gist可访问，检查文件是否存在
-                if (response.ok) {
-                    elements.loadingDetails.textContent = '正在检查留言文件是否存在...';
-                    const data = await response.json();
-                    
-                    results.fileExists = {
-                        name: '留言文件存在性',
-                        valid: data.files && data.files[CONFIG.fileName] !== undefined,
-                        message: results.fileExists?.valid ? `文件 "${CONFIG.fileName}" 存在` : `未找到文件 "${CONFIG.fileName}"`
-                    };
-                    if (!results.fileExists.valid) allValid = false;
-                } else {
-                    results.fileExists = {
-                        name: '留言文件存在性',
-                        valid: false,
-                        message: '无法验证，Gist访问失败'
-                    };
-                }
-            } catch (error) {
-                results.gistAccess = {
-                    name: 'Gist 可访问性',
-                    valid: false,
-                    message: `验证失败: ${error.message}`
-                };
-                results.fileExists = {
-                    name: '留言文件存在性',
-                    valid: false,
-                    message: '无法验证，Gist访问失败'
-                };
-                allValid = false;
-            }
-            
-            // 检查令牌（如果提供）
-            if (CONFIG.token && CONFIG.token.trim() !== '') {
-                results.tokenProvided = {
-                    name: 'GitHub 令牌',
-                    valid: true,
-                    message: '已提供GitHub令牌'
-                };
-                
-                // 简单验证令牌格式（不发送实际请求）
-                const tokenValidFormat = CONFIG.token.startsWith('ghp_') || CONFIG.token.startsWith('github_pat_');
-                results.tokenFormat = {
-                    name: '令牌格式',
-                    valid: tokenValidFormat,
-                    message: tokenValidFormat ? '令牌格式看起来有效' : '令牌格式可能无效（应为ghp_或github_pat_开头）'
-                };
-                if (!tokenValidFormat) allValid = false;
-            } else {
-                results.tokenProvided = {
-                    name: 'GitHub 令牌',
-                    valid: false,
-                    message: '未提供GitHub令牌（将只能读取公开Gist）'
-                };
-                results.tokenFormat = {
-                    name: '令牌格式',
-                    valid: false,
-                    message: '未提供令牌'
-                };
-            }
-            
-            state.configCheckResults = results;
-            return allValid;
-        }
-
-        // 显示配置检查结果
-        function displayConfigCheckResults() {
-            elements.configResults.innerHTML = '';
-            
-            Object.values(state.configCheckResults).forEach(result => {
-                const item = document.createElement('div');
-                item.className = `p-3 rounded border ${result.valid ? 'border-success/30 bg-success/5' : 'border-error/30 bg-error/5'}`;
-                
-                item.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium text-sm">${result.name}</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">${result.message}</p>
-                        </div>
-                        <i class="fa ${result.valid ? 'fa-check-circle text-success' : 'fa-times-circle text-error'}"></i>
-                    </div>
-                `;
-                
-                elements.configResults.appendChild(item);
+            elements.modalRetryBtn.addEventListener('click', () => {
+                elements.modalError.classList.add('hidden');
+                elements.modalLoading.classList.remove('hidden');
+                submitMessage();
             });
-            
-            // 添加总体状态
-            const allValid = Object.values(state.configCheckResults).every(r => r.valid);
-            const summary = document.createElement('div');
-            summary.className = `mt-4 p-3 rounded ${allValid ? 'bg-success/10 border border-success/20' : 'bg-warning/10 border border-warning/20'}`;
-            
-            summary.innerHTML = `
-                <p class="text-sm font-medium ${allValid ? 'text-success' : 'text-warning'}">
-                    ${allValid ? '配置检查通过' : '配置存在问题'}
-                </p>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                    ${allValid ? '您的留言系统应该可以正常工作' : '请根据以上提示修正配置问题'}
-                </p>
-            `;
-            
-            elements.configResults.appendChild(summary);
         }
 
-        // 从Gist加载留言
-        async function loadMessages() {
+        // 加载留言
+        function loadMessages() {
+            logDebug('开始加载留言...');
             showState('loading');
             
-            try {
-                const url = `https://api.github.com/gists/${CONFIG.gistId}`;
-                elements.loadingDetails.textContent = `正在加载Gist: ${CONFIG.gistId}...`;
-                console.log('尝试加载Gist:', url);
-                
-                const headers = {};
-                // 仅在提供了令牌时添加认证头
-                if (CONFIG.token && CONFIG.token.trim() !== '') {
-                    headers['Authorization'] = `token ${CONFIG.token}`;
-                    elements.loadingDetails.textContent = '使用提供的令牌访问Gist...';
-                } else {
-                    elements.loadingDetails.textContent = '未使用令牌，访问公开Gist...';
-                }
-                
-                const response = await fetch(url, { headers });
-                elements.loadingDetails.textContent = `Gist请求返回状态: ${response.status}...`;
-                console.log('Gist请求状态:', response.status);
-                
-                if (!response.ok) {
-                    let errorMsg = `加载失败 (HTTP状态: ${response.status})`;
+            const apiUrl = CONFIG.api.comments(CONFIG.owner, CONFIG.repo, CONFIG.issueId) + 
+                          `?access_token=${CONFIG.accessToken}&sort=created&direction=desc`;
+            
+            // 尝试使用代理加载
+            tryProxiesForRequest(apiUrl, 'GET')
+                .then(response => {
+                    logDebug(`加载成功，收到 ${response.length} 条留言`);
                     
-                    // 常见错误处理
-                    if (response.status === 404) {
-                        errorMsg += ' - 未找到Gist，请检查Gist ID是否正确';
-                    } else if (response.status === 403) {
-                        errorMsg += ' - 访问被拒绝，可能是令牌无效或API请求超限';
-                        errorMsg += '<br>提示：GitHub API未认证请求每小时限制60次，认证后提高到5000次';
-                    } else if (response.status === 401) {
-                        errorMsg += ' - 认证失败，请检查令牌是否有效';
-                    } else if (response.status === 403) {
-                        errorMsg += ' - 请求频率超限，请稍后再试或使用令牌';
+                    if (response.length === 0) {
+                        showState('empty');
+                        return;
                     }
                     
-                    throw new Error(errorMsg);
-                }
-                
-                const data = await response.json();
-                elements.loadingDetails.textContent = 'Gist数据加载成功，解析中...';
-                console.log('Gist数据加载成功');
-                
-                // 处理留言数据
-                if (data.files && data.files[CONFIG.fileName]) {
-                    const content = data.files[CONFIG.fileName].content;
-                    try {
-                        state.messages = JSON.parse(content) || [];
-                        elements.loadingDetails.textContent = `成功解析${state.messages.length}条留言...`;
-                        console.log(`成功解析${state.messages.length}条留言`);
-                    } catch (parseError) {
-                        throw new Error(`解析留言数据失败: ${parseError.message}`);
-                    }
-                } else {
-                    console.log('Gist中未找到留言文件，初始化空数组');
-                    elements.loadingDetails.textContent = 'Gist中未找到留言文件，初始化新文件...';
-                    // 如果文件不存在，初始化空数组
-                    state.messages = [];
-                    await saveMessagesToGist();
-                }
-                
-                // 筛选和排序留言
-                filterAndSortMessages();
-                
-                // 更新统计信息
-                updateStatistics();
-                
-                // 更新图表
-                updateCharts();
-                
-                // 显示随机留言
-                showRandomMessage();
-                
-            } catch (error) {
-                console.error('加载留言失败:', error);
-                showErrorState(error.message);
-            }
-        }
-
-        // 从本地存储加载留言
-        function loadLocalMessages() {
-            showState('loading');
-            elements.loadingDetails.textContent = '从本地存储加载留言...';
-            
-            try {
-                console.log('从本地存储加载留言');
-                const storedMessages = localStorage.getItem('guestbook-local-messages');
-                state.messages = storedMessages ? JSON.parse(storedMessages) : [];
-                
-                elements.loadingDetails.textContent = `已加载${state.messages.length}条本地留言...`;
-                
-                // 筛选和排序留言
-                filterAndSortMessages();
-                
-                // 更新统计信息
-                updateStatistics();
-                
-                // 更新图表
-                updateCharts();
-                
-                // 显示随机留言
-                showRandomMessage();
-                
-            } catch (error) {
-                console.error('加载本地留言失败:', error);
-                showErrorState(`本地存储加载失败: ${error.message}`);
-            }
-        }
-
-        // 筛选和排序留言
-        function filterAndSortMessages() {
-            const searchTerm = elements.searchInput.value.trim().toLowerCase();
-            const filterTag = elements.filterSelect.value;
-            const sortBy = elements.sortSelect.value;
-            
-            // 筛选
-            state.filteredMessages = state.messages.filter(message => {
-                // 搜索筛选
-                const matchesSearch = searchTerm === '' || 
-                    message.name.toLowerCase().includes(searchTerm) || 
-                    message.content.toLowerCase().includes(searchTerm);
-                
-                // 标签筛选
-                const matchesTag = filterTag === 'all' || message.tag === filterTag;
-                
-                return matchesSearch && matchesTag;
-            });
-            
-            // 排序
-            switch (sortBy) {
-                case 'newest':
-                    state.filteredMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    break;
-                case 'oldest':
-                    state.filteredMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                    break;
-                case 'mostLiked':
-                    state.filteredMessages.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                    break;
-            }
-            
-            // 重置页码并重新渲染
-            state.currentPage = 1;
-            elements.messagesContainer.innerHTML = '';
-            renderMessages();
-        }
-
-        // 渲染留言
-        function renderMessages() {
-            // 检查是否有留言
-            if (state.filteredMessages.length === 0) {
-                showState('empty');
-                return;
-            }
-            
-            // 显示留言容器
-            showState('content');
-            
-            // 计算分页
-            const startIndex = (state.currentPage - 1) * CONFIG.pageSize;
-            const endIndex = startIndex + CONFIG.pageSize;
-            const messagesToRender = state.filteredMessages.slice(startIndex, endIndex);
-            
-            // 检查是否有更多留言
-            state.hasMore = endIndex < state.filteredMessages.length;
-            elements.loadMoreBtn.disabled = !state.hasMore;
-            
-            // 渲染留言
-            messagesToRender.forEach(message => {
-                const messageElement = createMessageElement(message);
-                elements.messagesContainer.appendChild(messageElement);
-            });
-        }
-
-        // 创建单个留言元素
-        function createMessageElement(message) {
-            const div = document.createElement('div');
-            div.className = 'bg-white dark:bg-darkCard rounded-xl shadow-card p-5 transition-elegant card-hover border border-gray-100 dark:border-gray-800';
-            div.dataset.id = message.id;
-            
-            // 格式化时间
-            const formattedTime = formatTime(message.timestamp);
-            
-            // 标签显示
-            const tagHtml = message.tag ? `
-                <span class="inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 ml-2">
-                    ${message.tag}
-                </span>
-            ` : '';
-            
-            // 表情显示
-            const emojiHtml = message.emoji ? `<span class="mr-2">${message.emoji}</span>` : '';
-            
-            // 显示存储模式标识
-            const storageIndicator = state.isLocalMode ? `
-                <span class="ml-2 text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-gray-500 dark:text-gray-400">
-                    本地
-                </span>
-            ` : '';
-            
-            div.innerHTML = `
-                <div class="flex justify-between items-start mb-3">
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm mr-3">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <div>
-                            <div class="flex items-center">
-                                <h4 class="font-medium">${escapeHtml(message.name)}</h4>
-                                ${tagHtml}
-                                ${storageIndicator}
-                            </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${formattedTime}</p>
-                        </div>
-                    </div>
-                    <button class="like-btn text-gray-500 dark:text-gray-400 hover:text-primary transition-elegant flex items-center gap-1 text-sm"
-                            data-id="${message.id}">
-                        <i class="fa ${message.liked ? 'fa-heart text-primary' : 'fa-heart-o'}"></i>
-                        <span>${message.likes || 0}</span>
-                    </button>
-                </div>
-                <p class="text-gray-700 dark:text-gray-300">${emojiHtml}${escapeHtml(message.content)}</p>
-            `;
-            
-            // 绑定点赞事件
-            div.querySelector('.like-btn').addEventListener('click', (e) => {
-                const messageId = e.currentTarget.dataset.id;
-                toggleLike(messageId);
-            });
-            
-            return div;
-        }
-
-        // 提交新留言
-        async function submitMessage() {
-            const name = elements.usernameInput.value.trim();
-            const content = elements.messageInput.value.trim();
-            const emoji = elements.selectedEmoji.value;
-            const tag = document.querySelector('input[name="tag"]:checked')?.value || '其他';
-            
-            // 创建新留言对象
-            const newMessage = {
-                id: generateId(),
-                name: name,
-                content: content,
-                emoji: emoji,
-                tag: tag,
-                timestamp: new Date().toISOString(),
-                likes: 0,
-                liked: false
-            };
-            
-            // 临时添加到留言列表
-            state.messages.unshift(newMessage);
-            
-            // 重新筛选排序并渲染
-            filterAndSortMessages();
-            
-            // 更新统计信息
-            updateStatistics();
-            updateCharts();
-            showRandomMessage();
-            
-            // 重置表单
-            elements.form.reset();
-            elements.selectedEmoji.value = '';
-            elements.emojiBtns.forEach(btn => btn.classList.remove('bg-gray-100', 'dark:bg-gray-700'));
-            elements.charCounter.textContent = '0/300';
-            validateForm();
-            
-            try {
-                // 根据当前模式保存留言
-                if (state.isLocalMode) {
-                    await saveMessagesToLocalStorage();
-                } else {
-                    await saveMessagesToGist();
-                }
-                showToast('留言提交成功', 'success');
-                
-                // 滚动到最新留言
-                setTimeout(() => {
-                    const firstMessage = elements.messagesContainer.querySelector('div[data-id]');
-                    if (firstMessage) {
-                        firstMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                        firstMessage.classList.add('ring-2', 'ring-primary/20');
-                        setTimeout(() => firstMessage.classList.remove('ring-2', 'ring-primary/20'), 2000);
-                    }
-                }, 300);
-                
-            } catch (error) {
-                console.error('保存留言失败:', error);
-                showToast('留言提交失败，请重试', 'error');
-                
-                // 回滚操作
-                state.messages.shift();
-                filterAndSortMessages();
-                updateStatistics();
-                updateCharts();
-            }
-        }
-
-        // 保存留言到Gist
-        async function saveMessagesToGist() {
-            if (state.isLocalMode) return; // 如果是本地模式，不保存到Gist
-            
-            const url = `https://api.github.com/gists/${CONFIG.gistId}`;
-            const content = JSON.stringify(state.messages, null, 2);
-            
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            
-            // 仅在提供了令牌时添加认证头
-            if (CONFIG.token && CONFIG.token.trim() !== '') {
-                headers['Authorization'] = `token ${CONFIG.token}`;
-            }
-            
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: headers,
-                body: JSON.stringify({
-                    files: {
-                        [CONFIG.fileName]: {
-                            content: content
-                        }
-                    }
+                    renderMessages(response);
+                    showState('content');
                 })
-            });
-            
-            if (!response.ok) {
-                let errorMsg = `保存失败 (HTTP状态: ${response.status})`;
-                
-                if (response.status === 403) {
-                    errorMsg += ' - 可能是API请求超限，请稍后再试或使用本地存储模式';
-                } else if (response.status === 401) {
-                    errorMsg += ' - 认证失败，请检查令牌是否有效';
-                }
-                
-                throw new Error(errorMsg);
-            }
-            
-            return true;
+                .catch(error => {
+                    logDebug(`加载失败: ${error.message}`);
+                    elements.errorText.textContent = '加载留言失败';
+                    elements.errorDetails.textContent = error.message || '请检查配置和网络连接';
+                    showState('error');
+                });
         }
 
-        // 保存留言到本地存储
-        function saveMessagesToLocalStorage() {
-            try {
-                localStorage.setItem('guestbook-local-messages', JSON.stringify(state.messages));
-                return true;
-            } catch (error) {
-                throw new Error(`本地存储失败: ${error.message}`);
-            }
-        }
-
-        // 切换点赞状态
-        async function toggleLike(messageId) {
-            const message = state.messages.find(m => m.id === messageId);
+        // 提交留言
+        function submitMessage() {
+            const name = elements.nameInput.value.trim() || '匿名访客';
+            const message = elements.messageInput.value.trim();
+            
             if (!message) return;
             
-            // 临时更新状态
-            const wasLiked = message.liked;
-            message.liked = !wasLiked;
-            message.likes = wasLiked ? (message.likes || 0) - 1 : (message.likes || 0) + 1;
+            logDebug(`准备提交留言: 昵称=${name}, 内容=${message.substring(0, 20)}...`);
             
-            // 更新UI
-            const likeBtn = document.querySelector(`.like-btn[data-id="${messageId}"]`);
-            if (likeBtn) {
-                likeBtn.innerHTML = `
-                    <i class="fa ${message.liked ? 'fa-heart text-primary' : 'fa-heart-o'}"></i>
-                    <span>${message.likes || 0}</span>
+            // 显示提交弹窗
+            elements.submitModal.classList.remove('hidden');
+            elements.modalLoading.classList.remove('hidden');
+            elements.modalSuccess.classList.add('hidden');
+            elements.modalError.classList.add('hidden');
+            
+            // 构建留言内容
+            const content = `**${name}**\n\n${message}\n\n_${new Date().toLocaleString()}_`;
+            
+            // 构建API URL和数据
+            const apiUrl = CONFIG.api.comments(CONFIG.owner, CONFIG.repo, CONFIG.issueId);
+            const requestData = {
+                body: content
+            };
+            
+            // 尝试使用代理提交
+            tryProxiesForRequest(apiUrl, 'POST', requestData)
+                .then(response => {
+                    logDebug('留言提交成功');
+                    elements.modalLoading.classList.add('hidden');
+                    elements.modalSuccess.classList.remove('hidden');
+                    
+                    // 重置表单
+                    elements.form.reset();
+                    elements.charCount.textContent = '0/300';
+                    
+                    // 重新加载留言
+                    loadMessages();
+                })
+                .catch(error => {
+                    logDebug(`提交失败: ${error.message}`);
+                    elements.modalLoading.classList.add('hidden');
+                    elements.modalError.classList.remove('hidden');
+                    elements.modalErrorText.textContent = '提交失败';
+                    elements.modalErrorDetails.textContent = error.message || '请检查配置和网络连接';
+                });
+        }
+
+        // 渲染留言列表
+        function renderMessages(messages) {
+            elements.messagesList.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'border-b border-gray-100 pb-4 last:border-0';
+                
+                // 解析昵称
+                let nickname = '匿名访客';
+                const nicknameMatch = msg.body.match(/\*\*(.*?)\*\*/);
+                if (nicknameMatch && nicknameMatch[1]) {
+                    nickname = nicknameMatch[1];
+                }
+                
+                // 解析内容
+                let content = msg.body.replace(/\*\*(.*?)\*\*/, '').replace(/\n\n_.*?_/, '').trim();
+                
+                messageElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-2">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <span class="font-medium">${escapeHtml(nickname)}</span>
+                        </div>
+                        <span class="text-xs text-gray-500">${formatTime(msg.created_at)}</span>
+                    </div>
+                    <div class="text-gray-700 text-sm">${formatContent(escapeHtml(content))}</div>
                 `;
                 
-                // 添加点赞动画
-                if (message.liked) {
-                    likeBtn.querySelector('i').classList.add('animate-pulse');
-                    setTimeout(() => {
-                        likeBtn.querySelector('i').classList.remove('animate-pulse');
-                    }, 1000);
-                }
-            }
-            
-            // 更新统计
-            updateStatistics();
-            
-            try {
-                // 根据当前模式保存点赞状态
-                if (state.isLocalMode) {
-                    await saveMessagesToLocalStorage();
-                } else {
-                    await saveMessagesToGist();
-                }
-                showToast(message.liked ? '点赞成功' : '取消点赞', 'success');
-            } catch (error) {
-                console.error('保存点赞状态失败:', error);
-                showToast('操作失败，请重试', 'error');
-                
-                // 回滚状态
-                message.liked = wasLiked;
-                message.likes = wasLiked ? (message.likes || 0) + 1 : (message.likes || 0) - 1;
-                
-                if (likeBtn) {
-                    likeBtn.innerHTML = `
-                        <i class="fa ${message.liked ? 'fa-heart text-primary' : 'fa-heart-o'}"></i>
-                        <span>${message.likes || 0}</span>
-                    `;
-                }
-                
-                // 回滚统计
-                updateStatistics();
-            }
+                elements.messagesList.appendChild(messageElement);
+            });
         }
 
-        // 加载更多留言
-        function loadMoreMessages() {
-            if (!state.hasMore) return;
-            
-            // 显示加载状态
-            elements.loadMoreBtn.disabled = true;
-            elements.loadMoreBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
-            
-            // 加载下一页
-            setTimeout(() => {
-                state.currentPage++;
-                renderMessages();
-                elements.loadMoreBtn.innerHTML = '<span>加载更多</span><i class="fa fa-angle-down ml-1"></i>';
-                elements.loadMoreBtn.disabled = !state.hasMore;
-            }, 600);
-        }
-
-        // 初始化图表
-        function initCharts() {
-            // 初始化访客图表
-            const visitorsCtx = document.getElementById('visitors-chart').getContext('2d');
-            
-            // 图表颜色配置（适配深色模式）
-            const getChartColors = () => {
-                return state.isDarkMode 
-                    ? { 
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.7)',
-                            'rgba(16, 185, 129, 0.7)',
-                            'rgba(245, 158, 11, 0.7)',
-                            'rgba(236, 72, 153, 0.7)',
-                            'rgba(139, 92, 246, 0.7)',
-                            'rgba(239, 68, 68, 0.7)',
-                            'rgba(6, 182, 212, 0.7)',
-                            'rgba(16, 185, 129, 0.7)'
-                        ],
-                        borderColor: 'rgba(30, 41, 59, 0.8)',
-                        textColor: '#94a3b8'
+        // 尝试使用多个代理进行请求
+        function tryProxiesForRequest(url, method = 'GET', data = null) {
+            return new Promise((resolve, reject) => {
+                // 递归尝试代理
+                function attemptProxy(proxyIndex) {
+                    if (proxyIndex >= CONFIG.proxies.length) {
+                        return reject(new Error('所有代理尝试失败，请检查网络或更换代理'));
                     }
-                    : { 
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.7)',
-                            'rgba(16, 185, 129, 0.7)',
-                            'rgba(245, 158, 11, 0.7)',
-                            'rgba(236, 72, 153, 0.7)',
-                            'rgba(139, 92, 246, 0.7)',
-                            'rgba(239, 68, 68, 0.7)',
-                            'rgba(6, 182, 212, 0.7)',
-                            'rgba(16, 185, 129, 0.7)'
-                        ],
-                        borderColor: 'rgba(255, 255, 255, 0.8)',
-                        textColor: '#64748b'
-                    };
-            };
-            
-            // 创建访客图表
-            state.visitorsChart = new Chart(visitorsCtx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: '访客数',
-                        data: [],
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0,
-                                color: state.isDarkMode ? '#94a3b8' : '#64748b'
-                            },
-                            grid: {
-                                display: false
-                            }
+                    
+                    const proxy = CONFIG.proxies[proxyIndex];
+                    const fullUrl = proxy ? `${proxy}${url}` : url;
+                    
+                    logDebug(`尝试代理 ${proxyIndex + 1}/${CONFIG.proxies.length}: ${proxy || '无代理'}`);
+                    logDebug(`请求URL: ${fullUrl}`);
+                    
+                    // 创建请求选项
+                    const requestOptions = {
+                        method: method,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${CONFIG.accessToken}`,
+                            'X-Gitee-Api-Version': 'v5',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
                         },
-                        x: {
-                            ticks: {
-                                color: state.isDarkMode ? '#94a3b8' : '#64748b'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 3,
-                            hoverRadius: 5
-                        }
+                        timeout: 15000
+                    };
+                    
+                    // 如果有数据，添加到请求体
+                    if (data && method === 'POST') {
+                        requestOptions.body = JSON.stringify(data);
                     }
-                }
-            });
-        }
-
-        // 更新图表
-        function updateCharts() {
-            updateVisitorsChart();
-        }
-
-        // 更新访客图表
-        function updateVisitorsChart() {
-            if (!state.visitorsChart) return;
-            
-            // 准备过去7天的标签和数据
-            const labels = [];
-            const data = [];
-            
-            // 获取过去7天的日期标签
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
-            }
-            
-            // 填充数据，确保有7天的数据
-            while (state.visitorsData.history.length < 7) {
-                state.visitorsData.history.unshift(0);
-            }
-            if (state.visitorsData.history.length > 7) {
-                state.visitorsData.history = state.visitorsData.history.slice(-7);
-            }
-            
-            // 更新图表数据
-            state.visitorsChart.data.labels = labels;
-            state.visitorsChart.data.datasets[0].data = state.visitorsData.history;
-            
-            // 更新图表颜色（适配深色模式）
-            state.visitorsChart.options.scales.y.ticks.color = state.isDarkMode ? '#94a3b8' : '#64748b';
-            state.visitorsChart.options.scales.x.ticks.color = state.isDarkMode ? '#94a3b8' : '#64748b';
-            
-            state.visitorsChart.update();
-        }
-
-        // 更新统计信息
-        function updateStatistics() {
-            // 总留言数
-            elements.totalMessages.textContent = state.messages.length;
-            
-            // 今日新增
-            const today = new Date().toISOString().split('T')[0];
-            const todayCount = state.messages.filter(m => 
-                m.timestamp.split('T')[0] === today
-            ).length;
-            elements.todayMessages.textContent = todayCount;
-            
-            // 总点赞数
-            const totalLikes = state.messages.reduce((sum, m) => sum + (m.likes || 0), 0);
-            elements.totalLikes.textContent = totalLikes;
-            
-            // 增长百分比（模拟）
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-            const yesterdayCount = state.messages.filter(m => 
-                m.timestamp.split('T')[0] === yesterdayStr
-            ).length;
-            
-            let growth = 0;
-            if (yesterdayCount > 0) {
-                growth = Math.round(((todayCount - yesterdayCount) / yesterdayCount) * 100);
-            } else if (todayCount > 0) {
-                growth = 100;
-            }
-            
-            const growthPercent = growth >= 0 ? `+${growth}%` : `${growth}%`;
-            elements.growthPercentage.textContent = growthPercent;
-            
-            // 增长条
-            const growthBarWidth = Math.min(Math.abs(growth), 100);
-            elements.messagesGrowth.style.width = `${growthBarWidth}%`;
-            
-            // 根据增长情况设置颜色
-            if (growth > 0) {
-                elements.messagesGrowth.classList.remove('bg-error');
-                elements.messagesGrowth.classList.add('bg-success');
-            } else if (growth < 0) {
-                elements.messagesGrowth.classList.remove('bg-success');
-                elements.messagesGrowth.classList.add('bg-error');
-            } else {
-                elements.messagesGrowth.classList.remove('bg-success', 'bg-error');
-            }
-            
-            // 更新访客统计显示
-            elements.visitorCount.textContent = `总访客: ${state.visitorsData.total}`;
-            elements.todayVisitors.textContent = state.visitorsData.today;
-            elements.weekVisitors.textContent = state.visitorsData.week;
-            elements.monthVisitors.textContent = state.visitorsData.month;
-        }
-
-        // 初始化访客跟踪系统
-        function initVisitorTracking() {
-            // 从本地存储获取访客数据
-            const storedVisitorsData = localStorage.getItem('visitorsData');
-            if (storedVisitorsData) {
-                try {
-                    state.visitorsData = JSON.parse(storedVisitorsData);
-                } catch (e) {
-                    console.error('解析访客数据失败:', e);
-                    // 初始化默认数据
-                    initializeDefaultVisitorData();
-                }
-            } else {
-                // 初始化默认数据
-                initializeDefaultVisitorData();
-            }
-            
-            // 检查是否需要更新日期相关数据
-            updateVisitorDateData();
-            
-            // 检查当前用户是否为新访客
-            checkNewVisitor();
-            
-            // 保存更新后的访客数据
-            saveVisitorData();
-            
-            // 更新统计显示
-            updateStatistics();
-            
-            // 更新访客图表
-            updateVisitorsChart();
-        }
-
-        // 初始化默认访客数据
-        function initializeDefaultVisitorData() {
-            state.visitorsData = {
-                total: 0,
-                today: 0,
-                week: 0,
-                month: 0,
-                history: [],
-                lastResetDate: new Date().toISOString().split('T')[0],
-                lastWeekReset: new Date().toISOString().split('T')[0],
-                lastMonthReset: new Date().toISOString().split('T')[0]
-            };
-        }
-
-        // 更新与日期相关的访客数据
-        function updateVisitorDateData() {
-            const today = new Date().toISOString().split('T')[0];
-            const todayDate = new Date();
-            
-            // 检查是否需要重置今日访客数（新的一天）
-            if (state.visitorsData.lastResetDate !== today) {
-                // 将昨天的访客数添加到历史记录
-                state.visitorsData.history.push(state.visitorsData.today);
-                
-                // 重置今日访客数
-                state.visitorsData.today = 0;
-                state.visitorsData.lastResetDate = today;
-            }
-            
-            // 检查是否需要重置本周访客数（新的一周）
-            const dayOfWeek = todayDate.getDay(); // 0是星期日
-            const isStartOfWeek = dayOfWeek === 1; // 以周一为一周的开始
-            if (isStartOfWeek && state.visitorsData.lastWeekReset !== today) {
-                state.visitorsData.week = 0;
-                state.visitorsData.lastWeekReset = today;
-            }
-            
-            // 检查是否需要重置本月访客数（新的一个月）
-            const isStartOfMonth = todayDate.getDate() === 1;
-            if (isStartOfMonth && state.visitorsData.lastMonthReset !== today) {
-                state.visitorsData.month = 0;
-                state.visitorsData.lastMonthReset = today;
-            }
-        }
-
-        // 检查当前用户是否为新访客
-        function checkNewVisitor() {
-            // 检查是否有访客标识
-            const visitorId = localStorage.getItem('visitorId');
-            const lastVisitDate = localStorage.getItem('lastVisitDate');
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (!visitorId) {
-                // 新访客 - 生成唯一标识
-                const newVisitorId = generateVisitorId();
-                localStorage.setItem('visitorId', newVisitorId);
-                localStorage.setItem('lastVisitDate', today);
-                
-                // 增加所有计数器
-                state.visitorsData.total++;
-                state.visitorsData.today++;
-                state.visitorsData.week++;
-                state.visitorsData.month++;
-                
-                showToast('欢迎新访客！', 'success');
-            } else if (lastVisitDate !== today) {
-                // 回访者但不是今天访问过
-                localStorage.setItem('lastVisitDate', today);
-                
-                // 只增加今日、本周和本月计数器（如果在范围内）
-                state.visitorsData.today++;
-                
-                // 检查是否在同一周
-                const lastVisit = new Date(lastVisitDate);
-                const todayDate = new Date();
-                const daysDiff = Math.floor((todayDate - lastVisit) / (1000 * 60 * 60 * 24));
-                
-                if (daysDiff < 7) {
-                    state.visitorsData.week++;
+                    
+                    // 创建超时控制器
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => {
+                        controller.abort();
+                        logDebug(`代理 ${proxyIndex + 1} 请求超时`);
+                        attemptProxy(proxyIndex + 1);
+                    }, 15000);
+                    
+                    // 发送请求
+                    fetch(fullUrl, {
+                        ...requestOptions,
+                        signal: controller.signal
+                    })
+                    .then(response => {
+                        clearTimeout(timeoutId);
+                        logDebug(`代理 ${proxyIndex + 1} 响应状态: ${response.status}`);
+                        
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                let errorMsg = `HTTP错误: ${response.status}`;
+                                try {
+                                    const jsonError = JSON.parse(text);
+                                    if (jsonError.message) errorMsg += ` - ${jsonError.message}`;
+                                } catch (e) {
+                                    errorMsg += ` - ${text.substring(0, 100)}`;
+                                }
+                                throw new Error(errorMsg);
+                            });
+                        }
+                        
+                        return response.json();
+                    })
+                    .then(data => {
+                        logDebug(`代理 ${proxyIndex + 1} 请求成功`);
+                        resolve(data);
+                    })
+                    .catch(error => {
+                        clearTimeout(timeoutId);
+                        
+                        if (error.name === 'AbortError') {
+                            logDebug(`代理 ${proxyIndex + 1} 请求超时`);
+                        } else {
+                            logDebug(`代理 ${proxyIndex + 1} 请求失败: ${error.message}`);
+                        }
+                        
+                        // 尝试下一个代理
+                        attemptProxy(proxyIndex + 1);
+                    });
                 }
                 
-                // 检查是否在同一个月
-                if (lastVisit.getMonth() === todayDate.getMonth() && 
-                    lastVisit.getFullYear() === todayDate.getFullYear()) {
-                    state.visitorsData.month++;
-                }
-            }
-        }
-
-        // 生成唯一访客ID
-        function generateVisitorId() {
-            // 使用时间戳和随机数生成唯一ID
-            const timestamp = new Date().getTime().toString(36);
-            const random = Math.random().toString(36).substring(2, 10);
-            return `${timestamp}-${random}`;
-        }
-
-        // 保存访客数据到本地存储
-        function saveVisitorData() {
-            localStorage.setItem('visitorsData', JSON.stringify(state.visitorsData));
-        }
-
-        // 显示随机精选留言
-        function showRandomMessage() {
-            if (state.messages.length === 0) {
-                elements.randomMessage.textContent = '暂无留言，成为第一个留言的人吧！';
-                return;
-            }
-            
-            // 随机选择一条留言
-            const randomIndex = Math.floor(Math.random() * state.messages.length);
-            const randomMsg = state.messages[randomIndex];
-            
-            // 截断过长的留言
-            let content = randomMsg.content;
-            if (content.length > 50) {
-                content = content.substring(0, 50) + '...';
-            }
-            
-            elements.randomMessage.innerHTML = `
-                <p>"${escapeHtml(content)}"</p>
-                <p class="mt-2 text-right text-gray-500 dark:text-gray-400">— ${escapeHtml(randomMsg.name)}</p>
-            `;
-        }
-
-        // 切换主题模式
-        function toggleTheme() {
-            state.isDarkMode = !state.isDarkMode;
-            updateThemeUI();
-            
-            // 保存主题偏好
-            localStorage.setItem('guestbook-theme', state.isDarkMode ? 'dark' : 'light');
-            
-            // 更新图表颜色
-            updateCharts();
-        }
-
-        // 检查系统主题偏好
-        function checkSystemTheme() {
-            const savedTheme = localStorage.getItem('guestbook-theme');
-            if (savedTheme) {
-                state.isDarkMode = savedTheme === 'dark';
-                updateThemeUI();
-            } else {
-                // 跟随系统主题
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (prefersDark) {
-                    state.isDarkMode = true;
-                    updateThemeUI();
-                }
-            }
-        }
-
-        // 更新主题UI
-        function updateThemeUI() {
-            const isDark = state.isDarkMode;
-            
-            // 顶部导航栏样式
-            elements.mainHeader.classList.toggle('bg-white/80', !isDark);
-            elements.mainHeader.classList.toggle('bg-darkHeader/80', isDark);
-            elements.mainHeader.classList.toggle('border-gray-100', !isDark);
-            elements.mainHeader.classList.toggle('border-gray-700', isDark);
-            
-            // 更新body类和属性
-            document.body.classList.toggle('bg-secondary', !isDark);
-            document.body.classList.toggle('bg-dark', isDark);
-            document.body.classList.toggle('text-gray-800', !isDark);
-            document.body.classList.toggle('text-gray-200', isDark);
-            
-            // 更新其他元素
-            document.querySelectorAll('.dark\\:bg-darkCard').forEach(el => {
-                el.classList.toggle('bg-white', !isDark);
-                el.classList.toggle('bg-darkCard', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:border-gray-800').forEach(el => {
-                el.classList.toggle('border-gray-100', !isDark);
-                el.classList.toggle('border-gray-800', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:text-gray-300').forEach(el => {
-                el.classList.toggle('text-gray-600', !isDark);
-                el.classList.toggle('text-gray-300', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:text-gray-400').forEach(el => {
-                el.classList.toggle('text-gray-500', !isDark);
-                el.classList.toggle('text-gray-400', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:bg-gray-700').forEach(el => {
-                el.classList.toggle('bg-gray-100', !isDark);
-                el.classList.toggle('bg-gray-700', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:bg-dark').forEach(el => {
-                el.classList.toggle('bg-white', !isDark);
-                el.classList.toggle('bg-dark', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:border-gray-700').forEach(el => {
-                el.classList.toggle('border-gray-200', !isDark);
-                el.classList.toggle('border-gray-700', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:text-white').forEach(el => {
-                el.classList.toggle('text-gray-800', !isDark);
-                el.classList.toggle('text-white', isDark);
-            });
-            
-            document.querySelectorAll('.dark\\:hover\\:bg-gray-700').forEach(el => {
-                el.classList.toggle('hover:bg-gray-50', !isDark);
-                el.classList.toggle('hover:bg-gray-700', isDark);
+                // 开始尝试第一个代理
+                attemptProxy(0);
             });
         }
 
         // 显示不同状态
-        function showState(stateName) {
+        function showState(state) {
             elements.loadingState.classList.add('hidden');
             elements.emptyState.classList.add('hidden');
             elements.errorState.classList.add('hidden');
-            elements.messagesContainer.classList.add('hidden');
+            elements.messagesList.classList.add('hidden');
             
-            switch (stateName) {
+            switch (state) {
                 case 'loading':
                     elements.loadingState.classList.remove('hidden');
                     break;
@@ -1652,82 +445,49 @@
                     elements.errorState.classList.remove('hidden');
                     break;
                 case 'content':
-                    elements.messagesContainer.classList.remove('hidden');
+                    elements.messagesList.classList.remove('hidden');
                     break;
             }
         }
 
-        // 显示错误状态并提供详细信息
-        function showErrorState(errorMessage) {
-            elements.loadingState.classList.add('hidden');
-            elements.emptyState.classList.add('hidden');
-            elements.messagesContainer.classList.add('hidden');
-            elements.errorState.classList.remove('hidden');
-            
-            // 显示错误详情（支持简单HTML）
-            elements.errorMessage.innerHTML = errorMessage;
-            elements.errorDetails.classList.remove('hidden');
+        // 记录调试信息
+        function logDebug(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            elements.debugLog.textContent += `[${timestamp}] ${message}\n`;
+            elements.debugLog.scrollTop = elements.debugLog.scrollHeight;
         }
 
-        // 显示提示信息
-        function showToast(message, type = 'success') {
-            elements.toastText.textContent = message;
-            
-            // 设置图标和颜色
-            if (type === 'success') {
-                elements.toastIcon.className = 'fa fa-check-circle';
-                elements.toast.className = 'fixed bottom-6 right-6 px-5 py-3 bg-success text-white rounded-lg shadow-elevated transform translate-y-20 opacity-0 transition-elegant flex items-center gap-2 z-50 max-w-xs';
-            } else if (type === 'error') {
-                elements.toastIcon.className = 'fa fa-exclamation-circle';
-                elements.toast.className = 'fixed bottom-6 right-6 px-5 py-3 bg-error text-white rounded-lg shadow-elevated transform translate-y-20 opacity-0 transition-elegant flex items-center gap-2 z-50 max-w-xs';
-            }
-            
-            // 显示提示
-            elements.toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            // 3秒后隐藏
-            setTimeout(() => {
-                elements.toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // 工具函数：生成唯一ID
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-        }
-
-        // 工具函数：格式化时间
+        // 格式化时间
         function formatTime(timestamp) {
             const date = new Date(timestamp);
             const now = new Date();
             const diffMs = now - date;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
             
-            // 少于30天显示相对时间
-            if (diffDays < 30) {
-                if (diffDays === 0) {
-                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                    if (diffHours === 0) {
-                        const diffMinutes = Math.floor(diffMs / (1000 * 60));
-                        return diffMinutes < 1 ? '刚刚' : `${diffMinutes}分钟前`;
-                    }
-                    return `${diffHours}小时前`;
-                }
-                return `${diffDays}天前`;
-            }
+            if (diffMins < 1) return '刚刚';
+            if (diffMins < 60) return `${diffMins}分钟前`;
+            if (diffHours < 24) return `${diffHours}小时前`;
+            if (diffDays < 30) return `${diffDays}天前`;
             
-            // 超过30天显示具体日期
             return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         }
 
-        // 工具函数：转义HTML，防止XSS攻击
+        // 转义HTML
         function escapeHtml(unsafe) {
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        }
+
+        // 格式化内容
+        function formatContent(content) {
+            return content.replace(/\n/g, '<br>');
         }
     </script>
 </body>
