@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UWB指令生成工具（响应式通用版）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        accent: '#10b981',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+            }
+            .input-focus {
+                @apply focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none;
+            }
+            .mode-indicator {
+                @apply absolute top-3 right-3 text-xs px-2 py-1 rounded-full font-medium;
+            }
+            .command-box {
+                @apply bg-gray-900 text-green-400 rounded-lg p-4 border border-gray-700 font-mono text-base md:text-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mt-4;
+            }
+            .info-card {
+                @apply bg-blue-50 rounded-lg p-4 border border-blue-100;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-light to-blue-50 min-h-screen font-sans text-dark">
+    <div class="container mx-auto px-4 py-8 md:py-12 max-w-3xl">
+        <!-- 页面标题（两端统一居中） -->
+        <div class="text-center mb-8 md:mb-10">
+            <h1 class="text-xl md:text-2xl font-bold text-dark mb-2 flex items-center justify-center">
+                <i class="fa fa-wifi text-primary mr-3"></i>
+                UWB指令生成工具
+            </h1>
+            <p class="text-secondary text-sm md:text-base">输入厘米或十六进制小端序，自动生成完整指令（含ADD8校验和）</p>
+        </div>
+
+        <!-- 转换卡片（响应式布局，两端无错位） -->
+        <div class="bg-white rounded-2xl p-6 md:p-8 card-shadow transition-all duration-300 hover:shadow-md relative mb-8">
+            <!-- 输入模式指示器 -->
+            <div id="cm-mode" class="mode-indicator bg-blue-100 text-primary hidden">
+                厘米 → 完整指令
+            </div>
+            <div id="hex-mode" class="mode-indicator bg-green-100 text-accent hidden">
+                十六进制 → 完整指令
+            </div>
+
+            <!-- 输入区域（响应式适配） -->
+            <div class="mb-6">
+                <label for="input-value" class="block text-sm font-medium text-secondary mb-2">输入值</label>
+                <div class="flex items-center w-full">
+                    <input 
+                        type="text" 
+                        id="input-value" 
+                        placeholder="例如：950 或 B6 03"
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg input-focus transition-all duration-200 text-base"
+                        autocomplete="off"
+                    >
+                    <button id="clear-btn" class="bg-gray-100 text-secondary hover:bg-gray-200 transition-colors duration-200 px-4 py-3 rounded-r-lg">
+                        <i class="fa fa-times text-lg"></i>
+                    </button>
+                </div>
+                <p id="input-error" class="text-red-500 text-sm mt-2 hidden">请输入有效数值（厘米：0~65535；十六进制：XX XX）</p>
+            </div>
+
+            <!-- 核心：完整指令输出（两端适配，无溢出） -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-secondary mb-2">UWB完整指令（可直接复制）</label>
+                <div class="command-box">
+                    <span id="full-command" class="flex-1 break-all">A5 06 03 -- -- --</span>
+                    <button id="copy-btn" class="text-white bg-primary hover:bg-primary/80 transition-colors duration-200 px-4 py-2 rounded text-sm md:text-base whitespace-nowrap" disabled>
+                        <i class="fa fa-copy mr-1"></i> 复制指令
+                    </button>
+                </div>
+                <p class="text-xs text-secondary mt-1">格式说明：帧头(A5) + 帧长(06) + 命令字(03) + 数据 + 校验和(ADD8)</p>
+            </div>
+
+            <!-- 详细信息区域（移动端单列，电脑端三列） -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div class="info-card">
+                    <p class="text-sm text-secondary mb-1">实际距离</p>
+                    <p id="distance-value" class="font-medium text-base md:text-lg">-- 厘米</p>
+                </div>
+                <div class="info-card bg-green-50 border-green-100">
+                    <p class="text-sm text-secondary mb-1">十六进制小端序</p>
+                    <p id="little-endian-value" class="font-mono font-medium text-base md:text-lg">-- --</p>
+                </div>
+                <div class="info-card bg-purple-50 border-purple-100">
+                    <p class="text-sm text-secondary mb-1">ADD8校验和</p>
+                    <p id="checksum-value" class="font-mono font-medium text-base md:text-lg">--</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 示例表格（响应式滚动，两端适配） -->
+        <div class="bg-white rounded-xl p-5 md:p-6 card-shadow mb-8">
+            <h3 class="text-base md:text-lg font-semibold mb-4 flex items-center">
+                <i class="fa fa-table text-primary mr-2"></i> 常用示例（点击快速生成）
+            </h3>
+            <div class="overflow-x-auto pb-2">
+                <table class="min-w-full divide-y divide-gray-200 text-sm md:text-base">
+                    <thead>
+                        <tr>
+                            <th class="px-3 md:px-4 py-2 text-left text-xs font-medium text-secondary uppercase tracking-wider">厘米</th>
+                            <th class="px-3 md:px-4 py-2 text-left text-xs font-medium text-secondary uppercase tracking-wider">十六进制</th>
+                            <th class="px-3 md:px-4 py-2 text-left text-xs font-medium text-secondary uppercase tracking-wider">完整指令</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="cm">100</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="hex">64 00</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap font-mono">A5 06 03 64 00 12</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="cm">200</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="hex">C8 00</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap font-mono">A5 06 03 C8 00 78</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="cm">650</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="hex">8A 02</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap font-mono">A5 06 03 8A 02 3A</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="cm">950</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="hex">B6 03</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap font-mono">A5 06 03 B6 03 67</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="cm">1000</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap cursor-pointer hover:text-primary" data-type="hex">E8 03</td>
+                            <td class="px-3 md:px-4 py-3 whitespace-nowrap font-mono">A5 06 03 E8 03 87</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 页脚（两端统一居中） -->
+        <footer class="mt-8 text-center text-secondary text-sm">
+            <p>© 2025 UWB指令生成工具 | 响应式设计（移动端/电脑端通用）</p>
+        </footer>
+    </div>
+
+    <!-- 复制成功提示（两端适配位置） -->
+    <div id="copy-toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 translate-y-20 opacity-0 bg-dark text-white px-5 py-3 rounded-lg shadow-lg transition-all duration-300 flex items-center">
+        <i class="fa fa-check-circle mr-2"></i> 指令复制成功！
+    </div>
+
+    <script>
+        // 统一DOM管理
+        const dom = {
+            input: document.getElementById('input-value'),
+            fullCommand: document.getElementById('full-command'),
+            distance: document.getElementById('distance-value'),
+            littleEndian: document.getElementById('little-endian-value'),
+            checksum: document.getElementById('checksum-value'),
+            copyBtn: document.getElementById('copy-btn'),
+            copyToast: document.getElementById('copy-toast'),
+            inputError: document.getElementById('input-error'),
+            clearBtn: document.getElementById('clear-btn'),
+            cmMode: document.getElementById('cm-mode'),
+            hexMode: document.getElementById('hex-mode')
+        };
+
+        // 配置常量
+        const CONFIG = {
+            maxCm: 65535,
+            cmRegex: /^\d+$/,
+            hexRegex: /^[0-9A-Fa-f]{2}\s[0-9A-Fa-f]{2}$/,
+            commandHeader: [0xA5, 0x06, 0x03] // 固定帧头+帧长+命令字
+        };
+
+        // 清除所有内容
+        const clearAll = () => {
+            dom.input.value = '';
+            dom.fullCommand.textContent = 'A5 06 03 -- -- --';
+            dom.distance.textContent = '-- 厘米';
+            dom.littleEndian.textContent = '-- --';
+            dom.checksum.textContent = '--';
+            dom.copyBtn.disabled = true;
+            dom.inputError.classList.add('hidden');
+            dom.cmMode.classList.add('hidden');
+            dom.hexMode.classList.add('hidden');
+        };
+
+        // 十进制转十六进制（补零到2位）
+        const decToHex = (num) => num.toString(16).toUpperCase().padStart(2, '0');
+
+        // 计算ADD8校验和
+        const calcChecksum = (bytes) => bytes.reduce((acc, curr) => acc + curr, 0) & 0xFF;
+
+        // 厘米转完整指令
+        const cmToCommand = (cmStr) => {
+            const num = parseInt(cmStr);
+            // 验证有效性
+            if (isNaN(num) || num < 0 || num > CONFIG.maxCm || !Number.isInteger(num)) return null;
+            
+            const lowByte = num & 0xFF;
+            const highByte = (num >> 8) & 0xFF;
+            const littleEndian = `${decToHex(lowByte)} ${decToHex(highByte)}`;
+            const commandBytes = [...CONFIG.commandHeader, lowByte, highByte];
+            const checksumHex = decToHex(calcChecksum(commandBytes));
+            
+            return {
+                distance: `${num} 厘米`,
+                littleEndian,
+                checksum: checksumHex,
+                fullCommand: `A5 06 03 ${decToHex(lowByte)} ${decToHex(highByte)} ${checksumHex}`
+            };
+        };
+
+        // 十六进制转完整指令
+        const hexToCommand = (hexStr) => {
+            if (!CONFIG.hexRegex.test(hexStr)) return null;
+            
+            const [lowHex, highHex] = hexStr.trim().split(' ');
+            const lowByte = parseInt(lowHex, 16);
+            const highByte = parseInt(highHex, 16);
+            const distance = (highByte << 8) | lowByte;
+            const commandBytes = [...CONFIG.commandHeader, lowByte, highByte];
+            const checksumHex = decToHex(calcChecksum(commandBytes));
+            
+            return {
+                distance: `${distance} 厘米`,
+                littleEndian: hexStr.toUpperCase(),
+                checksum: checksumHex,
+                fullCommand: `A5 06 03 ${lowHex.toUpperCase()} ${highHex.toUpperCase()} ${checksumHex}`
+            };
+        };
+
+        // 处理输入并更新UI
+        const processInput = (input) => {
+            const val = input.trim();
+            let result = null;
+
+            // 识别输入类型
+            if (CONFIG.cmRegex.test(val)) {
+                result = cmToCommand(val);
+                if (result) {
+                    dom.cmMode.classList.remove('hidden');
+                    dom.hexMode.classList.add('hidden');
+                }
+            } else if (CONFIG.hexRegex.test(val)) {
+                result = hexToCommand(val);
+                if (result) {
+                    dom.hexMode.classList.remove('hidden');
+                    dom.cmMode.classList.add('hidden');
+                }
+            }
+
+            // 更新界面
+            if (result) {
+                dom.fullCommand.textContent = result.fullCommand;
+                dom.distance.textContent = result.distance;
+                dom.littleEndian.textContent = result.littleEndian;
+                dom.checksum.textContent = result.checksum;
+                dom.copyBtn.disabled = false;
+                dom.inputError.classList.add('hidden');
+            } else {
+                // 输入无效
+                dom.fullCommand.textContent = 'A5 06 03 -- -- --';
+                dom.distance.textContent = '-- 厘米';
+                dom.littleEndian.textContent = '-- --';
+                dom.checksum.textContent = '--';
+                dom.copyBtn.disabled = true;
+                val && dom.inputError.classList.remove('hidden');
+            }
+        };
+
+        // 事件绑定
+        dom.input.addEventListener('input', (e) => processInput(e.target.value));
+        dom.clearBtn.addEventListener('click', clearAll);
+        dom.copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(dom.fullCommand.textContent).then(() => {
+                dom.copyToast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => dom.copyToast.classList.add('translate-y-20', 'opacity-0'), 2000);
+            });
+        });
+
+        // 示例表格点击填充
+        document.querySelectorAll('td[data-type]').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const val = cell.textContent;
+                dom.input.value = val;
+                processInput(val);
+                dom.input.focus();
+                dom.input.select();
+            });
+        });
+
+        // 粘贴事件处理
+        dom.input.addEventListener('paste', () => setTimeout(() => processInput(dom.input.value), 100));
+
+        // 页面加载初始化
+        window.addEventListener('load', () => {
+            dom.input.focus();
+            // 预加载950厘米示例（用户常用）
+            dom.input.value = '950';
+            processInput('950');
+        });
+    </script>
+</body>
+</html>
