@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>外卖兼职收入统计</title>
+  <!-- 外部资源 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FFD700', // 美团黄色
+            secondary: '#FF6700', // 美团橙
+            jdBlue: '#0066CC', // 京东蓝
+            taobaoOrange: '#FF4400', // 淘宝橙
+            dark: '#1E293B',
+            light: '#F8FAFC',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      },
+      darkMode: 'class'
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .card {
+        @apply bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md transition-all hover:shadow-lg;
+      }
+      .btn-primary {
+        @apply bg-primary hover:bg-primary/90 text-dark font-medium py-2 px-4 rounded-lg transition-all;
+      }
+      .btn-secondary {
+        @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-dark dark:text-white font-medium py-2 px-4 rounded-lg transition-all;
+      }
+      .btn-danger {
+        @apply bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-all;
+      }
+      .platform-badge-meituan {
+        @apply bg-primary/10 text-primary;
+      }
+      .platform-badge-jd {
+        @apply bg-jdBlue/10 text-jdBlue;
+      }
+      .platform-badge-taobao {
+        @apply bg-taobaoOrange/10 text-taobaoOrange;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 font-sans text-gray-900 dark:text-white transition-colors duration-300">
+  <!-- 顶部导航 -->
+  <header class="bg-gradient-to-r from-primary to-secondary text-dark shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-bicycle text-xl"></i>
+        <h1 class="text-xl font-bold">外卖兼职收入统计</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="themeToggle" class="p-2 rounded-full hover:bg-white/20 transition-all" title="切换主题">
+          <i class="fa fa-moon-o dark:hidden"></i>
+          <i class="fa fa-sun-o hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-6">
+    <!-- 移动端添加记录表单 -->
+    <section class="lg:hidden mb-6">
+      <div class="card border-2 border-primary/30">
+        <h2 class="text-lg font-bold mb-4 flex items-center text-primary">
+          <i class="fa fa-plus-circle mr-2"></i>添加今日记录
+        </h2>
+        <form id="recordFormMobile" class="space-y-3">
+          <div>
+            <label for="dateMobile" class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">日期</label>
+            <input type="date" id="dateMobile" name="dateMobile" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+          
+          <div>
+            <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">选择平台</label>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="flex flex-col items-center justify-center p-2 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformMobile" value="meituan" class="sr-only" checked>
+                <i class="fa fa-cutlery text-primary text-lg mb-1"></i>
+                <span class="text-xs">美团众包</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-2 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformMobile" value="jd" class="sr-only">
+                <i class="fa fa-truck text-jdBlue text-lg mb-1"></i>
+                <span class="text-xs">京东秒送</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-2 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformMobile" value="taobao" class="sr-only">
+                <i class="fa fa-shopping-bag text-taobaoOrange text-lg mb-1"></i>
+                <span class="text-xs">淘宝闪购</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="ordersMobile" class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">订单数</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                  <i class="fa fa-shopping-bag"></i>
+                </span>
+                <input type="number" id="ordersMobile" name="ordersMobile" min="0" step="1" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0" value="0">
+              </div>
+            </div>
+            <div>
+              <label for="incomeMobile" class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">收入 (元)</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                  <i class="fa fa-cny"></i>
+                </span>
+                <input type="number" id="incomeMobile" name="incomeMobile" min="0" step="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00" value="0.00">
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="w-full btn-primary">
+            <i class="fa fa-plus-circle"></i>添加记录
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 统计概览 -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <!-- 今日统计 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400">今日</h3>
+            <p class="text-2xl font-bold mt-1" id="todayOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-primary/10 p-2 rounded-lg">
+            <i class="fa fa-calendar text-primary"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="todayIncome">¥0.00</p>
+          <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" id="todayDate"></span>
+        </div>
+      </div>
+
+      <!-- 本月统计 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400">本月</h3>
+            <p class="text-2xl font-bold mt-1" id="monthOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-secondary/10 p-2 rounded-lg">
+            <i class="fa fa-calendar-check-o text-secondary"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="monthIncome">¥0.00</p>
+          <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full" id="currentMonth"></span>
+        </div>
+      </div>
+
+      <!-- 总计统计 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400">总计</h3>
+            <p class="text-2xl font-bold mt-1" id="totalOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-green-100 p-2 rounded-lg">
+            <i class="fa fa-line-chart text-green-600"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="totalIncome">¥0.00</p>
+          <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full" id="totalDays">0天</span>
+        </div>
+      </div>
+
+      <!-- 平均统计 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400">日均</h3>
+            <p class="text-2xl font-bold mt-1" id="avgOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-indigo-100 p-2 rounded-lg">
+            <i class="fa fa-bar-chart text-indigo-600"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="avgIncome">¥0.00</p>
+          <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">平均</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 平台统计 -->
+    <section class="grid grid-cols-3 gap-4 mb-6">
+      <!-- 美团众包 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+              <i class="fa fa-cutlery text-primary mr-1"></i> 美团众包
+            </h3>
+            <p class="text-2xl font-bold mt-1" id="meituanOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-primary/10 p-2 rounded-lg">
+            <i class="fa fa-credit-card text-primary"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="meituanIncome">¥0.00</p>
+          <span class="text-xs platform-badge-meituan px-2 py-0.5 rounded-full">
+            <span id="meituanPercentage">0%</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 京东秒送 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+              <i class="fa fa-truck text-jdBlue mr-1"></i> 京东秒送
+            </h3>
+            <p class="text-2xl font-bold mt-1" id="jdOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-jdBlue/10 p-2 rounded-lg">
+            <i class="fa fa-credit-card text-jdBlue"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="jdIncome">¥0.00</p>
+          <span class="text-xs platform-badge-jd px-2 py-0.5 rounded-full">
+            <span id="jdPercentage">0%</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 淘宝闪购 -->
+      <div class="card">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h3 class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+              <i class="fa fa-shopping-bag text-taobaoOrange mr-1"></i> 淘宝闪购
+            </h3>
+            <p class="text-2xl font-bold mt-1" id="taobaoOrders">0</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">订单</p>
+          </div>
+          <div class="bg-taobaoOrange/10 p-2 rounded-lg">
+            <i class="fa fa-credit-card text-taobaoOrange"></i>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="font-semibold" id="taobaoIncome">¥0.00</p>
+          <span class="text-xs platform-badge-taobao px-2 py-0.5 rounded-full">
+            <span id="taobaoPercentage">0%</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图表和桌面端表单 -->
+    <section class="hidden lg:grid grid-cols-3 gap-6 mb-6">
+      <!-- 收入趋势图表 -->
+      <div class="card col-span-2">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">收入趋势</h2>
+          <div class="flex space-x-2">
+            <button class="chart-period-btn px-3 py-1 rounded-full bg-primary text-dark" data-period="week">周</button>
+            <button class="chart-period-btn px-3 py-1 rounded-full bg-gray-200 text-gray-700" data-period="month">月</button>
+            <button class="chart-period-btn px-3 py-1 rounded-full bg-gray-200 text-gray-700" data-period="year">年</button>
+          </div>
+        </div>
+        <div class="h-64">
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 桌面端添加记录表单 -->
+      <div class="card">
+        <h2 class="text-lg font-bold mb-4">添加今日记录</h2>
+        <form id="recordFormDesktop" class="space-y-4">
+          <div>
+            <label for="dateDesktop" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">日期</label>
+            <input type="date" id="dateDesktop" name="dateDesktop" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">选择平台</label>
+            <div class="grid grid-cols-3 gap-3">
+              <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformDesktop" value="meituan" class="sr-only" checked>
+                <i class="fa fa-cutlery text-primary text-xl mb-2"></i>
+                <span class="text-sm">美团众包</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformDesktop" value="jd" class="sr-only">
+                <i class="fa fa-truck text-jdBlue text-xl mb-2"></i>
+                <span class="text-sm">京东秒送</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <input type="radio" name="platformDesktop" value="taobao" class="sr-only">
+                <i class="fa fa-shopping-bag text-taobaoOrange text-xl mb-2"></i>
+                <span class="text-sm">淘宝闪购</span>
+              </label>
+            </div>
+          </div>
+          
+          <div>
+            <label for="ordersDesktop" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">完成订单数</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                <i class="fa fa-shopping-bag"></i>
+              </span>
+              <input type="number" id="ordersDesktop" name="ordersDesktop" min="0" step="1" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0" value="0">
+            </div>
+          </div>
+          
+          <div>
+            <label for="incomeDesktop" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">收入金额 (元)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                <i class="fa fa-cny"></i>
+              </span>
+              <input type="number" id="incomeDesktop" name="incomeDesktop" min="0" step="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00" value="0.00">
+            </div>
+          </div>
+          
+          <button type="submit" class="w-full btn-primary">
+            <i class="fa fa-plus-circle"></i>添加记录
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 历史记录 -->
+    <section class="card mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h2 class="text-lg font-bold mb-4 sm:mb-0">历史记录</h2>
+        <div class="flex flex-wrap gap-2">
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+              <i class="fa fa-search"></i>
+            </span>
+            <input type="text" id="searchInput" placeholder="搜索日期" class="pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+          <select id="filterPlatform" class="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            <option value="">全部平台</option>
+            <option value="meituan">美团众包</option>
+            <option value="jd">京东秒送</option>
+            <option value="taobao">淘宝闪购</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">日期</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">平台</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">订单数</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">收入 (元)</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">操作</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tr id="emptyRecordRow">
+              <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                <div class="flex flex-col items-center">
+                  <i class="fa fa-inbox text-4xl mb-2"></i>
+                  <p>暂无记录，开始添加你的第一条记录吧！</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页控件 -->
+      <div class="flex justify-between items-center mt-4" id="paginationControls">
+        <div class="text-sm text-gray-500 dark:text-gray-400">
+          显示 <span id="showingRecords">0</span> 条，共 <span id="totalRecords">0</span> 条
+        </div>
+        <div class="flex space-x-1">
+          <button id="prevPageBtn" class="p-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50" disabled>
+            <i class="fa fa-chevron-left"></i>
+          </button>
+          <div id="pageNumbers" class="flex space-x-1">
+            <!-- 页码动态生成 -->
+          </div>
+          <button id="nextPageBtn" class="p-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50" disabled>
+            <i class="fa fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 编辑记录模态框 -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold">编辑记录</h3>
+        <button id="closeEditModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <form id="editForm" class="space-y-4">
+        <input type="hidden" id="editId">
+        <div>
+          <label for="editDate" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">日期</label>
+          <input type="date" id="editDate" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">选择平台</label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <input type="radio" name="editPlatform" value="meituan" class="sr-only">
+              <i class="fa fa-cutlery text-primary text-xl mb-2"></i>
+              <span class="text-sm">美团众包</span>
+            </label>
+            <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <input type="radio" name="editPlatform" value="jd" class="sr-only">
+              <i class="fa fa-truck text-jdBlue text-xl mb-2"></i>
+              <span class="text-sm">京东秒送</span>
+            </label>
+            <label class="flex flex-col items-center justify-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <input type="radio" name="editPlatform" value="taobao" class="sr-only">
+              <i class="fa fa-shopping-bag text-taobaoOrange text-xl mb-2"></i>
+              <span class="text-sm">淘宝闪购</span>
+            </label>
+          </div>
+        </div>
+        
+        <div>
+          <label for="editOrders" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">订单数</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+              <i class="fa fa-shopping-bag"></i>
+            </span>
+            <input type="number" id="editOrders" min="0" step="1" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+        </div>
+        
+        <div>
+          <label for="editIncome" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">收入金额 (元)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+              <i class="fa fa-cny"></i>
+            </span>
+            <input type="number" id="editIncome" min="0" step="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+        </div>
+        
+        <div class="flex space-x-3 pt-2">
+          <button type="button" id="deleteRecordBtn" class="flex-1 btn-danger">
+            <i class="fa fa-trash"></i>删除
+          </button>
+          <button type="submit" class="flex-1 btn-primary">
+            <i class="fa fa-save"></i>保存
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 确认删除模态框 -->
+  <div id="confirmDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-sm">
+      <div class="text-center mb-4">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-500 mb-4">
+          <i class="fa fa-exclamation-triangle text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold">确认删除</h3>
+        <p class="text-gray-500 mt-2">你确定要删除这条记录吗？此操作无法撤销。</p>
+      </div>
+      <div class="flex space-x-3">
+        <button id="cancelDeleteBtn" class="flex-1 btn-secondary">取消</button>
+        <button id="confirmDeleteBtn" class="flex-1 btn-danger">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知提示 -->
+  <div id="notification" class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3">
+    <i id="notificationIcon" class="fa fa-check-circle"></i>
+    <span id="notificationMessage">操作成功</span>
+  </div>
+
+  <script>
+    // 全局变量
+    let records = JSON.parse(localStorage.getItem('takeawayPartTimeRecords')) || [];
+    let currentPage = 1;
+    const recordsPerPage = 10;
+    let filteredRecords = [...records];
+    let incomeChart = null;
+    let currentEditId = null;
+    let currentChartPeriod = 'week';
+
+    // DOM 元素缓存
+    const DOM = {
+      recordsTableBody: document.getElementById('recordsTableBody'),
+      emptyRecordRow: document.getElementById('emptyRecordRow'),
+      paginationControls: document.getElementById('paginationControls'),
+      showingRecords: document.getElementById('showingRecords'),
+      totalRecords: document.getElementById('totalRecords'),
+      prevPageBtn: document.getElementById('prevPageBtn'),
+      nextPageBtn: document.getElementById('nextPageBtn'),
+      pageNumbers: document.getElementById('pageNumbers'),
+      editModal: document.getElementById('editModal'),
+      closeEditModal: document.getElementById('closeEditModal'),
+      confirmDeleteModal: document.getElementById('confirmDeleteModal'),
+      cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
+      confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
+      notification: document.getElementById('notification'),
+      notificationIcon: document.getElementById('notificationIcon'),
+      notificationMessage: document.getElementById('notificationMessage'),
+      themeToggle: document.getElementById('themeToggle'),
+      searchInput: document.getElementById('searchInput'),
+      filterPlatform: document.getElementById('filterPlatform'),
+      deleteRecordBtn: document.getElementById('deleteRecordBtn'),
+      editForm: document.getElementById('editForm'),
+      editId: document.getElementById('editId'),
+      editDate: document.getElementById('editDate'),
+      editOrders: document.getElementById('editOrders'),
+      editIncome: document.getElementById('editIncome'),
+      recordFormMobile: document.getElementById('recordFormMobile'),
+      recordFormDesktop: document.getElementById('recordFormDesktop'),
+      todayOrders: document.getElementById('todayOrders'),
+      todayIncome: document.getElementById('todayIncome'),
+      todayDate: document.getElementById('todayDate'),
+      monthOrders: document.getElementById('monthOrders'),
+      monthIncome: document.getElementById('monthIncome'),
+      currentMonth: document.getElementById('currentMonth'),
+      totalOrders: document.getElementById('totalOrders'),
+      totalIncome: document.getElementById('totalIncome'),
+      totalDays: document.getElementById('totalDays'),
+      avgOrders: document.getElementById('avgOrders'),
+      avgIncome: document.getElementById('avgIncome'),
+      meituanOrders: document.getElementById('meituanOrders'),
+      meituanIncome: document.getElementById('meituanIncome'),
+      meituanPercentage: document.getElementById('meituanPercentage'),
+      jdOrders: document.getElementById('jdOrders'),
+      jdIncome: document.getElementById('jdIncome'),
+      jdPercentage: document.getElementById('jdPercentage'),
+      taobaoOrders: document.getElementById('taobaoOrders'),
+      taobaoIncome: document.getElementById('taobaoIncome'),
+      taobaoPercentage: document.getElementById('taobaoPercentage')
+    };
+
+    // DOM 加载完成后初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('初始化应用，当前记录数:', records.length);
+      
+      // 设置默认日期为今天
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateMobile').value = today;
+      document.getElementById('dateDesktop').value = today;
+      DOM.todayDate.textContent = formatDate(today);
+      
+      // 设置当前月份
+      const now = new Date();
+      DOM.currentMonth.textContent = 
+        now.toLocaleString('zh-CN', { year: 'numeric', month: 'long' });
+      
+      // 初始化图表
+      initChart();
+      
+      // 渲染记录列表（修复核心问题）
+      renderRecords();
+      
+      // 更新统计数据
+      updateStatistics();
+      
+      // 添加事件监听器
+      addEventListeners();
+    });
+
+    // 添加事件监听器
+    function addEventListeners() {
+      // 表单提交
+      DOM.recordFormMobile.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleRecordSubmit('mobile');
+      });
+      
+      DOM.recordFormDesktop.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleRecordSubmit('desktop');
+      });
+      
+      DOM.editForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleEditSubmit();
+      });
+      
+      // 搜索和筛选
+      DOM.searchInput.addEventListener('input', handleSearch);
+      DOM.filterPlatform.addEventListener('change', handleFilter);
+      
+      // 分页
+      DOM.prevPageBtn.addEventListener('click', goToPrevPage);
+      DOM.nextPageBtn.addEventListener('click', goToNextPage);
+      
+      // 编辑和删除
+      DOM.closeEditModal.addEventListener('click', () => {
+        DOM.editModal.classList.add('hidden');
+      });
+      
+      DOM.deleteRecordBtn.addEventListener('click', () => {
+        DOM.editModal.classList.add('hidden');
+        DOM.confirmDeleteModal.classList.remove('hidden');
+      });
+      
+      DOM.cancelDeleteBtn.addEventListener('click', () => {
+        DOM.confirmDeleteModal.classList.add('hidden');
+      });
+      
+      DOM.confirmDeleteBtn.addEventListener('click', handleDeleteRecord);
+      
+      // 主题切换
+      DOM.themeToggle.addEventListener('click', toggleTheme);
+      
+      // 图表周期切换
+      document.querySelectorAll('.chart-period-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.chart-period-btn').forEach(b => {
+            b.classList.remove('bg-primary', 'text-dark');
+            b.classList.add('bg-gray-200', 'text-gray-700');
+          });
+          btn.classList.remove('bg-gray-200', 'text-gray-700');
+          btn.classList.add('bg-primary', 'text-dark');
+          
+          currentChartPeriod = btn.dataset.period;
+          updateChart();
+        });
+      });
+    }
+
+    // 处理记录提交
+    function handleRecordSubmit(formType) {
+      console.log('提交记录，表单类型:', formType);
+      
+      // 根据表单类型获取不同的元素ID
+      const dateId = formType === 'mobile' ? 'dateMobile' : 'dateDesktop';
+      const ordersId = formType === 'mobile' ? 'ordersMobile' : 'ordersDesktop';
+      const incomeId = formType === 'mobile' ? 'incomeMobile' : 'incomeDesktop';
+      const platformName = formType === 'mobile' ? 'platformMobile' : 'platformDesktop';
+      
+      // 获取表单值
+      const date = document.getElementById(dateId).value;
+      const ordersInput = document.getElementById(ordersId);
+      const incomeInput = document.getElementById(incomeId);
+      const platform = document.querySelector(`input[name="${platformName}"]:checked`).value;
+      
+      // 验证输入
+      const orders = parseInt(ordersInput.value) || 0;
+      const income = parseFloat(incomeInput.value) || 0;
+      
+      // 输入验证
+      if (!date) {
+        showNotification('错误', '请选择日期', 'error');
+        return;
+      }
+      
+      if (orders < 0 || income < 0) {
+        showNotification('错误', '订单数和收入不能为负数', 'error');
+        return;
+      }
+      
+      if (orders === 0 && income === 0) {
+        showNotification('错误', '订单数和收入不能同时为0', 'error');
+        return;
+      }
+      
+      // 检查是否已存在该日期和平台的记录
+      const existingRecord = records.find(
+        record => record.date === date && record.platform === platform
+      );
+      
+      if (existingRecord) {
+        showNotification('错误', '该日期该平台已存在记录', 'error');
+        return;
+      }
+      
+      // 创建新记录
+      const newRecord = {
+        id: Date.now().toString(),
+        date,
+        platform,
+        orders,
+        income
+      };
+      
+      // 添加到记录数组
+      records.unshift(newRecord);
+      filteredRecords = [...records];
+      
+      // 保存到本地存储
+      saveRecords();
+      console.log('记录添加成功，当前总记录数:', records.length);
+      
+      // 重置表单
+      ordersInput.value = '0';
+      incomeInput.value = '0.00';
+      
+      // 更新UI
+      renderRecords();
+      updateStatistics();
+      updateChart();
+      
+      // 显示通知
+      showNotification('成功', '记录添加成功', 'success');
+    }
+
+    // 处理编辑提交
+    function handleEditSubmit() {
+      console.log('保存编辑，记录ID:', DOM.editId.value);
+      
+      const id = DOM.editId.value;
+      const date = DOM.editDate.value;
+      const orders = parseInt(DOM.editOrders.value) || 0;
+      const income = parseFloat(DOM.editIncome.value) || 0;
+      const platform = document.querySelector('input[name="editPlatform"]:checked').value;
+      
+      // 验证输入
+      if (!date) {
+        showNotification('错误', '请选择日期', 'error');
+        return;
+      }
+      
+      if (orders < 0 || income < 0) {
+        showNotification('错误', '订单数和收入不能为负数', 'error');
+        return;
+      }
+      
+      if (orders === 0 && income === 0) {
+        showNotification('错误', '订单数和收入不能同时为0', 'error');
+        return;
+      }
+      
+      // 检查是否已存在该日期和平台的记录（排除当前编辑的记录）
+      const existingRecord = records.find(
+        record => record.date === date && 
+                 record.platform === platform && 
+                 record.id !== id
+      );
+      
+      if (existingRecord) {
+        showNotification('错误', '该日期该平台已存在记录', 'error');
+        return;
+      }
+      
+      // 更新记录
+      const recordIndex = records.findIndex(record => record.id === id);
+      if (recordIndex !== -1) {
+        records[recordIndex] = { ...records[recordIndex], date, platform, orders, income };
+        
+        // 更新筛选后的数组
+        const filteredIndex = filteredRecords.findIndex(record => record.id === id);
+        if (filteredIndex !== -1) {
+          filteredRecords[filteredIndex] = { ...filteredRecords[filteredIndex], date, platform, orders, income };
+        }
+        
+        // 保存到本地存储
+        saveRecords();
+        
+        // 更新UI
+        renderRecords();
+        updateStatistics();
+        updateChart();
+        
+        // 关闭模态框
+        DOM.editModal.classList.add('hidden');
+        
+        // 显示通知
+        showNotification('成功', '记录更新成功', 'success');
+      } else {
+        showNotification('错误', '未找到该记录', 'error');
+      }
+    }
+
+    // 编辑记录 - 修复核心问题：确保可以正确加载记录
+    function editRecord(id) {
+      console.log('编辑记录，ID:', id);
+      currentEditId = id;
+      const record = records.find(r => r.id === id);
+      
+      if (record) {
+        console.log('找到记录:', record);
+        DOM.editId.value = id;
+        DOM.editDate.value = record.date;
+        DOM.editOrders.value = record.orders;
+        DOM.editIncome.value = record.income;
+        
+        // 选中对应的平台 - 修复平台选择问题
+        const platformRadios = document.querySelectorAll('input[name="editPlatform"]');
+        platformRadios.forEach(radio => {
+          if (radio.value === record.platform) {
+            radio.checked = true;
+          }
+        });
+        
+        // 显示编辑模态框
+        DOM.editModal.classList.remove('hidden');
+      } else {
+        showNotification('错误', '未找到该记录', 'error');
+      }
+    }
+
+    // 处理删除记录
+    function handleDeleteRecord() {
+      if (currentEditId) {
+        console.log('删除记录，ID:', currentEditId);
+        
+        // 从原始数组中删除
+        records = records.filter(record => record.id !== currentEditId);
+        
+        // 从筛选数组中删除
+        filteredRecords = filteredRecords.filter(record => record.id !== currentEditId);
+        
+        // 保存到本地存储
+        saveRecords();
+        
+        // 更新UI
+        renderRecords();
+        updateStatistics();
+        updateChart();
+        
+        // 关闭模态框
+        DOM.confirmDeleteModal.classList.add('hidden');
+        
+        // 显示通知
+        showNotification('成功', '记录已删除', 'success');
+      }
+    }
+
+    // 处理搜索
+    function handleSearch() {
+      const searchTerm = DOM.searchInput.value.toLowerCase().trim();
+      console.log('搜索:', searchTerm);
+      
+      filteredRecords = records.filter(record => {
+        const dateText = formatDate(record.date).toLowerCase();
+        return dateText.includes(searchTerm);
+      });
+      
+      // 应用平台筛选
+      handleFilter();
+    }
+
+    // 处理筛选
+    function handleFilter() {
+      const selectedPlatform = DOM.filterPlatform.value;
+      console.log('筛选平台:', selectedPlatform);
+      
+      let result = [...filteredRecords];
+      
+      if (selectedPlatform) {
+        result = result.filter(record => record.platform === selectedPlatform);
+      }
+      
+      filteredRecords = result;
+      currentPage = 1;
+      renderRecords();
+    }
+
+    // 分页功能
+    function goToPrevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        renderRecords();
+      }
+    }
+
+    function goToNextPage() {
+      const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderRecords();
+      }
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      renderRecords();
+    }
+
+    // 渲染记录列表 - 修复核心问题：确保记录可以正确显示
+    function renderRecords() {
+      console.log('渲染记录，当前页:', currentPage, '筛选后记录数:', filteredRecords.length);
+      
+      // 清空表格
+      DOM.recordsTableBody.innerHTML = '';
+      
+      // 显示或隐藏空记录提示
+      if (filteredRecords.length === 0) {
+        DOM.emptyRecordRow.classList.remove('hidden');
+        DOM.recordsTableBody.appendChild(DOM.emptyRecordRow);
+        DOM.paginationControls.style.display = 'none';
+        return;
+      }
+      
+      DOM.emptyRecordRow.classList.add('hidden');
+      DOM.paginationControls.style.display = 'flex';
+      
+      // 计算分页
+      const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = Math.min(startIndex + recordsPerPage, filteredRecords.length);
+      const pageRecords = filteredRecords.slice(startIndex, endIndex);
+      
+      console.log('渲染记录范围:', startIndex, '-', endIndex, '共', totalPages, '页');
+      
+      // 渲染当前页的记录 - 修复DOM操作问题
+      pageRecords.forEach(record => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
+        
+        // 修复平台显示文本
+        let platformText = '未知平台';
+        if (record.platform === 'meituan') platformText = '美团众包';
+        if (record.platform === 'jd') platformText = '京东秒送';
+        if (record.platform === 'taobao') platformText = '淘宝闪购';
+        
+        // 修复平台徽章样式
+        let badgeClass = 'bg-gray-100 text-gray-800';
+        if (record.platform === 'meituan') badgeClass = 'platform-badge-meituan';
+        if (record.platform === 'jd') badgeClass = 'platform-badge-jd';
+        if (record.platform === 'taobao') badgeClass = 'platform-badge-taobao';
+        
+        tr.innerHTML = `
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="text-sm">${formatDate(record.date)}</div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${badgeClass}">
+              ${platformText}
+            </span>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="text-sm">${record.orders}</div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="text-sm font-medium">¥${record.income.toFixed(2)}</div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+            <button onclick="editRecord('${record.id}')" class="text-primary hover:text-primary/80">编辑</button>
+          </td>
+        `;
+        
+        DOM.recordsTableBody.appendChild(tr);
+      });
+      
+      // 更新分页信息
+      DOM.showingRecords.textContent = `${startIndex + 1}-${endIndex}`;
+      DOM.totalRecords.textContent = filteredRecords.length;
+      
+      // 更新分页按钮状态
+      DOM.prevPageBtn.disabled = currentPage === 1;
+      DOM.nextPageBtn.disabled = currentPage === totalPages;
+      
+      // 渲染页码
+      renderPageNumbers(totalPages);
+    }
+
+    // 渲染页码
+    function renderPageNumbers(totalPages) {
+      DOM.pageNumbers.innerHTML = '';
+      
+      // 最多显示5个页码
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + 4);
+      
+      // 如果后面页数不足，向前补充
+      if (endPage - startPage < 4 && startPage > 1) {
+        startPage = Math.max(1, endPage - 4);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        const button = document.createElement('button');
+        button.className = `px-3 py-1 border rounded-lg ${
+          i === currentPage ? 'bg-primary text-dark border-primary' : 
+          'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'
+        }`;
+        button.textContent = i;
+        button.addEventListener('click', () => goToPage(i));
+        DOM.pageNumbers.appendChild(button);
+      }
+    }
+
+    // 更新统计数据
+    function updateStatistics() {
+      const today = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      
+      console.log('更新统计数据，总记录数:', records.length);
+      
+      // 今日统计
+      const todayRecords = records.filter(record => record.date === today);
+      const todayOrdersTotal = todayRecords.reduce((sum, r) => sum + r.orders, 0);
+      const todayIncomeTotal = todayRecords.reduce((sum, r) => sum + r.income, 0);
+      
+      DOM.todayOrders.textContent = todayOrdersTotal;
+      DOM.todayIncome.textContent = `¥${todayIncomeTotal.toFixed(2)}`;
+      
+      // 本月统计
+      const monthRecords = records.filter(record => record.date.startsWith(currentMonth));
+      const monthOrdersTotal = monthRecords.reduce((sum, r) => sum + r.orders, 0);
+      const monthIncomeTotal = monthRecords.reduce((sum, r) => sum + r.income, 0);
+      
+      DOM.monthOrders.textContent = monthOrdersTotal;
+      DOM.monthIncome.textContent = `¥${monthIncomeTotal.toFixed(2)}`;
+      
+      // 总计统计
+      const totalOrders = records.reduce((sum, r) => sum + r.orders, 0);
+      const totalIncome = records.reduce((sum, r) => sum + r.income, 0);
+      const uniqueDays = new Set(records.map(r => r.date)).size;
+      
+      DOM.totalOrders.textContent = totalOrders;
+      DOM.totalIncome.textContent = `¥${totalIncome.toFixed(2)}`;
+      DOM.totalDays.textContent = `${uniqueDays}天`;
+      
+      // 平均统计
+      const avgOrders = uniqueDays > 0 ? (totalOrders / uniqueDays).toFixed(1) : 0;
+      const avgIncome = uniqueDays > 0 ? (totalIncome / uniqueDays).toFixed(2) : 0;
+      
+      DOM.avgOrders.textContent = avgOrders;
+      DOM.avgIncome.textContent = `¥${avgIncome}`;
+      
+      // 平台统计
+      const meituanRecords = records.filter(r => r.platform === 'meituan');
+      const jdRecords = records.filter(r => r.platform === 'jd');
+      const taobaoRecords = records.filter(r => r.platform === 'taobao');
+      
+      const meituanOrders = meituanRecords.reduce((sum, r) => sum + r.orders, 0);
+      const meituanIncome = meituanRecords.reduce((sum, r) => sum + r.income, 0);
+      
+      const jdOrders = jdRecords.reduce((sum, r) => sum + r.orders, 0);
+      const jdIncome = jdRecords.reduce((sum, r) => sum + r.income, 0);
+      
+      const taobaoOrders = taobaoRecords.reduce((sum, r) => sum + r.orders, 0);
+      const taobaoIncome = taobaoRecords.reduce((sum, r) => sum + r.income, 0);
+      
+      // 计算平台占比
+      const meituanPercentage = totalIncome > 0 ? Math.round((meituanIncome / totalIncome) * 100) : 0;
+      const jdPercentage = totalIncome > 0 ? Math.round((jdIncome / totalIncome) * 100) : 0;
+      const taobaoPercentage = totalIncome > 0 ? Math.round((taobaoIncome / totalIncome) * 100) : 0;
+      
+      // 更新平台统计UI
+      DOM.meituanOrders.textContent = meituanOrders;
+      DOM.meituanIncome.textContent = `¥${meituanIncome.toFixed(2)}`;
+      DOM.meituanPercentage.textContent = `${meituanPercentage}%`;
+      
+      DOM.jdOrders.textContent = jdOrders;
+      DOM.jdIncome.textContent = `¥${jdIncome.toFixed(2)}`;
+      DOM.jdPercentage.textContent = `${jdPercentage}%`;
+      
+      DOM.taobaoOrders.textContent = taobaoOrders;
+      DOM.taobaoIncome.textContent = `¥${taobaoIncome.toFixed(2)}`;
+      DOM.taobaoPercentage.textContent = `${taobaoPercentage}%`;
+    }
+
+    // 初始化图表
+    function initChart() {
+      const ctx = document.getElementById('incomeChart').getContext('2d');
+      
+      // 准备图表数据
+      const { labels, data } = getChartData(currentChartPeriod);
+      
+      incomeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '收入 (元)',
+            data: data,
+            backgroundColor: '#FFD700',
+            borderColor: '#FFC107',
+            borderWidth: 1,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '¥' + value;
+                }
+              }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `收入: ¥${context.raw.toFixed(2)}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 更新图表
+    function updateChart() {
+      if (incomeChart) {
+        const { labels, data } = getChartData(currentChartPeriod);
+        incomeChart.data.labels = labels;
+        incomeChart.data.datasets[0].data = data;
+        incomeChart.update();
+      }
+    }
+
+    // 获取图表数据
+    function getChartData(period) {
+      const now = new Date();
+      const labels = [];
+      const data = [];
+      
+      // 按周期准备数据
+      if (period === 'week') {
+        // 过去7天
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(now.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          
+          // 标签显示为星期几
+          const dayName = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
+          labels.push(dayName);
+          
+          // 计算当天总收入
+          const dayRecords = records.filter(r => r.date === dateStr);
+          const dayIncome = dayRecords.reduce((sum, r) => sum + r.income, 0);
+          data.push(dayIncome);
+        }
+      } else if (period === 'month') {
+        // 本月天数
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        
+        for (let i = 1; i <= daysInMonth; i++) {
+          const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+          labels.push(`${i}日`);
+          
+          // 计算当天总收入
+          const dayRecords = records.filter(r => r.date === dateStr);
+          const dayIncome = dayRecords.reduce((sum, r) => sum + r.income, 0);
+          data.push(dayIncome);
+        }
+      } else if (period === 'year') {
+        // 全年12个月
+        for (let i = 1; i <= 12; i++) {
+          const monthStr = `${now.getFullYear()}-${String(i).padStart(2, '0')}`;
+          labels.push(`${i}月`);
+          
+          // 计算当月总收入
+          const monthRecords = records.filter(r => r.date.startsWith(monthStr));
+          const monthIncome = monthRecords.reduce((sum, r) => sum + r.income, 0);
+          data.push(monthIncome);
+        }
+      }
+      
+      return { labels, data };
+    }
+
+    // 保存记录到本地存储
+    function saveRecords() {
+      localStorage.setItem('takeawayPartTimeRecords', JSON.stringify(records));
+      console.log('记录已保存到本地存储，当前记录数:', records.length);
+    }
+
+    // 显示通知
+    function showNotification(title, message, type = 'success') {
+      // 设置通知类型样式
+      DOM.notification.className = 'fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3';
+      
+      if (type === 'success') {
+        DOM.notification.classList.add('bg-green-500', 'text-white');
+        DOM.notificationIcon.className = 'fa fa-check-circle';
+      } else if (type === 'error') {
+        DOM.notification.classList.add('bg-red-500', 'text-white');
+        DOM.notificationIcon.className = 'fa fa-exclamation-circle';
+      }
+      
+      DOM.notificationMessage.textContent = message;
+      
+      // 显示通知
+      setTimeout(() => {
+        DOM.notification.classList.remove('translate-y-20', 'opacity-0');
+      }, 100);
+      
+      // 3秒后隐藏
+      setTimeout(() => {
+        DOM.notification.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // 切换主题
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      
+      // 保存主题偏好
+      if (document.documentElement.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+      } else {
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    // 检查主题偏好
+    function checkThemePreference() {
+      if (localStorage.getItem('theme') === 'dark' || 
+          (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    // 格式化日期显示
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    // 暴露editRecord函数到全局，确保HTML可以调用 - 修复核心问题
+    window.editRecord = editRecord;
+    
+    // 初始化时添加测试数据（方便测试）
+    function addTestData() {
+      const testData = [
+        { id: '1', date: '2025-12-01', platform: 'meituan', orders: 15, income: 125.50 },
+        { id: '2', date: '2025-12-01', platform: 'jd', orders: 8, income: 98.00 },
+        { id: '3', date: '2025-11-30', platform: 'taobao', orders: 12, income: 110.75 },
+        { id: '4', date: '2025-11-30', platform: 'meituan', orders: 18, income: 156.20 },
+        { id: '5', date: '2025-11-29', platform: 'jd', orders: 6, income: 78.50 },
+      ];
+      
+      records = [...testData, ...records];
+      filteredRecords = [...records];
+      saveRecords();
+      renderRecords();
+      updateStatistics();
+      updateChart();
+      
+      showNotification('提示', '已添加测试数据', 'success');
+    }
+    
+    // 可以通过控制台调用 addTestData() 添加测试数据
+    window.addTestData = addTestData;
+  </script>
+</body>
+</html>
