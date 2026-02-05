@@ -154,6 +154,43 @@
                 0 0 0 1px rgba(254, 226, 226, 0.9);
         }
 
+        .hero-search {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-search input {
+            width: 100%;
+            max-width: 420px;
+            padding: 14px 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(209, 213, 219, 0.95);
+            background: #ffffff;
+            font-size: 15px;
+            color: #111827;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            text-align: center;
+        }
+
+        .hero-search input:focus {
+            border-color: rgba(255, 29, 85, 0.6);
+            box-shadow: 0 0 0 4px rgba(255, 29, 85, 0.15);
+            background: #fff1f5;
+        }
+
+        .hero-search input::placeholder {
+            color: #9ca3af;
+            transition: color 0.2s ease;
+        }
+
+        .hero-search input:focus::placeholder {
+            color: #ff1d55;
+            opacity: 0.5;
+        }
+
         .main {
             margin-top: 18px;
         }
@@ -711,6 +748,9 @@
                             <span class="hero-link-label">靠谱大流量卡</span>
                         </a>
                     </div>
+                    <div class="hero-search">
+                        <input type="text" id="timelineSearch" placeholder="输入关键词，筛选时间线内容..." autocomplete="off">
+                    </div>
                 </div>
             </header>
             <main class="main">
@@ -722,6 +762,228 @@
                     <div class="timeline-axis"></div>
                     <div class="timeline-axis-glow"></div>
                     <div class="timeline-group-list">
+                        
+                        <article class="timeline-group">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date">2026-02-08</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.xiaocheng991.site/" target="_blank">NebulaHub橙光</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个面向朋友之间的实用小站，帮助协作、分享与日常生活的快速入口</p>
+                                        <p>摸鱼聊天，大文件无损传输。只属于我们的小天地，不留痕迹</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://xiaohuohumax.github.io/resources/" target="_blank">Resources</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>资源仓库 · 收录各种常用资源地址(软件、配置、文档等)</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://nafy.ai/zh" target="_blank">Nafy AI</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>使用Nafy AI音乐生成器，即时将创意转化为免版税的录音棚级音轨</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="timeline-group">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date">2026-02-07</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://ageeye.app.ditushu.com/" target="_blank">NO视频</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个在线视频聚合/影视导航类网站，旨在为用户提供电影、电视剧、综艺、动漫等影视内容的在线播放入口</p>
+                                        <p>网站本身不存储或制作视频资源，而是通过聚合互联网上的第三方播放源进行展示，支持分类浏览与关键词搜索，无需注册登录</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.novipnoad.net/" target="_blank">观沧海</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个以“地图 + 知识可视化”为核心的在线平台，主要功能是将历史、地理、文化、军事等信息与地图深度结合</p>
+                                        <p>用户可以在地图上查看不同时代、不同主题的知识内容，也可以通过内置的地图编辑工具</p>
+                                        <p>将文字、图片、时间线等信息标注到具体地理位置上，直观地呈现复杂知识关系</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.miosub.app/" target="_blank">MioSub</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一款一站式全自动字幕生成工具，覆盖从视频获取（支持在线视频链接和本地文件）、语音识别、自动翻译、时间轴对齐，到字幕编辑与字幕压制的完整流程</p>
+                                        <p>用户只需提供视频来源，即可自动生成多语言字幕，支持导出 SRT、ASS 等常见字幕格式，亦可直接输出带硬字幕的视频</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="timeline-group">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date">2026-02-06</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://egift-book.netlify.app/" target="_blank">电子礼簿系统</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一款纯本地、零后端、完全本地运行的单页 Web 应用， 旨在为各类红白喜事提供一个现代化、安全、高效的礼金（份子钱）管理解决方案</p>
+                                        <p>彻底告别了传统的手写礼簿，通过数字化的方式解决了记录、统计、查询和存档的全部流程，以简单易用为最高设计原则</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.openapk.net/zh/" target="_blank">OpenAPK</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个安卓的各种类型的APK下载网站</p>
+                                        <p>无需解压，点击就可下载，涵盖小说、游戏、办公等等</p>
+                                        <p>浏览器打不开就换一个浏览器</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://guihualianpian.cn/" target="_blank">鬼话连篇</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个专门提供灵异鬼故事和恐怖小说的平台</p>
+                                        <p>网站内容丰富，包括短篇、长篇、校园、家里鬼故事、民间鬼故事以及长篇小说等多个类别</p>
+                                        <p>这些故事跨越了不同的背景与时空，从古老的传说到现代都市的灵异事件，每一篇都让人毛骨悚然</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="timeline-group">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date">2026-02-05</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.gpukill.com/" target="_blank">GPU Kill</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>GPU管理工具，支持NVIDIA、AMD、Intel及Apple Silicon等各个厂商，可实时查看GPU使用情况，如内存占用、温度、进程列表</p>
+                                        <p>并可以优雅地终止卡住或异常的GPU进程，还具备“Guard模式”以执行资源使用策略、审计潜在加密挖矿行为或可疑进程</p>
+                                        <p>支持通过远程命令在多台服务器上执行GPU管理操作，免费开源，适用于Linux、macOS及Windows平台</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://github.com/Turbo1123/LauncherTurbo?tab=readme-ov-file" target="_blank">LauncherTurbo</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>苹果在 macOS Tahoe 中移除了启动台 (Launchpad)</p>
+                                        <p>在 MacBook Pro 上实现真正的 120Hz ProMotion 支持页面滚动时零掉帧</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.deepsoga.com" target="_blank">DeepSoga</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>分享生活经验、避坑指南和实用技巧，互助交流，让生活更轻松</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.didahd.pro/" target="_blank">嘀嗒影视</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>高分电影聚集地，超清秒播体验</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="timeline-group">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date">2026-02-04</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://www.wfhg.cc/zh_CN/" target="_blank">网费很贵</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一款强大的上网时间记录工具，通过追踪用户在各个网站上花费的时间，提供详细的数据分析，还具备习惯分析功能</p>
+                                        <p>可以根据用户的浏览数据自动生成分析报告，识别出高频访问的网站和特定时间段的使用习惯</p>
+                                        <p>可以根据分析结果设置每日访问时间限制和禁止访问的时间段，从而有效控制上网行为，避免不必要的时间浪费</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://whitepic.online/zh" target="_blank">白色背景</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个可以获取纯白色背景图像的网站，适用于显示器测试、屏幕清洁和专业照明等多种用途</p>
+                                        <p>支持从480p到8K的多种分辨率，可以免费下载所需的白色背景图像，且无需注册或支付任何费用</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-card">
+                                    <div class="timeline-card-header">
+                                        <h3 class="timeline-card-title">
+                                            <a class="timeline-title-link" href="https://jorypein.github.io/Notebook/" target="_blank">备忘录</a>
+                                        </h3>
+                                    </div>
+                                    <div class="timeline-card-body">
+                                        <p>一个功能强大的本地备忘录应用，支持富文本编辑和Markdown语法，可以轻松创建清单、代码块和引用等内容</p>
+                                        <p>可以通过文件夹和标签系统来组织备忘录，并利用强大的全文搜索功能快速找到所需信息</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
                         
                         <article class="timeline-group">
                             <div class="timeline-dot"></div>
@@ -2357,6 +2619,46 @@
             var sectionTitle = document.querySelector(".section-title");
             var backToTopBtn = document.querySelector(".back-to-top");
             var backToTopToast = document.querySelector(".back-to-top-toast");
+
+            // 搜索功能逻辑
+            var searchInput = document.getElementById("timelineSearch");
+            if (searchInput) {
+                searchInput.addEventListener("input", function (e) {
+                    var query = e.target.value.trim().toLowerCase();
+                    var allGroups = document.querySelectorAll(".timeline-group");
+                    var hasAnyResult = false;
+
+                    allGroups.forEach(function (group) {
+                        var cards = group.querySelectorAll(".timeline-card");
+                        var groupHasVisible = false;
+
+                        cards.forEach(function (card) {
+                            var title = card.querySelector(".timeline-card-title").innerText;
+                            var body = card.querySelector(".timeline-card-body").innerText;
+                            var content = (title + " " + body).toLowerCase();
+
+                            if (content.indexOf(query) > -1) {
+                                card.style.display = "";
+                                groupHasVisible = true;
+                            } else {
+                                card.style.display = "none";
+                            }
+                        });
+
+                        if (groupHasVisible) {
+                            group.style.display = "";
+                            hasAnyResult = true;
+                            // 如果有搜索词，自动展开分组以便查看结果
+                            if (query.length > 0) {
+                                group.classList.remove("collapsed");
+                            }
+                        } else {
+                            group.style.display = "none";
+                        }
+                    });
+                });
+            }
+
             groups.forEach(function (group) {
                 var date = group.querySelector(".timeline-date");
                 if (!date) return;
