@@ -317,7 +317,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 1000px;
+            max-height: 5000px;
             opacity: 1;
             transform: translateY(0);
             overflow: hidden;
@@ -716,6 +716,72 @@
                 padding: 12px 12px 10px;
             }
         }
+
+        /* 广告卡片样式 */
+        .timeline-card-ad-promo {
+            padding: 0 !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        .timeline-card-ad-promo:hover {
+            border-color: rgba(255, 29, 85, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .timeline-card-ad-image-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .timeline-card-ad-image {
+            width: auto;
+            max-width: 100%;
+            max-height: 360px;
+            display: inline-block;
+            object-fit: contain;
+        }
+
+        .timeline-card-ad-content {
+            padding: 12px 16px 14px;
+        }
+
+        .timeline-card-ad-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .timeline-card-ad-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff1d55, #ff7a95);
+        }
+
+        .timeline-card-ad-desc {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        @media (max-width: 520px) {
+            .timeline-card-ad-content {
+                padding: 10px 12px 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -762,6 +828,29 @@
                     <div class="timeline-axis"></div>
                     <div class="timeline-axis-glow"></div>
                     <div class="timeline-group-list">
+
+                        <article class="timeline-group">
+                            <div class="timeline-dot" style="background: #ff1d55; box-shadow: 0 0 0 4px rgba(255, 29, 85, 0.2);"></div>
+                            <div class="timeline-side timeline-meta">
+                                <span class="timeline-date" style="color: #ff1d55; font-size: 18px;">置顶推荐</span>
+                            </div>
+                            <div class="timeline-side timeline-cards">
+                                <div class="timeline-card timeline-card-ad-promo">
+                                    <a href="#" target="_blank" class="timeline-card-ad-image-link">
+                                        <img src="img/qianwen.jpg" alt="活动海报" class="timeline-card-ad-image">
+                                        <div class="timeline-card-ad-content">
+                                            <div class="timeline-card-ad-title">
+                                                用千问扫码领25元免单卡
+                                                <span class="timeline-card-ad-tag">福利</span>
+                                            </div>
+                                            <p class="timeline-card-ad-desc">
+                                                下载千问APP，点击右下角相机，扫码领取奶茶免单卡
+                                            </p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
                         
                         <article class="timeline-group">
                             <div class="timeline-dot"></div>
