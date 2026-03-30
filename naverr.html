@@ -257,10 +257,10 @@
         }
 
         .grid-links a:hover {
-            color: #ff1D55;
-            border-color: #ff1D55;
+            color: #ff6b9b;
+            border-color: #ff6b9b;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgb(255, 29, 86, 0.1);
+            box-shadow: 0 4px 12px rgba(255, 107, 155, 0.15);
         }
 
         .grid-links a:hover::before {
@@ -407,7 +407,7 @@
 
         .back-to-top {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 29, 85, 0.9);
@@ -487,7 +487,7 @@
             }
 
             .grid-links a:hover {
-                color: #ff4081;
+                color: #ff6b9b;
                 border: none;
                 background: #262626;
                 box-shadow: none;
@@ -514,13 +514,13 @@
             }
 
             .back-to-top {
-                background: rgba(255,64,129,0.8);
-                box-shadow: 0 2px 10px rgba(255, 64, 129, 0.2);
+                background: rgba(255,107,155,0.8);
+                box-shadow: 0 2px 10px rgba(255, 107, 155, 0.2);
             }
 
             .back-to-top:hover {
-                background: #ff4081;
-                box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+                background: #ff6b9b;
+                box-shadow: 0 4px 15px rgba(255, 107, 155, 0.3);
             }
 
             /* 链接悬停渐变动画 */
@@ -533,9 +533,374 @@
                 );
             }
         }
+
+        /* Navigation Bar Styles */
+        .top-nav, .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 1px solid rgba(255,29,85,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .top-nav {
+            top: 0;
+        }
+
+        .bottom-nav {
+            bottom: 0;
+        }
+
+        .nav-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 0;
+        }
+
+        .nav-item {
+            color: #ff1D55;
+            text-decoration: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, #ff6b9b, #ff8fa3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,107,155,0.25);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #ff6b9b, #ff8fa3);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255,107,155,0.3);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: linear-gradient(135deg, #ff6b9b, #ff8fa3);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+        }
+
+        .mobile-menu-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-menu-content {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .mobile-nav-section h4 {
+            color: #ff1D55;
+            margin: 15px 0 10px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .mobile-nav-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .mobile-menu-content h3 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #ff1D55;
+        }
+
+        .mobile-nav-item {
+            color: #ff1D55;
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid rgba(255,29,85,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-item:hover {
+            background: linear-gradient(135deg, #ff6b9b, #ff8fa3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Content section padding to account for fixed navs */
+        #contentSection {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .mobile-menu-btn-bottom {
+                display: block !important;
+            }
+
+            .top-nav .nav-links {
+                display: none;
+            }
+
+            .bottom-nav .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-content {
+                width: 90vw;
+                height: auto;
+                max-width: 400px;
+                max-height: 80vh;
+                border-radius: 12px;
+                margin: auto;
+                padding: 20px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                overflow-y: auto;
+            }
+
+            .mobile-nav-links {
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+                gap: 10px;
+                margin-top: 20px;
+                max-width: 400px;
+                width: 100%;
+            }
+
+            .nav-item {
+                font-size: 11px;
+                padding: 4px 6px;
+            }
+
+            #contentSection {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-nav-links {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
+                max-width: 400px;
+                width: 100%;
+            }
+
+            .mobile-nav-item {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+
+            .mobile-menu-content {
+                padding: 15px;
+                width: 90vw;
+                height: auto;
+                max-width: 400px;
+                max-height: 80vh;
+                border-radius: 12px;
+                margin: auto;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                overflow-y: auto;
+            }
+        }
+
+        /* Mobile Menu Button at Bottom */
+        .mobile-menu-btn-bottom {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b9b, #ff8fa3);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(255, 29, 85, 0.3);
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn-bottom:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255, 29, 85, 0.4);
+        }
+
+        /* Back to top button adjustment */
+        .back-to-top {
+            bottom: 80px;
+            left: 20px;
+            transform: none;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .back-to-top {
+                bottom: 80px;
+            }
+        }
+
     </style>
 </head>
 <body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav" id="topNav">
+        <div class="nav-container">
+            <div class="nav-links" id="navLinks">
+                <a href="#section1" class="nav-item">万物归一</a>
+                <a href="#section2" class="nav-item">搜索标签</a>
+                <a href="#section3" class="nav-item">小白常用</a>
+                <a href="#section4" class="nav-item">论坛平台</a>
+                <a href="#section5" class="nav-item">国家服务</a>
+                <a href="#section6" class="nav-item">次元壁垒</a>
+                <a href="#section7" class="nav-item">知识学习</a>
+                <a href="#section8" class="nav-item">书籍阅读</a>
+                <a href="#section9" class="nav-item">软件资源</a>
+                <a href="#section10" class="nav-item">破冰世界</a>
+                <a href="#section11" class="nav-item">商城购物</a>
+                <a href="#section12" class="nav-item">资源搜索</a>
+                <a href="#section13" class="nav-item">微信社交</a>
+                <a href="#section14" class="nav-item">健康养生</a>
+                <a href="#section15" class="nav-item">工具合集</a>
+                <a href="#section16" class="nav-item">音乐天才</a>
+                <a href="#section17" class="nav-item">设计天才</a>
+                <a href="#section18" class="nav-item">游戏学习</a>
+                <a href="#section19" class="nav-item">文件分享</a>
+                <a href="#section20" class="nav-item">科技资讯</a>
+                <a href="#section21" class="nav-item">浏览插件</a>
+                <a href="#section22" class="nav-item">视频下载</a>
+                <a href="#section23" class="nav-item">图片素材</a>
+                <a href="#section24" class="nav-item">图片工具</a>
+                <a href="#section25" class="nav-item">苹果管理</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;">全部导航</h3>
+                <button id="closeMobileMenu" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #ff1D55;">&times;</button>
+            </div>
+            <div class="mobile-nav-links">
+                <a href="#section1" class="mobile-nav-item">万物归一</a>
+                <a href="#section2" class="mobile-nav-item">搜索标签</a>
+                <a href="#section3" class="mobile-nav-item">小白常用</a>
+                <a href="#section4" class="mobile-nav-item">论坛平台</a>
+                <a href="#section5" class="mobile-nav-item">国家服务</a>
+                <a href="#section6" class="mobile-nav-item">次元壁垒</a>
+                <a href="#section7" class="mobile-nav-item">知识学习</a>
+                <a href="#section8" class="mobile-nav-item">书籍阅读</a>
+                <a href="#section9" class="mobile-nav-item">软件资源</a>
+                <a href="#section10" class="mobile-nav-item">破冰世界</a>
+                <a href="#section11" class="mobile-nav-item">商城购物</a>
+                <a href="#section12" class="mobile-nav-item">资源搜索</a>
+                <a href="#section13" class="mobile-nav-item">微信社交</a>
+                <a href="#section14" class="mobile-nav-item">健康养生</a>
+                <a href="#section15" class="mobile-nav-item">工具合集</a>
+                <a href="#section16" class="mobile-nav-item">音乐天才</a>
+                <a href="#section17" class="mobile-nav-item">设计天才</a>
+                <a href="#section18" class="mobile-nav-item">游戏学习</a>
+                <a href="#section19" class="mobile-nav-item">文件分享</a>
+                <a href="#section20" class="mobile-nav-item">科技资讯</a>
+                <a href="#section21" class="mobile-nav-item">浏览插件</a>
+                <a href="#section22" class="mobile-nav-item">视频下载</a>
+                <a href="#section23" class="mobile-nav-item">图片素材</a>
+                <a href="#section24" class="mobile-nav-item">图片工具</a>
+                <a href="#section25" class="mobile-nav-item">苹果管理</a>
+                <a href="#section26" class="mobile-nav-item">安卓开源</a>
+                <a href="#section27" class="mobile-nav-item">视频影院</a>
+                <a href="#section28" class="mobile-nav-item">在线杂乱</a>
+                <a href="#section29" class="mobile-nav-item">生成神器</a>
+                <a href="#section30" class="mobile-nav-item">新奇有趣</a>
+                <a href="#section31" class="mobile-nav-item">导航网站</a>
+                <a href="#section32" class="mobile-nav-item">PDF相关</a>
+                <a href="#section33" class="mobile-nav-item">主机服务</a>
+                <a href="#section34" class="mobile-nav-item">偶尔用用</a>
+                <a href="#section35" class="mobile-nav-item">文库相关</a>
+                <a href="#section36" class="mobile-nav-item">办公学习</a>
+                <a href="#section37" class="mobile-nav-item">运营学习</a>
+                    <a href="#section38" class="mobile-nav-item">营销工具</a>
+                    <a href="#section39" class="mobile-nav-item">数据平台</a>
+                    <a href="#section40" class="mobile-nav-item">开源仓库</a>
+                    <a href="#section41" class="mobile-nav-item">艺术展馆</a>
+                    <a href="#section42" class="mobile-nav-item">电商梦想</a>
+                    <a href="#section43" class="mobile-nav-item">装修天才</a>
+                    <a href="#section44" class="mobile-nav-item">儿童教育</a>
+                    <a href="#section45" class="mobile-nav-item">图标图库</a>
+                    <a href="#section46" class="mobile-nav-item">美术文献</a>
+                    <a href="#section47" class="mobile-nav-item">剪辑汇总</a>
+                    <a href="#section48" class="mobile-nav-item">剪辑资料</a>
+                    <a href="#section49" class="mobile-nav-item">AI赋能</a>
+                    <a href="#section50" class="mobile-nav-item">Mac</a>
+            </div>
+        </div>
+    </div>
+
     <section id="contentSection">
         <div id="content1" class="content">
             <h2>壹号导航</h2>
@@ -552,7 +917,7 @@
 
     <div class="content-blocks-container">
         <div class="content-block" id="block1">
-            <h3>万物归一</h3>
+            <h3 id="section1">万物归一</h3>
             <div class="grid-links">
                 <a href="qiantai.html" target="_blank">壹号讯息</a>
                 <a href="baozhi.html" target="_blank">旧报纸</a>
@@ -574,7 +939,7 @@
         </div>
 
         <div class="content-block" id="block2">
-            <h3>搜索标签</h3>
+            <h3 id="section2">搜索标签</h3>
             <div class="grid-links">
                 <a href="https://chat.deepseek.com/" target="_blank">DeepSeek</a>
                 <a href="https://www.doubao.com/" target="_blank">豆包</a>
@@ -622,7 +987,7 @@
         </div>
 
         <div class="content-block" id="block3">
-            <h3>小白常用</h3>
+            <h3 id="section3">小白常用</h3>
             <div class="grid-links">
                 <a href="https://baoxiaobao.vercel.app/" target="_blank">宝小宝镜像</a>
                 <a href="https://baoxiaobao.btw.so/" target="_blank">宝小宝博客</a>
@@ -683,7 +1048,7 @@
         </div>
 
         <div class="content-block" id="block4">
-            <h3>论坛平台</h3>
+            <h3 id="section4">论坛平台</h3>
             <div class="grid-links">
                 <a href="http://www.52pojie.cn/" target="_blank">52破解</a>
                 <a href="https://topsub.cc/" target="_blank">Reddit榜单</a>
@@ -728,7 +1093,7 @@
         </div>
 
         <div class="content-block" id="block5">
-            <h3>国家服务</h3>
+            <h3 id="section5">国家服务</h3>
             <div class="grid-links">
                 <a href="http://www.std.gov.cn/" target="_blank">全国标准信息公共服务</a>
                 <a href="http://www.gsxt.gov.cn/index.html" target="_blank">全国企业信用信息公示</a>
@@ -779,7 +1144,7 @@
         </div>
 
         <div class="content-block" id="block6">
-            <h3>次元壁垒</h3>
+            <h3 id="section6">次元壁垒</h3>
             <div class="grid-links">
                 <a href="http://www.bilibili.com/" target="_blank">B站</a>
                 <a href="https://tv.garden/" target="_blank">TVgarden</a>
@@ -896,7 +1261,7 @@
         </div>
 
         <div class="content-block" id="block7">
-            <h3>知识学习</h3>
+            <h3 id="section7">知识学习</h3>
             <div class="grid-links">
                 <a href="http://www.jianshu.com/" target="_blank">简书</a>
                 <a href="https://www.zhihu.com/" target="_blank">知乎</a>
@@ -932,7 +1297,7 @@
         </div>
 
         <div class="content-block" id="block8">
-            <h3>书籍阅读</h3>
+            <h3 id="section8">书籍阅读</h3>
             <div class="grid-links">
                 <a href="https://weread.qq.com/" target="_blank">微信读书</a>
                 <a href="https://ebook.huzerui.com/" target="_blank">熊猫搜书</a>
@@ -997,7 +1362,7 @@
         </div>
 
         <div class="content-block" id="block9">
-            <h3>软件资源</h3>
+            <h3 id="section9">软件资源</h3>
             <div class="grid-links">
                 <a href="http://msdn.itellyou.cn/" target="_blank">ITellYou</a>
                 <a href="http://lackar.com/aa/" target="_blank">AnywhereAnything</a>
@@ -1042,7 +1407,7 @@
         </div>
 
         <div class="content-block" id="block10">
-            <h3>破冰世界</h3>
+            <h3 id="section10">破冰世界</h3>
             <div class="grid-links">
                 <a href="https://www.google.com/" target="_blank">Google</a>
                 <a href="https://www.tumblr.com/" target="_blank">Tumblr</a>
@@ -1084,7 +1449,7 @@
         </div>
 
         <div class="content-block" id="block11">
-            <h3>商城购物</h3>
+            <h3 id="section11">商城购物</h3>
             <div class="grid-links">
                 <!-- 充气老婆： https://www.kanadoll.jp/ -->
                 <a href="http://www.jd.com/" target="_blank">京东</a>
@@ -1114,7 +1479,7 @@
         </div>
 
         <div class="content-block" id="block12">
-            <h3>资源搜索</h3>
+            <h3 id="section12">资源搜索</h3>
             <div class="grid-links">
                 <a href="https://www.panlegepan.com/" target="_blank">盘了个盘</a>
                 <a href="https://wpxz.top/" target="_blank">阿里网盘小站</a>
@@ -1170,7 +1535,7 @@
         </div>
 
         <div class="content-block" id="block13">
-            <h3>微信社交</h3>
+            <h3 id="section13">微信社交</h3>
             <div class="grid-links">
                 <a href="http://www.15um.com/tools/weixin_v.php" target="_blank">微信视频下载</a>
                 <a href="http://www.gulugj.com/" target="_blank">咕噜管家微信活码</a>
@@ -1190,7 +1555,7 @@
         </div>
 
         <div class="content-block" id="block14">
-            <h3>健康养生</h3>
+            <h3 id="section14">健康养生</h3>
             <div class="grid-links">
                 <a href="https://www.curekids.cn/" target="_blank">向日葵儿童</a>
                 <a href="http://www.mvyxws.com/" target="_blank">医学微视</a>
@@ -1224,7 +1589,7 @@
         </div>
 
         <div class="content-block" id="block15">
-            <h3>工具合集</h3>
+            <h3 id="section15">工具合集</h3>
             <div class="grid-links">
                 <a href="http://tool.oschina.net/" target="_blank">在线工具</a>
                 <a href="https://1024tools.com/" target="_blank">1024程序員工具</a>
@@ -1317,7 +1682,7 @@
         </div>
 
         <div class="content-block" id="block16">
-            <h3>音乐天才</h3>
+            <h3 id="section16">音乐天才</h3>
             <div class="grid-links">
                 <a href="https://lizhi.turkyden.com/" target="_blank">李志BB音乐作品</a>
                 <a href="https://www.ximalaya.com/" target="_blank">喜马拉雅FM</a>
@@ -1432,7 +1797,7 @@
         </div>
 
         <div class="content-block" id="block17">
-            <h3>设计天才</h3>
+            <h3 id="section17">设计天才</h3>
             <div class="grid-links">
                 <a href="https://www.gaoding.com/" target="_blank">搞定设计电商</a>
                 <a href="https://www.figma.com/" target="_blank">Figma</a>
@@ -1485,7 +1850,7 @@
         </div>
 
         <div class="content-block" id="block18">
-            <h3>游戏学习</h3>
+            <h3 id="section18">游戏学习</h3>
             <div class="grid-links">
                 <a href="http://lines.frvr.com/" target="_blank">程序员小游戏</a>
                 <a href="http://fakeupdate.net/" target="_blank">假装Windows升级</a>
@@ -1509,7 +1874,7 @@
         </div>
 
         <div class="content-block" id="block19">
-            <h3>文件分享</h3>
+            <h3 id="section19">文件分享</h3>
             <div class="grid-links">
                 <a href="https://www.wenshushu.cn/" target="_blank">文叔叔</a>
                 <a href="http://cowtransfer.com/" target="_blank">奶牛快传</a>
@@ -1558,7 +1923,7 @@
         </div>
 
         <div class="content-block" id="block20">
-            <h3>科技资讯</h3>
+            <h3 id="section20">科技资讯</h3>
             <div class="grid-links">
                 <a href="http://www.geekpark.net/" target="_blank">极客公园</a>
                 <a href="http://36kr.com/" target="_blank">36Kr</a>
@@ -1597,7 +1962,7 @@
         </div>
 
         <div class="content-block" id="block21">
-            <h3>浏览插件</h3>
+            <h3 id="section21">浏览插件</h3>
             <div class="grid-links">
                 <a href="https://arc.net/" target="_blank">ARC浏览器</a>
                 <a href="https://www.google.com/chrome/" target="_blank">Chrome浏览器官方</a>
@@ -1639,7 +2004,7 @@
         </div>
 
         <div class="content-block" id="block22">
-            <h3>视频下载</h3>
+            <h3 id="section22">视频下载</h3>
             <div class="grid-links">
                 <a href="https://www.videoder.net/online-video-downloader" target="_blank">也是视频下载王者</a>
                 <a href="http://weibodang.cn/" target="_blank">weibodang视频下载</a>
@@ -1694,7 +2059,7 @@
         </div>
 
         <div class="content-block" id="block23">
-            <h3>图片素材</h3>
+            <h3 id="section23">图片素材</h3>
             <div class="grid-links">
                 <a href="https://snake.timeline.ink/" target="_blank">拾光壁纸</a>
                 <a href="http://pngimg.com/" target="_blank">pngimg</a>
@@ -1771,7 +2136,7 @@
         </div>
 
         <div class="content-block" id="block24">
-            <h3>图片工具</h3>
+            <h3 id="section24">图片工具</h3>
             <div class="grid-links">
                 <a href="https://imagecyborg.com/" target="_blank">网页下载所以图片</a>
                 <a href="http://zhitu.isux.us/" target="_blank">智图</a>
@@ -1860,7 +2225,7 @@
         </div>
 
         <div class="content-block" id="block25">
-            <h3>苹果管理</h3>
+            <h3 id="section25">苹果管理</h3>
             <div class="grid-links">
                 <a href="https://www.icloud.com/" target="_blank">iCloud</a>
                 <a href="http://93665.xin/" target="_blank">苦心IOS导航</a>
@@ -1902,7 +2267,7 @@
         </div>
 
         <div class="content-block" id="block26">
-            <h3>安卓开源</h3>
+            <h3 id="section26">安卓开源</h3>
             <div class="grid-links">
                 <a href="http://www.iapps.me/" target="_blank">翻应用</a>
                 <a href="https://opengapps.org/" target="_blank">OpenGapps</a>
@@ -1922,7 +2287,7 @@
         </div>
 
         <div class="content-block" id="block27">
-            <h3>视频影院</h3>
+            <h3 id="section27">视频影院</h3>
             <div class="grid-links">
                 <a href="https://wetv.vip/zh-cn" target="_blank">腾讯视频国际</a>
                 <a href="http://videocool.net/" target="_blank">VideoCool</a>
@@ -1972,12 +2337,11 @@
                 <a href="https://www.4kvm.net/" target="_blank">4K影院</a>
                 <a href="https://moovie.c2v2.com/" target="_blank">Moovie</a>
                 <a href="https://pstream.mov/" target="_blank">P-Stream</a>
-                <a href="https://ziziys.org/" target="_blank">子子影视</a>
             </div>
         </div>
 
         <div class="content-block" id="block28">
-            <h3>在线杂乱</h3>
+            <h3 id="section28">在线杂乱</h3>
             <div class="grid-links">
                 <a href="http://cn.office-converter.com/" target="_blank">免费文件转换</a>
                 <a href="http://cn.free-converter.com/" target="_blank">免费在线文件转换</a>
@@ -2032,7 +2396,7 @@
         </div>
 
         <div class="content-block" id="block29">
-            <h3>生成神器</h3>
+            <h3 id="section29">生成神器</h3>
             <div class="grid-links">
                 <a href="https://getavataaars.com/" target="_blank">卡通头像生成器</a>
                 <a href="https://logoly.pro/" target="_blank">LogolyPro生成器</a>
@@ -2259,7 +2623,7 @@
         </div>
 
         <div class="content-block" id="block30">
-            <h3>新奇有趣</h3>
+            <h3 id="section30">新奇有趣</h3>
             <div class="grid-links">
                 <a href="https://webgradients.com/ " target="_blank">WebGradients</a>
                 <a href="http://www.metacd.com " target="_blank">博云</a>
@@ -2421,7 +2785,7 @@
         </div>
 
         <div class="content-block" id="block31">
-            <h3>导航网站</h3>
+            <h3 id="section31">导航网站</h3>
             <div class="grid-links">
                 <a href="https://1000userguide.com/" target="_blank">1000UserGuide</a>
                 <a href="https://www.amz123.com/ " target="_blank">AMZ123跨境</a>
@@ -2500,7 +2864,7 @@
         </div>
 
         <div class="content-block" id="block32">
-            <h3>PDF相关</h3>
+            <h3 id="section32">PDF相关</h3>
             <div class="grid-links">
                 <a href="https://online.rightpdf.com/cn/home" target="_blank">文电通PDF</a>
                 <a href="https://www.pdf2go.com/zh/ " target="_blank">PDF2Go</a>
@@ -2539,7 +2903,7 @@
         </div>
 
         <div class="content-block" id="block33">
-            <h3>主机服务</h3>
+            <h3 id="section33">主机服务</h3>
             <div class="grid-links">
                 <a href="https://www.cloudns.net/index/lang/chs/" target="_blank">ClouDNS</a>
                 <a href="https://www.cloudflare.com/zh-cn/" target="_blank">Cloudflare</a>
@@ -2562,7 +2926,7 @@
         </div>
 
         <div class="content-block" id="block34">
-            <h3>偶尔用用</h3>
+            <h3 id="section34">偶尔用用</h3>
             <div class="grid-links">
                 <a href="http://www.youku.com " target="_blank">优酷</a>
                 <a href="http://www.iqiyi.com/ " target="_blank">爱奇艺</a>
@@ -2619,7 +2983,7 @@
         </div>
 
         <div class="content-block" id="block35">
-            <h3>文库相关</h3>
+            <h3 id="section35">文库相关</h3>
             <div class="grid-links">
                 <a href="https://www.docin365.com/ " target="_blank">豆丁文档解析工具</a>
                 <a href="http://bdwk.588230.com/ " target="_blank">南瓜文档解析抓取工具</a>
@@ -2627,7 +2991,7 @@
         </div>
 
         <div class="content-block" id="block36">
-            <h3>办公学习</h3>
+            <h3 id="section36">办公学习</h3>
             <div class="grid-links">
                 <a href="http://ffcell.com/wenku/index.aspx" target="_blank">格子社区</a>
                 <a href="http://www.ypppt.com/" target="_blank">优品PPT</a>
@@ -2647,7 +3011,7 @@
         </div>
 
         <div class="content-block" id="block37">
-            <h3>运营学习</h3>
+            <h3 id="section37">运营学习</h3>
             <div class="grid-links">
                 <a href="https://www.newrank.cn/ " target="_blank">新榜</a>
                 <a href="http://www.growthhk.cn/ " target="_blank">增长黑客</a>
@@ -2674,7 +3038,7 @@
         </div>
 
         <div class="content-block" id="block38">
-            <h3>营销工具</h3>
+            <h3 id="section38">营销工具</h3>
             <div class="grid-links">
                 <a href="http://www.eqxiu.com/ " target="_blank">易企秀</a>
                 <a href="http://www.wannengye.com/ " target="_blank">万能页</a>
@@ -2693,7 +3057,7 @@
         </div>
 
         <div class="content-block" id="block39">
-            <h3>数据平台</h3>
+            <h3 id="section39">数据平台</h3>
             <div class="grid-links">
                 <a href="https://data.newrank.cn/ " target="_blank">新榜有数</a>
                 <a href="http://www.wrd.cn/ " target="_blank">新浪微热点</a>
@@ -2723,7 +3087,7 @@
         </div>
 
         <div class="content-block" id="block40">
-            <h3>开源仓库</h3>
+            <h3 id="section40">开源仓库</h3>
             <div class="grid-links">
                 <a href="https://www.fosshub.com/ " target="_blank">FossHub</a>
                 <a href="https://github.com/nrop19/weiman_app " target="_blank">微漫APP</a>
@@ -2844,7 +3208,7 @@
         </div>
 
         <div class="content-block" id="block41">
-            <h3>艺术展馆</h3>
+            <h3 id="section41">艺术展馆</h3>
             <div class="grid-links">
                 <a href="https://minghuaji.dpm.org.cn/" target="_blank">故宫名画记</a>
                 <a href="http://www.namoc.org/" target="_blank">中国美术馆</a>
@@ -2860,7 +3224,7 @@
         </div>
 
         <div class="content-block" id="block42">
-            <h3>电商梦想</h3>
+            <h3 id="section42">电商梦想</h3>
             <div class="grid-links">
                 <a href="https://school.jinritemai.com/" target="_blank">抖音电商学习中心</a>
                 <a href="http://zhitongche.taobao.com/" target="_blank">直通车</a>
@@ -2894,7 +3258,7 @@
         </div>
 
         <div class="content-block" id="block43">
-            <h3>装修天才</h3>
+            <h3 id="section43">装修天才</h3>
             <div class="grid-links">
                 <a href="https://www.kujiale.com/" target="_blank">酷家乐3D云设计</a>
                 <a href="https://www.jianzhuxuezhang.com/" target="_blank">建筑学长</a>
@@ -2903,7 +3267,7 @@
         </div>
 
         <div class="content-block" id="block44">
-            <h3>儿童教育</h3>
+            <h3 id="section44">儿童教育</h3>
             <div class="grid-links">
                 <a href="https://www.91118.com/" target="_blank">快乐学堂</a>
                 <a href="http://www.raywit.com/" target="_blank">锐智网</a>
@@ -2940,7 +3304,7 @@
         </div>
 
         <div class="content-block" id="block45">
-            <h3>图标图库</h3>
+            <h3 id="section45">图标图库</h3>
             <div class="grid-links">
                 <a href="https://www.iconfont.cn/ " target="_blank">阿里矢量图标库</a>
                 <a href="https://fontawesome.com/ " target="_blank">Font Awesome</a>
@@ -2978,7 +3342,7 @@
         </div>
 
         <div class="content-block" id="block46">
-            <h3>美术文献</h3>
+            <h3 id="section46">美术文献</h3>
             <div class="grid-links">
                 <a href="https://sci-hub.org.cn/ " target="_blank">Sci-Hub文献检索</a>
                 <a href="http://xueshu.baidu.com/ " target="_blank">百毒学术</a>
@@ -2995,7 +3359,7 @@
         </div>
 
         <div class="content-block" id="block47">
-            <h3>剪辑汇总</h3>
+            <h3 id="section47">剪辑汇总</h3>
             <div class="grid-links">
                 <a href="http://www.hd-trailers.net/" target="_blank">HD-Trailers</a>
                 <a href="http://secure.assrt.net/" target="_blank">射手网</a>
@@ -3014,7 +3378,7 @@
         </div>
 
         <div class="content-block" id="block48">
-            <h3>剪辑资料</h3>
+            <h3 id="section48">剪辑资料</h3>
             <div class="grid-links">
                 <a href="https://www.mediastory.cc/#/" target="_blank">闪电分镜</a>
                 <a href="https://www.vjshi.com/" target="_blank">光厂</a>
@@ -3024,11 +3388,10 @@
         </div>
 
         <div class="content-block" id="block49">
-            <h3>AI赋能</h3>
+            <h3 id="section49">AI赋能</h3>
             <div class="grid-links">
                 <a href="https://opencode.ai/" target="_blank">OpenCode</a>
-                <a href="https://www.clawfather.cn/" target="_blank">OpenClaw中文网</a>
-                <a href="https://claw101.com/" target="_blank">Claw101中文社区</a>
+                <a href="https://clawd.org.cn/" target="_blank">OpenClaw</a>
                 <a href="https://openclaw101.dev/zh" target="_blank">OpenClaw101</a>
                 <a href="https://code.claude.com/docs/zh-CN/overview" target="_blank">Claude Code</a>
                 <a href="https://clawd.org.cn/" target="_blank">OpenClaw中文社区</a>
@@ -3091,14 +3454,11 @@
                 <a href="https://prompts.chat/" target="_blank">AI提示词宝库</a>
                 <a href="https://www.waytoagi.com/zh" target="_blank">通往AGI之路</a>
                 <a href="https://longcat.chat/" target="_blank">LongCat</a>
-                <a href="https://longxiadaxue.com/" target="_blank">龙虾大学</a>
-                <a href="https://clawpath.dev/" target="_blank">ClawPath</a>
-                <a href="https://open.maic.chat/" target="_blank">OpenMAIC</a>
             </div>
         </div>
 
         <div class="content-block" id="block50">
-            <h3>Mac</h3>
+            <h3 id="section50">Mac</h3>
             <div class="grid-links">
                 <a href="https://github.com/jaywcjlove/awesome-mac/blob/master/README-zh.md" target="_blank">Awesome Mac</a>
                 <a href="https://indiegoodies.com/awesome-open-source-mac-apps" target="_blank">Mac开源Apps</a>
@@ -3139,12 +3499,11 @@
                 <a href="https://appstoreprice.org/zh" target="_blank">App Store Price</a>
                 <a href="https://www.better365.cn/apps.html" target="_blank">宁波上官科技</a>
                 <a href="https://appstorrent.ru/" target="_blank">appstorrent</a>
-                <a href="https://my.feishu.cn/wiki/WntSwDldZiyOIRkz1trc0xfNnSb" target="_blank">Mac的分享中心</a>
             </div>
         </div>
 
         <div class="content-block" id="block50">
-            <h3>飞书分享</h3>
+            <h3 id="section51">飞书分享</h3>
             <div class="grid-links">
                 <a href="https://xuqiwei1986.feishu.cn/wiki/Xqhew46CMiXD1AkJOURcvMDSnih" target="_blank">备胎打造计划</a>
                 <a href="https://dye87dshnj.feishu.cn/wiki/V7J1w3MEPiZdtdkfhFAcOCnJnEh" target="_blank">文森策的AI知识库</a>
@@ -3153,7 +3512,7 @@
 
         
         <div class="content-block">
-            <h3>零一一零</h3>
+            <h3 id="section52">零一一零</h3>
             <div class="grid-links">
                 <a href="#block1">小白原创</a>
                 <a href="#block2">搜索标签</a>
@@ -3234,6 +3593,40 @@
     </div>
 
 
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav" id="bottomNav">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="#section26" class="nav-item">安卓开源</a>
+                <a href="#section27" class="nav-item">视频影院</a>
+                <a href="#section28" class="nav-item">在线杂乱</a>
+                <a href="#section29" class="nav-item">生成神器</a>
+                <a href="#section30" class="nav-item">新奇有趣</a>
+                <a href="#section31" class="nav-item">导航网站</a>
+                <a href="#section32" class="nav-item">PDF相关</a>
+                <a href="#section33" class="nav-item">主机服务</a>
+                <a href="#section34" class="nav-item">偶尔用用</a>
+                <a href="#section35" class="nav-item">文库相关</a>
+                <a href="#section36" class="nav-item">办公学习</a>
+                <a href="#section37" class="nav-item">运营学习</a>
+                <a href="#section38" class="nav-item">营销工具</a>
+                <a href="#section39" class="nav-item">数据平台</a>
+                <a href="#section40" class="nav-item">开源仓库</a>
+                <a href="#section41" class="nav-item">艺术展馆</a>
+                <a href="#section42" class="nav-item">电商梦想</a>
+                <a href="#section43" class="nav-item">装修天才</a>
+                <a href="#section44" class="nav-item">儿童教育</a>
+                <a href="#section45" class="nav-item">图标图库</a>
+                <a href="#section46" class="nav-item">美术文献</a>
+                <a href="#section47" class="nav-item">剪辑汇总</a>
+                <a href="#section48" class="nav-item">剪辑资料</a>
+                <a href="#section49" class="nav-item">AI赋能</a>
+                <a href="#section50" class="nav-item">Mac</a>
+            </div>
+        </div>
+    </nav>
+
+    <button class="mobile-menu-btn-bottom" id="mobileMenuBtn">☰</button>
     <div class="back-to-top" id="backToTop">
         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
             <path d="M25,2c12.703,0,23,10.297,23,23S37.703,48,25,48S2,37.703,2,25S12.297,2,25,2z M32.934,34.375	c0.423-1.298,2.405-14.234,2.65-16.783c0.074-0.772-0.17-1.285-0.648-1.514c-0.578-0.278-1.434-0.139-2.427,0.219	c-1.362,0.491-18.774,7.884-19.78,8.312c-0.954,0.405-1.856,0.847-1.856,1.487c0,0.45,0.267,0.703,1.003,0.966	c0.766,0.273,2.695,0.858,3.834,1.172c1.097,0.303,2.346,0.04,3.046-0.395c0.742-0.461,9.305-6.191,9.92-6.693	c0.614-0.502,1.104,0.141,0.602,0.644c-0.502,0.502-6.38,6.207-7.155,6.997c-0.941,0.959-0.273,1.953,0.358,2.351	c0.721,0.454,5.906,3.932,6.687,4.49c0.781,0.558,1.573,0.811,2.298,0.811C32.191,36.439,32.573,35.484,32.934,34.375z"></path>
@@ -3241,6 +3634,89 @@
     </div>
 
     <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenuOverlay.classList.add('active');
+        });
+
+        // 关闭按钮事件
+        const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+        if (closeMobileMenuBtn) {
+            closeMobileMenuBtn.addEventListener('click', function() {
+                mobileMenuOverlay.classList.remove('active');
+            });
+        }
+
+        // 点击外部关闭菜单
+        mobileMenuOverlay.addEventListener('click', function(e) {
+            // 检查是否点击的是 overlay 背景（不是菜单内容）
+            if (e.target === mobileMenuOverlay) {
+                mobileMenuOverlay.classList.remove('active');
+            }
+        });
+
+        // 阻止点击菜单内容时关闭
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.mobile-menu-content')) {
+                e.stopPropagation();
+            }
+        }, true);
+
+        // Close mobile menu when clicking a nav item
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                mobileMenuOverlay.classList.remove('active');
+                scrollToSection(this.getAttribute('href').substring(1));
+            });
+        });
+
+        // Navigation scroll functionality
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const offset = 80; // Account for top nav height
+                const elementPosition = element.offsetTop - offset;
+
+                window.scrollTo({
+                    top: elementPosition,
+                    behavior: 'smooth'
+                });
+
+                // Update active nav item
+                updateActiveNavItem(sectionId);
+            }
+        }
+
+        // Update active navigation item based on scroll position
+        function updateActiveNavItem(currentSection) {
+            document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + currentSection) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Add click event listeners to navigation items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sectionId = this.getAttribute('href').substring(1);
+                scrollToSection(sectionId);
+            });
+        });
+
+        // Scroll to section when page loads with hash
+        window.addEventListener('load', function() {
+            if (window.location.hash) {
+                const sectionId = window.location.hash.substring(1);
+                setTimeout(() => scrollToSection(sectionId), 100);
+            }
+        });
+
         // Scroll to bottom when clicking welcome section
         document.querySelector('h2').addEventListener('click', function() {
             const scrollHeight = Math.max(
